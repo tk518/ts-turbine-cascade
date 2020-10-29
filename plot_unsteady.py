@@ -90,7 +90,7 @@ P = Dat_ps['pstat'][imid,jmid,0,:]
 # P is a one-dimensional vector of values of static pressure at each instant in
 # time; np.mean is a function that returns the mean of an array
 P_hat = P / np.mean(P)
-
+'''
 # Generate the graph
 f,a = plt.subplots()  # Create a figure and axis to plot into
 a.plot(ft,P_hat,'-')  # Plot our data as a new line
@@ -99,7 +99,7 @@ plt.ylabel('Static Pressure, $p/\overline{p}$')  # Vertical axis label
 plt.tight_layout()  # Remove extraneous white space
 plt.show()  # Render the plot
 plt.savefig('unsteady_P.pdf')  # Write out a pdf file
-
+'''
 #
 # Plot time-mean density on pressure side as function of axial location
 #
@@ -131,7 +131,7 @@ x = Dat_ps['x'][:,jmid,0,0]
 # Convert to axial chord fraction; use the array min and max functions to get
 # the coordinates at leading and trailing edges respectively.
 x_hat = (x - x.min())/(x.max() - x.min())
-
+'''
 # Generate the graph
 f,a = plt.subplots()  # Create a figure and axis to plot into
 a.plot(x_hat,ro_hat,'-')  # Plot our data as a new line
@@ -143,7 +143,7 @@ plt.ylabel(
 plt.tight_layout()  # Remove extraneous white space
 plt.show()  # Render the plot
 plt.savefig('ro_x.pdf')  # Write out a pdf file
-
+'''
 #
 # Other things to try
 #
@@ -162,10 +162,12 @@ plt.savefig('ro_x.pdf')  # Write out a pdf file
 #   different Mach numbers
 
 #FFT plot
-signal = P_hat
-fourierTransform = np.fft.fft(signal/len(signal))
-fourierTransform = fourierTransform[range(int(len(signal)/2))]
-frequencies = np.fft.fftfreq( len(signal) , dt)
+print('p = ', P)
+print('P_hat =', P_hat)
+P = P[0]
+print('P[0]', P)
+fourierTransform = np.fft.fft(P)
+frequencies = np.fft.fftfreq( len(P) , dt)
 
 #Frequency domain presentation
 plt.plot(frequencies, abs(fourierTransform))
