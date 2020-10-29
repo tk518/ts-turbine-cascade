@@ -84,22 +84,30 @@ imid = int(di/2)
 # j = jmid for mid-span radial location
 # k = 0 because the patch is at const pitchwise position, on pressure surface
 # n = : for all instants in time 
-P = Dat_ps['pstat'][imid,jmid,0,:]
+P1 = Dat_ps['pstat'][imid,jmid,0,:]
+P2 = Dat_ps['pstat'][0,jmid,0,:]
+P3 = Dat_ps['pstat'][di,jmid,0,:]
 
 # Divide pressure by mean value
 # P is a one-dimensional vector of values of static pressure at each instant in
 # time; np.mean is a function that returns the mean of an array
-P_hat = P / np.mean(P)
-'''
+P_hat1 = P1 / np.mean(P1)
+P_hat2 = P2 / np.mean(P2)
+P_hat3 = P3 / np.mean(P3)
+
 # Generate the graph
 f,a = plt.subplots()  # Create a figure and axis to plot into
-a.plot(ft,P_hat,'-')  # Plot our data as a new line
+a.plot(ft,P_hat1,'-', label = 'Midpoint')  # Plot our data as a new line
+a.plot(ft,P_hat2,'-', label = 'Leading edge')
+a.plot(ft,P_hat3,'-', label = 'Trailing edge')
+plt.legend()
+
 plt.xlabel('Time, Rotor Periods, $ft$')  # Horizontal axis label
 plt.ylabel('Static Pressure, $p/\overline{p}$')  # Vertical axis label
 plt.tight_layout()  # Remove extraneous white space
 plt.show()  # Render the plot
 plt.savefig('unsteady_P.pdf')  # Write out a pdf file
-'''
+
 #
 # Plot time-mean density on pressure side as function of axial location
 #
@@ -162,12 +170,8 @@ plt.savefig('ro_x.pdf')  # Write out a pdf file
 #   different Mach numbers
 
 #FFT plot
-print('p = ', P)
-print('P_hat =', P_hat)
-P = P[0]
-print('P[0]', P)
-fourierTransform = np.fft.fft(P)
-frequencies = np.fft.fftfreq( len(P) , dt)
+fourierTransform = np.fft.fft(P1)
+frequencies = np.fft.fftfreq(len(P1) , dt)
 
 #Frequency domain presentation
 plt.plot(frequencies, abs(fourierTransform))
