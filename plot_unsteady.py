@@ -161,17 +161,26 @@ plt.savefig('ro_x.pdf')  # Write out a pdf file
 #   * Vary the Mach number in `make_design.py` and compare the above for
 #   different Mach numbers
 
+#FFT plot
+signal = P_hat
+fourierTransform = np.fft.fft(signal/len(signal))
+fourierTransform = fourierTransform[range(int(len(signal)/2))]
+frequencies = np.fft.fftfreq( len(signal) , dt)
+
+#Frequency domain presentation
+plt.plot(frequencies, abs(fourierTransform))
+plt.xlabel('Frequency')  
+plt.ylabel('Amplitude')
+plt.show()
 
 #Time averaged pressure vs maximum and minimum pressure
-
-
 # Get pressure at coordinates of interest
 # i = : for all axial locations
 # j = jmid for mid-span radial location 
 # k = 0 because the patch is at const pitchwise position, on pressure surface
 # n = : for all instants in time
-Pps = Dat_ps['pstat'][:,jmid,0,nstep_cycle*50:)
-Pss = Dat_ss['pstat'][:,jmid,0,nstep_cycle*50:)
+Pps = Dat_ps['pstat'][:,jmid,0,nstep_cycle*50:]
+Pss = Dat_ss['pstat'][:,jmid,0,nstep_cycle*50:]
 
 # Take the time-mean of the pressure at each axial location
 # P is a 2D matrix of density values over all axial positions and time steps
