@@ -162,3 +162,50 @@ plt.savefig('ro_x.pdf')  # Write out a pdf file
 #   different Mach numbers
 
 
+#Time averaged pressure vs maximum and minimum pressure
+
+
+# Get pressure at coordinates of interest
+# i = : for all axial locations
+# j = jmid for mid-span radial location 
+# k = 0 because the patch is at const pitchwise position, on pressure surface
+# n = : for all instants in time
+P = Dat_ps['pstat'][:,jmid,0,nstep_cycle*50:]
+
+# Take the time-mean of the pressure at each axial location
+# P is a 2D matrix of density values over all axial positions and time steps
+# The first index is i (axial), second index is n (time)
+# We use the np.mean funtion with a keyword argument `axis=1` to specify that we
+# want to take the mean over the second index, i.e. in time and not in space.
+P_av = np.mean(P, axis=1)
+Pmax = max(P, axis=1)
+Pmin = min(P, axis =1)
+
+# Make non-dimensional with the pressure at leading edge, at index i=0
+P_hat = P_av / P_av[0]
+Pmax_hat = Pmax / Pmax[0]
+Pmin_hat = Pmin / Pmin[0]
+
+# Get axial coordinates on pressure side 
+# i = : for all axial locations
+# j = jmid for mid-span radial location 
+# k = 0 because the patch is at const pitchwise position, on pressure surface
+# n = 0 for first time step, arbitrary because x is not a function of time.
+x = Dat_ps['x'][:,jmid,0,0]
+
+# Convert to axial chord fraction; use the array min and max functions to get
+# the coordinates at leading and trailing edges respectively.
+x_hat = (x - x.min())/(x.max() - x.min())
+
+f,a = plt.subplots()  # Create a figure and axis to plot into
+a.plot(x_hat,P_hat,'-')  # Plot our data as a new line
+a.plot(x_hat,Pmax_hat, '-')
+a.plot(x_hat,Pmin_hat, '-')
+plt.xlabel('Axial Chord Fraction, $\hat{x}$')  # Horizontal axis label
+# Vertical axis label, start string with r so that \r is not interpreted as a
+# special escape sequence for carriage return
+plt.ylabel(
+        r'Time-averaged Static Pressure, $p/\overline{p}$')
+plt.tight_layout()  # Remove extraneous white space
+plt.show()  # Render the plot
+plt.savefig('P_x.pdf')  # Write out a pdf file
