@@ -86,7 +86,7 @@ imid = int(di/2)
 # n = : for all instants in time 
 P1 = Dat_ps['pstat'][imid,jmid,0,:]
 P2 = Dat_ps['pstat'][0,jmid,0,:]
-P3 = Dat_ps['pstat'][di,jmid,0,:]
+P3 = Dat_ps['pstat'][int(di-1),jmid,0,:]
 
 # Divide pressure by mean value
 # P is a one-dimensional vector of values of static pressure at each instant in
