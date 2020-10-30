@@ -170,14 +170,17 @@ plt.savefig('ro_x.pdf')  # Write out a pdf file
 #   different Mach numbers
 
 #FFT plot
+P1 = P1 - np.mean(P1)
 fourierTransform = np.fft.fft(P1)
 frequencies = np.fft.fftfreq(len(P1) , dt)
 
 #Frequency domain presentation
 plt.plot(frequencies, abs(fourierTransform))
+plt.title('FFT 0 to 80 passes at midpoint')
 plt.xlabel('Frequency')  
 plt.ylabel('Amplitude')
 plt.show()
+plt.savefig('FFT_fullCFD.pdf')  # Write out a pdf file
 
 #Time averaged pressure vs maximum and minimum pressure
 # Get pressure at coordinates of interest
@@ -185,6 +188,74 @@ plt.show()
 # j = jmid for mid-span radial location 
 # k = 0 because the patch is at const pitchwise position, on pressure surface
 # n = : for all instants in time
+Pps = Dat_ps['pstat'][:,jmid,0,:]
+Pss = Dat_ss['pstat'][:,jmid,0,:]
+
+# Take the time-mean of the pressure at each axial location
+# P is a 2D matrix of density values over all axial positions and time steps
+# The first index is i (axial), second index is n (time)
+# We use the np.mean funtion with a keyword argument `axis=1` to specify that we
+# want to take the mean over the second index, i.e. in time and not in space.
+Pps_av = np.mean(Pps, axis=1)
+Ppsmax=[]
+for array in Pps:
+        Ppsmax.append(max(array))
+Ppsmin=[]
+for array in Pps:
+        Ppsmin.append(min(array))
+# Make non-dimensional with the pressure at leading edge, at index i=0
+Pps_hat = Pps_av / Pps_av[0]
+Ppsmax_hat = Ppsmax / Ppsmax[0]
+Ppsmin_hat = Ppsmin / Ppsmin[0]
+
+Pss_av = np.mean(Pss, axis=1)
+Pssmax=[]
+for array in Pss:
+        Pssmax.append(max(array))
+Pssmin=[]
+for array in Pss:
+        Pssmin.append(min(array))
+# Make non-dimensional with the pressure at leading edge, at index i=0
+Pss_hat = Pss_av / Pss_av[0]
+Pssmax_hat = Pssmax / Pssmax[0]
+Pssmin_hat = Pssmin / Pssmin[0]
+# Get axial coordinates on pressure side 
+# i = : for all axial locations
+# j = jmid for mid-span radial location 
+# k = 0 because the patch is at const pitchwise position, on pressure surface
+# n = 0 for first time step, arbitrary because x is not a function of time.
+xps = Dat_ps['x'][:,jmid,0,0]
+xss = Dat_ss['x'][:,jmid,0,0]
+
+# Convert to axial chord fraction; use the array min and max functions to get
+# the coordinates at leading and trailing edges respectively.
+xps_hat = (xps - xps.min())/(xps.max() - xps.min())
+xss_hat = (xss - xss.min())/(xss.max() - xss.min())
+
+f,a = plt.subplots()  # Create a figure and axis to plot into
+
+a.plot(xps_hat,Pps_hat,'-', label = 'average pressure - pressure side')  # Plot our data as a new line
+a.plot(xps_hat,Ppsmax_hat, '-',label = 'max pressure - pressure side')
+a.plot(xps_hat,Ppsmin_hat, '-', label = 'min pressure - pressure side')
+
+a.plot(xss_hat,Pss_hat,'-', label = 'average pressure - suction side')  # Plot our data as a new line
+a.plot(xss_hat,Pssmax_hat, '-',label = 'max pressure - suction side')
+a.plot(xss_hat,Pssmin_hat, '-', label = 'min pressure - suction side')
+
+plt.legend()
+
+plt.title('Max and Min pressures from 0 to 80 passes')
+
+plt.xlabel('Axial Chord Fraction, $\hat{x}$')  # Horizontal axis label
+# Vertical axis label, start string with r so that \r is not interpreted as a
+# special escape sequence for carriage return
+plt.ylabel(
+        r'Time-averaged Static Pressure, $p/\overline{p}$')
+plt.tight_layout()  # Remove extraneous white space
+plt.show()  # Render the plot
+plt.savefig('P_x.pdf')  # Write out a pdf file
+
+
 Pps = Dat_ps['pstat'][:,jmid,0,nstep_cycle*50:]
 Pss = Dat_ss['pstat'][:,jmid,0,nstep_cycle*50:]
 
@@ -241,6 +312,8 @@ a.plot(xss_hat,Pssmin_hat, '-', label = 'min pressure - suction side')
 
 plt.legend()
 
+plt.title('Max and Min pressures from 50 to 80 passes')
+
 plt.xlabel('Axial Chord Fraction, $\hat{x}$')  # Horizontal axis label
 # Vertical axis label, start string with r so that \r is not interpreted as a
 # special escape sequence for carriage return
@@ -248,4 +321,44 @@ plt.ylabel(
         r'Time-averaged Static Pressure, $p/\overline{p}$')
 plt.tight_layout()  # Remove extraneous white space
 plt.show()  # Render the plot
-plt.savefig('P_x.pdf')  # Write out a pdf file
+plt.savefig('P_x_cyclicalpart.pdf')  # Write out a pdf file
+
+P1 = Dat_ps['pstat'][imid,jmid,0,nstep_cycle*50::]
+P2 = Dat_ps['pstat'][0,jmid,0,nstep_cycle*50::]
+P3 = Dat_ps['pstat'][int(di-1),jmid,0,nstep_cycle*50::]
+
+# Divide pressure by mean value
+# P is a one-dimensional vector of values of static pressure at each instant in
+# time; np.mean is a function that returns the mean of an array
+P_hat1 = P1 / np.mean(P1)
+P_hat2 = P2 / np.mean(P2)
+P_hat3 = P3 / np.mean(P3)
+# Make non-dimensional time vector = time in seconds * blade passing frequency
+ft1 = np.linspace(float(nstep_cycle*50),float(nt-1)*dt,nt) * freq
+
+# Generate the graph
+f,a = plt.subplots()  # Create a figure and axis to plot into
+a.plot(ft1,P_hat1,'-', label = 'Midpoint')  # Plot our data as a new line
+a.plot(ft1,P_hat2,'-', label = 'Leading edge')
+a.plot(ft1,P_hat3,'-', label = 'Trailing edge')
+plt.legend()
+plt.title('pressure variation at 3 points: from 50 to 80 passes')
+
+
+plt.xlabel('Time, Rotor Periods, $ft$')  # Horizontal axis label
+plt.ylabel('Static Pressure, $p/\overline{p}$')  # Vertical axis label
+plt.tight_layout()  # Remove extraneous white space
+plt.show()  # Render the plot
+plt.savefig('unsteady_P_cyclicalpart.pdf')  # Write out a pdf file
+
+P1 = P1 - np.mean(P1)
+fourierTransform = np.fft.fft(P1)
+frequencies = np.fft.fftfreq(len(P1) , dt)
+
+#Frequency domain presentation
+plt.plot(frequencies, abs(fourierTransform))
+plt.title('FFT 50 to 80 passes at midpoint')
+plt.xlabel('Frequency')  
+plt.ylabel('Amplitude')
+plt.show()
+plt.savefig('FFT_cyclicalCFD.pdf')
