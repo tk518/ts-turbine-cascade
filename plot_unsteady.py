@@ -180,7 +180,31 @@ frequencies = np.fft.fftfreq(len(P1) , dt)
 
 #Frequency domain presentation
 plt.plot(frequencies, abs(fourierTransform))
-plt.title('FFT 0 to 80 passes at midpoint')
+plt.title('FFT 0 to 80 passes at Midpoint')
+plt.xlabel('Frequency')  
+plt.ylabel('Amplitude')
+plt.show()
+plt.savefig('FFT_fullCFD.pdf')  # Write out a pdf file
+
+P2 = P2 - np.mean(P2)
+fourierTransform = np.fft.fft(P2)
+frequencies = np.fft.fftfreq(len(P2) , dt)
+
+#Frequency domain presentation
+plt.plot(frequencies, abs(fourierTransform))
+plt.title('FFT 0 to 80 passes at Leading edge')
+plt.xlabel('Frequency')  
+plt.ylabel('Amplitude')
+plt.show()
+plt.savefig('FFT_fullCFD.pdf')  # Write out a pdf file
+
+P3 = P3 - np.mean(P3)
+fourierTransform = np.fft.fft(P3)
+frequencies = np.fft.fftfreq(len(P3) , dt)
+
+#Frequency domain presentation
+plt.plot(frequencies, abs(fourierTransform))
+plt.title('FFT 0 to 80 passes at Trailing edge')
 plt.xlabel('Frequency')  
 plt.ylabel('Amplitude')
 plt.show()
@@ -316,7 +340,7 @@ a.plot(xss_hat,Pssmin_hat, '-', label = 'min pressure - suction side')
 
 plt.legend()
 
-plt.title('Max and Min pressures from' +str(n_cycles_repeating)+ 'to 80 passes')
+plt.title('Max and Min pressures from' +str(n_cycles_repeating)+ ' to 80 passes')
 
 plt.xlabel('Axial Chord Fraction, $\hat{x}$')  # Horizontal axis label
 # Vertical axis label, start string with r so that \r is not interpreted as a
@@ -346,7 +370,7 @@ a.plot(ft1,P_hat1,'-', label = 'Midpoint')  # Plot our data as a new line
 a.plot(ft1,P_hat2,'-', label = 'Leading edge')
 a.plot(ft1,P_hat3,'-', label = 'Trailing edge')
 plt.legend()
-plt.title('pressure variation at 3 points: from 50 to 80 passes')
+plt.title('pressure variation at 3 points: from' +str(n_cycles_repeating)+ ' to 80 passes')
 
 plt.xlabel('Time, Rotor Periods, $ft$')  # Horizontal axis label
 plt.ylabel('Static Pressure, $p/\overline{p}$')  # Vertical axis label
@@ -360,8 +384,32 @@ frequencies = np.fft.fftfreq(len(P1) , dt)
 
 #Frequency domain presentation
 plt.plot(frequencies, abs(fourierTransform))
-plt.title('FFT 50 to 80 passes at midpoint')
+plt.title('FFT' +str(n_cycles_repeating)+ ' to 80 passes at midpoint')
 plt.xlabel('Frequency')  
 plt.ylabel('Amplitude')
 plt.show()
 plt.savefig('FFT_cyclicalCFD.pdf')
+
+P2 = P2 - np.mean(P2)
+fourierTransform = np.fft.fft(P2)
+frequencies = np.fft.fftfreq(len(P2) , dt)
+
+#Frequency domain presentation
+plt.plot(frequencies, abs(fourierTransform))
+plt.title('FFT' +str(n_cycles_repeating)+ ' to 80 passes at Leading edge')
+plt.xlabel('Frequency')  
+plt.ylabel('Amplitude')
+plt.show()
+plt.savefig('FFT_fullCFD.pdf')  # Write out a pdf file
+
+P3 = P3 - np.mean(P3)
+fourierTransform = np.fft.fft(P3)
+frequencies = np.fft.fftfreq(len(P3) , dt)
+
+#Frequency domain presentation
+plt.plot(frequencies, abs(fourierTransform))
+plt.title('FFT' +str(n_cycles_repeating)+ ' 80 passes at Trailing edge')
+plt.xlabel('Frequency')  
+plt.ylabel('Amplitude')
+plt.show()
+plt.savefig('FFT_fullCFD.pdf')  # Write out a pdf file
