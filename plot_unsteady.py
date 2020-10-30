@@ -169,6 +169,10 @@ plt.savefig('ro_x.pdf')  # Write out a pdf file
 #   * Vary the Mach number in `make_design.py` and compare the above for
 #   different Mach numbers
 
+
+#Point where the change becomes cyclical (number of cycles before the unsteadiness is predictable)
+n_cycles_repeating = 50
+
 #FFT plot
 P1 = P1 - np.mean(P1)
 fourierTransform = np.fft.fft(P1)
@@ -256,8 +260,8 @@ plt.show()  # Render the plot
 plt.savefig('P_x.pdf')  # Write out a pdf file
 
 
-Pps = Dat_ps['pstat'][:,jmid,0,nstep_cycle*50:]
-Pss = Dat_ss['pstat'][:,jmid,0,nstep_cycle*50:]
+Pps = Dat_ps['pstat'][:,jmid,0,nstep_cycle*n_cycles_repeating:]
+Pss = Dat_ss['pstat'][:,jmid,0,nstep_cycle*n_cycles_repeating:]
 
 # Take the time-mean of the pressure at each axial location
 # P is a 2D matrix of density values over all axial positions and time steps
@@ -312,7 +316,7 @@ a.plot(xss_hat,Pssmin_hat, '-', label = 'min pressure - suction side')
 
 plt.legend()
 
-plt.title('Max and Min pressures from 50 to 80 passes')
+plt.title('Max and Min pressures from' +str(n_cycles_repeating) 'to 80 passes')
 
 plt.xlabel('Axial Chord Fraction, $\hat{x}$')  # Horizontal axis label
 # Vertical axis label, start string with r so that \r is not interpreted as a
@@ -323,9 +327,9 @@ plt.tight_layout()  # Remove extraneous white space
 plt.show()  # Render the plot
 plt.savefig('P_x_cyclicalpart.pdf')  # Write out a pdf file
 
-P1 = Dat_ps['pstat'][imid,jmid,0,nstep_cycle*50::]
-P2 = Dat_ps['pstat'][0,jmid,0,nstep_cycle*50::]
-P3 = Dat_ps['pstat'][int(di-1),jmid,0,nstep_cycle*50::]
+P1 = Dat_ps['pstat'][imid,jmid,0,nstep_cycle*n_cycles_repeating::]
+P2 = Dat_ps['pstat'][0,jmid,0,nstep_cycle*n_cycles_repeating::]
+P3 = Dat_ps['pstat'][int(di-1),jmid,0,nstep_cycle*n_cycles_repeating::]
 
 # Divide pressure by mean value
 # P is a one-dimensional vector of values of static pressure at each instant in
@@ -334,7 +338,7 @@ P_hat1 = P1 / np.mean(P1)
 P_hat2 = P2 / np.mean(P2)
 P_hat3 = P3 / np.mean(P3)
 # Make non-dimensional time vector = time in seconds * blade passing frequency
-ft1 = np.linspace(float(nstep_cycle*50),float(nt-1)*dt,nt) * freq
+ft1 = np.linspace(float(nstep_cycle*n_cycles_repeating)*dt,float(nt-1)*dt,nt - nstep_cycle*n_cycles_repeating) * freq
 
 # Generate the graph
 f,a = plt.subplots()  # Create a figure and axis to plot into
@@ -343,7 +347,6 @@ a.plot(ft1,P_hat2,'-', label = 'Leading edge')
 a.plot(ft1,P_hat3,'-', label = 'Trailing edge')
 plt.legend()
 plt.title('pressure variation at 3 points: from 50 to 80 passes')
-
 
 plt.xlabel('Time, Rotor Periods, $ft$')  # Horizontal axis label
 plt.ylabel('Static Pressure, $p/\overline{p}$')  # Vertical axis label
