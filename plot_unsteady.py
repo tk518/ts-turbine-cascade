@@ -316,7 +316,7 @@ a.plot(xss_hat,Pssmin_hat, '-', label = 'min pressure - suction side')
 
 plt.legend()
 
-plt.title('Max and Min pressures from' +str(n_cycles_repeating) 'to 80 passes')
+plt.title('Max and Min pressures from' +str(n_cycles_repeating)+ 'to 80 passes')
 
 plt.xlabel('Axial Chord Fraction, $\hat{x}$')  # Horizontal axis label
 # Vertical axis label, start string with r so that \r is not interpreted as a
