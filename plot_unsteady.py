@@ -8,7 +8,7 @@ from ts import ts_tstream_reader  # TS grid reader
 # Set variables here
 #
 
-output_file_name = 'output_2'  # Location of TS output file
+output_file_name = 'output_2_1'  # Location of TS output file
 
 # We identify a region of the grid using block and patch IDs
 pid_probe_ps = 9  # Patch ID of probe on pressure side
@@ -340,7 +340,7 @@ a.plot(xss_hat,Pssmin_hat, '-', label = 'min pressure - suction side')
 
 plt.legend()
 
-plt.title('Max and Min pressures from' +str(n_cycles_repeating)+ ' to 80 passes')
+plt.title('Max and Min pressures from ' +str(n_cycles_repeating)+ ' to 80 passes')
 
 plt.xlabel('Axial Chord Fraction, $\hat{x}$')  # Horizontal axis label
 # Vertical axis label, start string with r so that \r is not interpreted as a
@@ -384,7 +384,7 @@ frequencies = np.fft.fftfreq(len(P1) , dt)
 
 #Frequency domain presentation
 plt.plot(frequencies, abs(fourierTransform))
-plt.title('FFT' +str(n_cycles_repeating)+ ' to 80 passes at midpoint')
+plt.title('FFT ' +str(n_cycles_repeating)+ ' to 80 passes at midpoint')
 plt.xlabel('Frequency')  
 plt.ylabel('Amplitude')
 plt.show()
@@ -396,7 +396,7 @@ frequencies = np.fft.fftfreq(len(P2) , dt)
 
 #Frequency domain presentation
 plt.plot(frequencies, abs(fourierTransform))
-plt.title('FFT' +str(n_cycles_repeating)+ ' to 80 passes at Leading edge')
+plt.title('FFT ' +str(n_cycles_repeating)+ ' to 80 passes at Leading edge')
 plt.xlabel('Frequency')  
 plt.ylabel('Amplitude')
 plt.show()
@@ -408,7 +408,7 @@ frequencies = np.fft.fftfreq(len(P3) , dt)
 
 #Frequency domain presentation
 plt.plot(frequencies, abs(fourierTransform))
-plt.title('FFT' +str(n_cycles_repeating)+ ' 80 passes at Trailing edge')
+plt.title('FFT ' +str(n_cycles_repeating)+ ' 80 passes at Trailing edge')
 plt.xlabel('Frequency')  
 plt.ylabel('Amplitude')
 plt.show()

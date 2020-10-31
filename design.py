@@ -1434,5 +1434,6 @@ def generate(fname, phi, psi, Lam, Ma, eta, gap_chord ):
         g.set_bv("rpmk2", ts_tstream_type.float, bid, rpm)
 
     g.write_hdf5(fname)
+    print(fname, 'has been written')
     print(Dr)
 
