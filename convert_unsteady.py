@@ -5,7 +5,7 @@ from ts import ts_tstream_reader, ts_tstream_steady_to_unsteady, ts_tstream_type
 from ts import ts_tstream_load_balance, ts_tstream_patch_kind
 
 if __name__ == "__main__":
-    for x in range(1,10):
+    for x in range(0,11):
     # Number of rotor blade passing periods to run for
     # Change me so that the computaion reaches a periodic state
         ncycle = 80
