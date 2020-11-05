@@ -28,7 +28,7 @@ if __name__ == "__main__":
 
         # File name of the new unsteady input file to write out
         fname_out = "input_2"+ '_Ma_%.2f.hdf5' % Mai
-
+        
         #
         # Should not need to change below this line
         # It is complicated and not neccesary to understand the below!
@@ -164,3 +164,23 @@ if __name__ == "__main__":
 
             # other configuration variables
             g2.set_av("dts_conv", ts_tstream_type.float, 0.0005)
+            g2.set_av("facsafe", ts_tstream_type.float, 0.2)
+            g2.set_av("dts", ts_tstream_type.int, 1)
+
+            # g2.set_av("sfin",ts_tstream_type.float,0.5)
+            # g2.set_av("facsecin",ts_tstream_type.float,0.005)
+            g2.set_av("dampin",ts_tstream_type.float,10.0)
+
+            # use mixing lengths and flow guess from steady calculation
+            g2.set_av("restart", ts_tstream_type.int, 1)
+            g2.set_av("poisson_restart", ts_tstream_type.int, 1)
+            g2.set_av("poisson_nstep", ts_tstream_type.int, 0)
+
+            # load balance for 1 GPUs
+            ts_tstream_load_balance.load_balance(g2, 1)
+
+            # Reset spurious application variable
+            g2.set_av("if_ale", ts_tstream_type.int, 0)
+
+            # write out unsteady input file
+            g2.write_hdf5(fname_out)
