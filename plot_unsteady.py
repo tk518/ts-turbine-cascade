@@ -8,7 +8,7 @@ from ts import ts_tstream_reader  # TS grid reader
 # Set variables here
 #
 for Mai in [0.6, 0.65, 0.7, 0.75, 0.81, 0.85, 0.9]:
-        output_file_name = "input_2"+ '_Ma_%.2f.hdf5' % Mai  # Location of TS output file
+        output_file_name = "output_2"+ '_Ma_%.2f.hdf5' % Mai  # Location of TS output file
         Mach = Mai
         # We identify a region of the grid using block and patch IDs
         pid_probe_ps = 9  # Patch ID of probe on pressure side
