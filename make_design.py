@@ -15,10 +15,11 @@ gap_chord = 0.5  # Spacing between stator and rotor
 
 # Check that the code works for many Mach
 for Mai in [0.6, 0.65, 0.7, 0.75, 0.81, 0.85, 0.9]:
-    try:
-        # Create a file name for this Mach using % substitution
-        fname_now = fname + '_Ma_%.2f.hdf5' % Mai
-        # Call out to the design generation code
-        # It is complicated so best to think of it as a black box!
-        design.generate(fname_now, phi, psi, Lam, Mai, eta, gap_chord )
-    except:
+    # Create a file name for this Mach using % substitution
+    fname_now = fname + '_Ma_%.2f.hdf5' % Mai
+    # Call out to the design generation code
+    # It is complicated so best to think of it as a black box!
+    design.generate(fname_now, phi, psi, Lam, Mai, eta, gap_chord )
+    
+
+        

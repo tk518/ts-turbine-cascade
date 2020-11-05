@@ -7,16 +7,15 @@ from ts import ts_tstream_reader  # TS grid reader
 #
 # Set variables here
 #
-for x in range(0,11):
-        output_file_name = 'output_2_' +str(x)  # Location of TS output file
-
-        Mach = 0.6 + x
+for Mai in [0.6, 0.65, 0.7, 0.75, 0.81, 0.85, 0.9]:
+        output_file_name = "input_2"+ '_Ma_%.2f.hdf5' % Mai  # Location of TS output file
+        Mach = Mai
         # We identify a region of the grid using block and patch IDs
         pid_probe_ps = 9  # Patch ID of probe on pressure side
         pid_probe_ss = 8  # Patch ID of probe on suction side
         bid_probe = 1  # Block ID where probes are located
 
-        #
+        
         # This next section contains code to read in the data and process it into a
         # convenient form. Only a vague undestanding of this section is needed.
         #
@@ -24,7 +23,7 @@ for x in range(0,11):
         # Load the grid 
         g = []
         tsr = ts_tstream_reader.TstreamReader()
-        g.append(tsr.read(output_file_name + '.hdf5'))
+        g.append(tsr.read(output_file_name))
 
         # Determine the number of grid points on probe patches
         # (We index the TS grid using i = streamwise, j = spanwise, k = pitchwise)

@@ -4,11 +4,15 @@ import numpy as np  # Multidimensional array library
 from ts import ts_tstream_reader, ts_tstream_steady_to_unsteady, ts_tstream_type
 from ts import ts_tstream_load_balance, ts_tstream_patch_kind
 
+fnamein = 'output_1'
+
 if __name__ == "__main__":
-    for x in range(0,11):
+    for Mai in [0.6, 0.65, 0.7, 0.75, 0.81, 0.85, 0.9]:
     # Number of rotor blade passing periods to run for
     # Change me so that the computaion reaches a periodic state
         ncycle = 80
+
+        fname_now = fnamein + '_Ma_%.2f.hdf5' % Mai
 
         # Time steps per cycle - leave at 72
         nstep_cycle = 72
@@ -20,10 +24,10 @@ if __name__ == "__main__":
         nstep_save_probe = 9
 
         # File name of the steady soln to read in
-        fname = "output_"+str(x)+".hdf5"
+        fname = fname_now
 
         # File name of the new unsteady input file to write out
-        fname_out = "input_2_"+str(x)".hdf5"
+        fname_out = "input_2"+ '_Ma_%.2f.hdf5' % Mai
 
         #
         # Should not need to change below this line
@@ -147,7 +151,7 @@ if __name__ == "__main__":
             g2.set_av("frequency", ts_tstream_type.float,  freq)
             g2.set_av("nstep_cycle", ts_tstream_type.int, nstep_cycle)
             g2.set_av("nstep_inner", ts_tstream_type.int, 200)
-            
+
             # disable saving of snapshots
             g2.set_av("nstep_save", ts_tstream_type.int, 999999)
 
