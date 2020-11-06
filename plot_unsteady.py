@@ -439,6 +439,8 @@ for Mai in [0.70]:
         plt.show()
         plt.savefig('FFT_fullCFD.pdf')  # Write out a pdf file
 
+
+
         """This script reads and plots the blade-to-blade probes."""
         import numpy as np  # Multidimensional array library
         import probe  # Code for reading TS probe output
@@ -449,7 +451,7 @@ for Mai in [0.70]:
         # Set variables here
         #
 
-        output_file_name = 'output_2'  # Location of TS output file
+        output_file_name = "output_2"+ '_Ma_%.2f.hdf5' % Mai  # Location of TS output file
 
         # We identify a region of the grid using block and patch IDs
         bid_probe = [4, 5, 6, 7 ,8]  # Block ID of probes
@@ -462,7 +464,7 @@ for Mai in [0.70]:
 
         # Load the grid 
         tsr = ts_tstream_reader.TstreamReader()
-        g = tsr.read(output_file_name + '.hdf5')
+        g = tsr.read(output_file_name)
 
         # Store all probe patches in a list
         Dat = []
