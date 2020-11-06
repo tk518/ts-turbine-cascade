@@ -9,7 +9,6 @@ from ts import ts_tstream_reader  # TS grid reader
 #
 '''Iterate through all Mach numbers'''
 
-x=1
 for Mai in [0.70]:
 
         output_file_name = "output_2"+ '_Ma_%.2f.hdf5' % Mai  # Location of TS output file
@@ -25,13 +24,13 @@ for Mai in [0.70]:
         #
 
         # Load the grid 
-        g = []
+       
         tsr = ts_tstream_reader.TstreamReader()
-        g.append(tsr.read(output_file_name))
+        g = tsr.read(output_file_name)
 
         # Determine the number of grid points on probe patches
         # (We index the TS grid using i = streamwise, j = spanwise, k = pitchwise)
-        p = g[x-1].get_patch(bid_probe,pid_probe_ps)
+        p = g.get_patch(bid_probe,pid_probe_ps)
         di = p.ien - p.ist
         dj = p.jen - p.jst
         probe_shape = [di, dj, 1]  # Numbers of points in i, j, k directions
@@ -54,14 +53,14 @@ for Mai in [0.70]:
         Dat_ss = probe.read_dat(probe_name_ss, probe_shape)
 
         # Here we extract some parameters from the TS grid to use later
-        rpm = g[x-1].get_bv('rpm',1)  # RPM in rotor row
-        cp = g[x-1].get_av('cp')  # Specific heat capacity at const p
-        ga = g[x-1].get_av('ga')  # Specific heat ratio
+        rpm = g.get_bv('rpm',1)  # RPM in rotor row
+        cp = g.get_av('cp')  # Specific heat capacity at const p
+        ga = g.get_av('ga')  # Specific heat ratio
 
         # Get information about time discretisation from TS grid
-        freq = g[x-1].get_av('frequency')  # Blade passing frequency
-        ncycle = g[x-1].get_av('ncycle')  # Number of cycles
-        nstep_cycle = g[x-1].get_av('nstep_cycle')  # Time steps per cycle
+        freq = g.get_av('frequency')  # Blade passing frequency
+        ncycle = g.get_av('ncycle')  # Number of cycles
+        nstep_cycle = g.get_av('nstep_cycle')  # Time steps per cycle
         # Individual time step in seconds = blade passing period / steps per cycle
         dt = 1./freq/float(nstep_cycle)
         # Number of time steps = num cycles * steps per cycle
