@@ -7,13 +7,17 @@ from ts import ts_tstream_reader  # TS grid reader
 #
 # Set variables here
 #
-for Mai in [0.6, 0.65, 0.7, 0.75, 0.81, 0.85, 0.9]:
+'''Iterate through all Mach numbers'''
+
+x=1
+for Mai in [0.70]:
+
         output_file_name = "output_2"+ '_Ma_%.2f.hdf5' % Mai  # Location of TS output file
         Mach = Mai
         # We identify a region of the grid using block and patch IDs
         pid_probe_ps = 9  # Patch ID of probe on pressure side
-        pid_probe_ss = 8  # Patch ID of probe on suction side
-        bid_probe = 1  # Block ID where probes are located
+        pid_probe_ss = 10  # Patch ID of probe on suction side
+        bid_probe = 5  # Block ID where probes are located
 
         
         # This next section contains code to read in the data and process it into a
@@ -27,7 +31,7 @@ for Mai in [0.6, 0.65, 0.7, 0.75, 0.81, 0.85, 0.9]:
 
         # Determine the number of grid points on probe patches
         # (We index the TS grid using i = streamwise, j = spanwise, k = pitchwise)
-        p = g[x-1].get_patch(1,pid_probe_ps)
+        p = g[x-1].get_patch(bid_probe,pid_probe_ps)
         di = p.ien - p.ist
         dj = p.jen - p.jst
         probe_shape = [di, dj, 1]  # Numbers of points in i, j, k directions
@@ -61,7 +65,11 @@ for Mai in [0.6, 0.65, 0.7, 0.75, 0.81, 0.85, 0.9]:
         # Individual time step in seconds = blade passing period / steps per cycle
         dt = 1./freq/float(nstep_cycle)
         # Number of time steps = num cycles * steps per cycle
-        nt = ncycle * nstep_cycle
+        
+        #nt = ncycle * nstep_cycle
+        nt = np.shape(Dat_ps['ro'])[-1]
+        print(nt)
+
         # Make non-dimensional time vector = time in seconds * blade passing frequency
         ft = np.linspace(0.,float(nt-1)*dt,nt) * freq
 
@@ -69,13 +77,9 @@ for Mai in [0.6, 0.65, 0.7, 0.75, 0.81, 0.85, 0.9]:
         Dat_ps = probe.secondary(Dat_ps, rpm, cp, ga)
         Dat_ss = probe.secondary(Dat_ss, rpm, cp, ga)
 
-        #
-        # Finished reading data, now make some plots
-        #
-
-        #
+        '''Finished reading data, now make some plots'''
+        
         # Plot static pressure at mid-chord on pressure side edge as function of time
-        #
 
         # Streamwise index at mid-chord = number of points in streamwise dirn / 2
         imid = int(di/2)
@@ -85,6 +89,8 @@ for Mai in [0.6, 0.65, 0.7, 0.75, 0.81, 0.85, 0.9]:
         # j = jmid for mid-span radial location
         # k = 0 because the patch is at const pitchwise position, on pressure surface
         # n = : for all instants in time 
+        '''Pressure plots at 3 points on a surface vs time'''
+
         P1 = Dat_ps['pstat'][imid,jmid,0,:]
         P2 = Dat_ps['pstat'][0,jmid,0,:]
         P3 = Dat_ps['pstat'][int(di-1),jmid,0,:]
@@ -109,7 +115,37 @@ for Mai in [0.6, 0.65, 0.7, 0.75, 0.81, 0.85, 0.9]:
         plt.show()  # Render the plot
         plt.savefig('unsteady_P.pdf')  # Write out a pdf file
 
-        #
+
+        '''Plot the gradient plots'''
+
+        f,a = plt.subplots() 
+        for Di in [Dat_ps, Dat_ss]:
+                P = Di['pstat'][:,jmid,0,:]
+                P_hat = P / np.mean(P,axis=1)[0]
+                # Get axial coordinates on pressure side 
+                # i = : for all axial locations
+                # j = jmid for mid-span radial location 
+                # k = 0 because the patch is at const pitchwise position, on pressure surface
+                # n = 0 for first time step, arbitrary because x is not a function of time.
+                x = Di['x'][:,jmid,0,0]
+                # Convert to axial chord fraction; use the array min and max functions to get
+                # the coordinates at leading and trailing edges respectively.
+                x_hat = (x - x.min())/(x.max() - x.min())
+
+                a.plot(x_hat,np.mean(P_hat,axis=1),'-k')  # Plot our data as a new line
+                a.plot(x_hat,np.min(P_hat,axis=1),'--k')  # Plot our data as a new line
+                a.plot(x_hat,np.max(P_hat,axis=1),'--k')  # Plot our data as a new line
+
+        plt.xlabel('Axial Chord Fraction, $\hat{x}$')  # Horizontal axis label
+        # Vertical axis label, start string with r so that \r is not interpreted as a
+        # special escape sequence for carriage return
+        plt.ylabel(
+                r'Static Pressure')
+        plt.tight_layout()  # Remove extraneous white space
+        plt.show()
+        plt.savefig('P_x_Ma_'+str(Mai)+'.pdf')
+
+
         # Plot time-mean density on pressure side as function of axial location
         #
 
@@ -140,20 +176,8 @@ for Mai in [0.6, 0.65, 0.7, 0.75, 0.81, 0.85, 0.9]:
         # Convert to axial chord fraction; use the array min and max functions to get
         # the coordinates at leading and trailing edges respectively.
         x_hat = (x - x.min())/(x.max() - x.min())
-        '''
-        # Generate the graph
-        f,a = plt.subplots()  # Create a figure and axis to plot into
-        a.plot(x_hat,ro_hat,'-')  # Plot our data as a new line
-        plt.xlabel('Axial Chord Fraction, $\hat{x}$')  # Horizontal axis label
-        # Vertical axis label, start string with r so that \r is not interpreted as a
-        # special escape sequence for carriage return
-        plt.ylabel(
-                r'Time-averaged Density, $\overline{\rho}/\overline{\rho}_\mathrm{LE}$')
-        plt.tight_layout()  # Remove extraneous white space
-        plt.show()  # Render the plot
-        plt.savefig('ro_x.pdf')  # Write out a pdf file
-        '''
-        #
+
+
         # Other things to try
         #
         #   See https://numpy.org/doc/stable/ for documentation on Numpy
@@ -414,3 +438,158 @@ for Mai in [0.6, 0.65, 0.7, 0.75, 0.81, 0.85, 0.9]:
         plt.ylabel('Amplitude')
         plt.show()
         plt.savefig('FFT_fullCFD.pdf')  # Write out a pdf file
+
+        """This script reads and plots the blade-to-blade probes."""
+        import numpy as np  # Multidimensional array library
+        import probe  # Code for reading TS probe output
+        import matplotlib.pyplot as plt  # Plotting library
+        from ts import ts_tstream_reader, ts_tstream_cut  # TS grid reader
+
+        #
+        # Set variables here
+        #
+
+        output_file_name = 'output_2'  # Location of TS output file
+
+        # We identify a region of the grid using block and patch IDs
+        bid_probe = [4, 5, 6, 7 ,8]  # Block ID of probes
+        pid_probe = [8, 8, 8, 8, 8]   # Patch ID of probes
+
+        #
+        # This next section contains code to read in the data and process it into a
+        # convenient form. Only a vague undestanding of this section is needed.
+        #
+
+        # Load the grid 
+        tsr = ts_tstream_reader.TstreamReader()
+        g = tsr.read(output_file_name + '.hdf5')
+
+        # Store all probe patches in a list
+        Dat = []
+        for i in range(len(bid_probe)):
+
+        bpi = bid_probe[i]
+        ppi = pid_probe[i]
+
+        print('Reading probe %d of %d' % (i+1, len(bid_probe)))
+
+        # Determine the number of grid points on probe patches
+        # (We index the TS grid using i = streamwise, j = spanwise, k =
+        # pitchwise)
+        p = g.get_patch(bpi,ppi)
+        di = p.ien - p.ist
+        dj = p.jen - p.jst
+        dk = p.ken - p.kst
+        probe_shape = [di, dj, dk]  # Numbers of points in i, j, k directions
+
+        # Assemble file names for the probes using % substitution
+        probe_name = (output_file_name + '_probe_%d_%d.dat' % (bpi,ppi))
+
+        # Read the probes: The dictionary is keyed by variable name; the values
+        # are numpy arrays with indexes 
+        # [i = streamwise, j = spanwise, k = pitchwise, n = timewise] 
+        Dat.append(probe.read_dat(probe_name, probe_shape))
+
+        # Here we extract some parameters from the TS grid to use later
+        rpm = g.get_bv('rpm',1)  # RPM in rotor row
+        cp = g.get_av('cp')  # Specific heat capacity at const p
+        ga = g.get_av('ga')  # Specific heat ratio
+        rgas = cp * (1.-1./ga)
+
+        # Get information about time discretisation from TS grid
+        freq = g.get_av('frequency')  # Blade passing frequency
+        ncycle = g.get_av('ncycle')  # Number of cycles
+        nstep_cycle = g.get_av('nstep_cycle')  # Time steps per cycle
+        # Individual time step in seconds = blade passing period / steps per cycle
+        dt = 1./freq/float(nstep_cycle)
+        # Number of time steps = num cycles * steps per cycle
+        # nt = ncycle * nstep_cycle
+        nt = np.shape(Dat[0]['ro'])[-1]
+        print(nt)
+        # Make non-dimensional time vector = time in seconds * blade passing frequency
+        ft = np.linspace(0.,float(nt-1)*dt,nt) * freq
+
+        # Get secondary vars, things like static pressure, rotor-relative Mach, etc.
+        Dat = [probe.secondary(Di, rpm, cp, ga) for Di in Dat]
+
+        # Arbitrary datum temperatures for entropy level
+        Pdat=16e5
+        Tdat=1600.
+        bid_rotor = 5
+        b_rotor = g.get_block(bid_rotor)
+
+        # Get cuts at rotor inlet and exit to form Cp
+        rotor_inlet = ts_tstream_cut.TstreamStructuredCut()
+        rotor_inlet.read_from_grid(
+                g, Pdat, Tdat, bid_rotor,
+                ist = 0, ien=1,  # First streamwise
+                jst = 0, jen=b_rotor.nj,  # All radial
+                kst = 0, ken=b_rotor.nk  # All pitchwise
+                )
+        rotor_outlet = ts_tstream_cut.TstreamStructuredCut()
+        rotor_outlet.read_from_grid(
+                g, Pdat, Tdat, bid_rotor,
+                ist = b_rotor.ni-1, ien=b_rotor.ni,  # Last streamwise
+                jst = 0, jen=b_rotor.nj,  # All radial
+                kst = 0, ken=b_rotor.nk  # All pitchwise
+                )
+
+        # Pressure references
+        _, Po1 = rotor_inlet.mass_avg_1d('pstag')
+        _, P1 = rotor_inlet.area_avg_1d('pstat')
+        _, P2 = rotor_outlet.area_avg_1d('pstat')
+
+        # Temperature references
+        _, T1 = rotor_inlet.area_avg_1d('tstat')
+        _, T2 = rotor_outlet.area_avg_1d('tstat')
+
+        # Finished reading data, now make some plots
+        #
+
+        # Static pressure
+        f,a = plt.subplots()  # Create a figure and axis to plot into
+        plt.set_cmap('cubehelix')
+        lev = np.linspace(-1.4,0.,21)
+        # Loop over all blocks
+        for Di in Dat:
+        # Indices
+        # :, all x
+        # 0, probe is at constant j
+        # :, all rt
+        # -1, last time step
+        xnow = Di['x'][:,0,:,-1]
+        rtnow = Di['rt'][:,0,:,-1]
+        Pnow = Di['pstat'][:,0,:,-1]
+        Cpnow = (Pnow - Po1)/(Po1-P2)
+        a.contourf(xnow, rtnow, Cpnow, lev)
+        a.axis('equal')
+        plt.grid(False)
+        plt.tight_layout()  # Remove extraneous white space
+        plt.show()  # Render the plot
+        plt.savefig('unst_Cp_cont.pdf')  # Write out a pdf file
+
+        # Entropy
+        f,a = plt.subplots()  # Create a figure and axis to plot into
+        plt.set_cmap('cubehelix_r')
+        lev = np.linspace(-8.,25.0,21)
+        # Loop over all blocks
+        for Di in Dat:
+        # Indices
+        # :, all x
+        # 0, probe is at constant j
+        # :, all rt
+        # -1, last time step
+        xnow = Di['x'][:,0,:,-1]
+        rtnow = Di['rt'][:,0,:,-1]
+        Pnow = Di['pstat'][:,0,:,-1]
+        Tnow = Di['tstat'][:,0,:,-1]
+        # Change in entropy relative to mean upstream state
+        Dsnow = cp * np.log(Tnow/T1) - rgas*np.log(Pnow/P1)
+        a.contourf(xnow, rtnow, Dsnow, lev)
+        a.axis('equal')
+        plt.grid(False)
+        plt.tight_layout()  # Remove extraneous white space
+        plt.show()  # Render the plot
+        plt.savefig('unst_s_cont.pdf')  # Write out a pdf file
+
+        x=x+1
