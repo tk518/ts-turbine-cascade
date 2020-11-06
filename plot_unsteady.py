@@ -470,27 +470,27 @@ for Mai in [0.70]:
         Dat = []
         for i in range(len(bid_probe)):
 
-        bpi = bid_probe[i]
-        ppi = pid_probe[i]
+                bpi = bid_probe[i]
+                ppi = pid_probe[i]
 
-        print('Reading probe %d of %d' % (i+1, len(bid_probe)))
+                print('Reading probe %d of %d' % (i+1, len(bid_probe)))
 
-        # Determine the number of grid points on probe patches
-        # (We index the TS grid using i = streamwise, j = spanwise, k =
-        # pitchwise)
-        p = g.get_patch(bpi,ppi)
-        di = p.ien - p.ist
-        dj = p.jen - p.jst
-        dk = p.ken - p.kst
-        probe_shape = [di, dj, dk]  # Numbers of points in i, j, k directions
+                # Determine the number of grid points on probe patches
+                # (We index the TS grid using i = streamwise, j = spanwise, k =
+                # pitchwise)
+                p = g.get_patch(bpi,ppi)
+                di = p.ien - p.ist
+                dj = p.jen - p.jst
+                dk = p.ken - p.kst
+                probe_shape = [di, dj, dk]  # Numbers of points in i, j, k directions
 
-        # Assemble file names for the probes using % substitution
-        probe_name = (output_file_name + '_probe_%d_%d.dat' % (bpi,ppi))
+                # Assemble file names for the probes using % substitution
+                probe_name = (output_file_name + '_probe_%d_%d.dat' % (bpi,ppi))
 
-        # Read the probes: The dictionary is keyed by variable name; the values
-        # are numpy arrays with indexes 
-        # [i = streamwise, j = spanwise, k = pitchwise, n = timewise] 
-        Dat.append(probe.read_dat(probe_name, probe_shape))
+                # Read the probes: The dictionary is keyed by variable name; the values
+                # are numpy arrays with indexes 
+                # [i = streamwise, j = spanwise, k = pitchwise, n = timewise] 
+                Dat.append(probe.read_dat(probe_name, probe_shape))
 
         # Here we extract some parameters from the TS grid to use later
         rpm = g.get_bv('rpm',1)  # RPM in rotor row
@@ -559,11 +559,11 @@ for Mai in [0.70]:
         # 0, probe is at constant j
         # :, all rt
         # -1, last time step
-        xnow = Di['x'][:,0,:,-1]
-        rtnow = Di['rt'][:,0,:,-1]
-        Pnow = Di['pstat'][:,0,:,-1]
-        Cpnow = (Pnow - Po1)/(Po1-P2)
-        a.contourf(xnow, rtnow, Cpnow, lev)
+                xnow = Di['x'][:,0,:,-1]
+                rtnow = Di['rt'][:,0,:,-1]
+                Pnow = Di['pstat'][:,0,:,-1]
+                Cpnow = (Pnow - Po1)/(Po1-P2)
+                a.contourf(xnow, rtnow, Cpnow, lev)
         a.axis('equal')
         plt.grid(False)
         plt.tight_layout()  # Remove extraneous white space
@@ -576,18 +576,18 @@ for Mai in [0.70]:
         lev = np.linspace(-8.,25.0,21)
         # Loop over all blocks
         for Di in Dat:
-        # Indices
-        # :, all x
-        # 0, probe is at constant j
-        # :, all rt
-        # -1, last time step
-        xnow = Di['x'][:,0,:,-1]
-        rtnow = Di['rt'][:,0,:,-1]
-        Pnow = Di['pstat'][:,0,:,-1]
-        Tnow = Di['tstat'][:,0,:,-1]
-        # Change in entropy relative to mean upstream state
-        Dsnow = cp * np.log(Tnow/T1) - rgas*np.log(Pnow/P1)
-        a.contourf(xnow, rtnow, Dsnow, lev)
+                # Indices
+                # :, all x
+                # 0, probe is at constant j
+                # :, all rt
+                # -1, last time step
+                xnow = Di['x'][:,0,:,-1]
+                rtnow = Di['rt'][:,0,:,-1]
+                Pnow = Di['pstat'][:,0,:,-1]
+                Tnow = Di['tstat'][:,0,:,-1]
+                # Change in entropy relative to mean upstream state
+                Dsnow = cp * np.log(Tnow/T1) - rgas*np.log(Pnow/P1)
+                a.contourf(xnow, rtnow, Dsnow, lev)
         a.axis('equal')
         plt.grid(False)
         plt.tight_layout()  # Remove extraneous white space
