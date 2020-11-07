@@ -32,7 +32,11 @@ if __name__ == "__main__":
         #
         # Should not need to change below this line
         # It is complicated and not neccesary to understand the below!
-        #
+        # Read in the converged steady solution
+        tsr = ts_tstream_reader.TstreamReader()
+        g = tsr.read(fname)
+        bids = g.get_block_ids()
+
         # add blade-to-blade probe patches
         for bid in [1]:
             b = g.get_block(bid)
@@ -55,10 +59,6 @@ if __name__ == "__main__":
             g.set_pv('probe_append', ts_tstream_type.int, p.bid, p.pid, 1)
 
 
-        # Read in the converged steady solution
-        tsr = ts_tstream_reader.TstreamReader()
-        g = tsr.read(fname)
-        bids = g.get_block_ids()
 
         # find the sector size required
         nb = np.array([g.get_bv('nblade',bid) for bid in bids])
@@ -109,97 +109,70 @@ if __name__ == "__main__":
                 g, dup_int, scale, periodic
                 )
 
-        # variables for unsteady run
-        g2.set_av("ncycle", ts_tstream_type.int, ncycle)
-        g2.set_av("frequency", ts_tstream_type.float,  freq)
-
-        g2.set_av("nstep_cycle", ts_tstream_type.int, nstep_cycle)
-        g2.set_av("nstep_inner", ts_tstream_type.int, 200)
-
-        # disable saving of snapshots
-        g2.set_av("nstep_save", ts_tstream_type.int, 999999)
-
-        # start averaging two periods before the end
-        g2.set_av("nstep_save_start", ts_tstream_type.int, (ncycle-2)*nstep_cycle)
-
-        # save probes every time step, from the beginning
-        g2.set_av("nstep_save_probe", ts_tstream_type.int, 1)
-        g2.set_av("nstep_save_start_probe", ts_tstream_type.int, 0)
-
-        # other configuration variables
-        g2.set_av("dts_conv", ts_tstream_type.float, 0.0005)
-        g2.set_av("facsafe", ts_tstream_type.float, 0.2)
-        g2.set_av("dts", ts_tstream_type.int, 1)
-
-        # g2.set_av("sfin",ts_tstream_type.float,0.5)
-        # g2.set_av("facsecin",ts_tstream_type.float,0.005)
-        g2.set_av("dampin",ts_tstream_type.float,10.0)
-
-        # use mixing lengths and flow guess from steady calculation
-        g2.set_av("restart", ts_tstream_type.int, 1)
-        g2.set_av("poisson_restart", ts_tstream_type.int, 1)
-        g2.set_av("poisson_nstep", ts_tstream_type.int, 0)
-
-        # add probe patch
-        p1 = g.get_patch(0,0)
-        p2 = g.get_patch(0,2)
+        # Get blade indices from circumferential periodics
+        p1 = g.get_patch(1,0)
+        p2 = g.get_patch(1,2)
         ist = p1.ien
         ien = p2.ist
 
-        b = g.get_block(1)
-        for k in [0, b.nk-1]:
-            p = ts_tstream_type.TstreamPatch()
-            p.kind = ts_tstream_patch_kind.probe
-            p.bid = 1
-            p.ist = ist
-            p.ien = ien
-            p.jst = 0
-            p.jen = b.nj
-            p.kst = k
-            p.ken = k+1
-            p.nxbid = 0
-            p.nxpid = 0
-            p.idir = 0
-            p.jdir = 1
-            p.kdir = 2
-            p.pid = g2.add_patch(1, p)
-            g2.set_pv('probe_append', ts_tstream_type.int, p.bid, p.pid, 1)
 
-        # variables for unsteady run
-        g2.set_av("ncycle", ts_tstream_type.int, ncycle)
-        g2.set_av("frequency", ts_tstream_type.float,  freq)
-        g2.set_av("nstep_cycle", ts_tstream_type.int, nstep_cycle)
-        g2.set_av("nstep_inner", ts_tstream_type.int, 200)
+        # add blade probe patches
+    bid_pr = int(dup_int[0]+1)
+    b = g2.get_block(bid_pr)
+    for k in [0, b.nk-1]:
+        p = ts_tstream_type.TstreamPatch()
+        p.kind = ts_tstream_patch_kind.probe
+        p.bid = bid_pr
+        p.ist = ist
+        p.ien = ien
+        p.jst = 0
+        p.jen = b.nj
+        p.kst = k
+        p.ken = k+1
+        p.nxbid = 0
+        p.nxpid = 0
+        p.idir = 0
+        p.jdir = 1
+        p.kdir = 2
+        p.pid = g2.add_patch(bid_pr, p)
+        g.set_pv('probe_append', ts_tstream_type.int, p.bid, p.pid, 1)
+       
+    # variables for unsteady run
+    g2.set_av("ncycle", ts_tstream_type.int, ncycle)
+    g2.set_av("frequency", ts_tstream_type.float,  freq)
 
-        # disable saving of snapshots
-        g2.set_av("nstep_save", ts_tstream_type.int, 999999)
+    g2.set_av("nstep_cycle", ts_tstream_type.int, nstep_cycle)
+    g2.set_av("nstep_inner", ts_tstream_type.int, 200)
 
-        # Save probes for last few period
-        g2.set_av("nstep_save_start", ts_tstream_type.int, nstep_save_start)
-        g2.set_av("nstep_save_start_probe", ts_tstream_type.int, nstep_save_start)
+    # disable saving of snapshots
+    g2.set_av("nstep_save", ts_tstream_type.int, 999999)
 
-        # save probes every  nth step, from the beginning
-        g2.set_av("nstep_save_probe", ts_tstream_type.int, nstep_save_probe)
+    # Save probes for last few period
+    g2.set_av("nstep_save_start", ts_tstream_type.int, nstep_save_start)
+    g2.set_av("nstep_save_start_probe", ts_tstream_type.int, nstep_save_start)
 
-        # other configuration variables
-        g2.set_av("dts_conv", ts_tstream_type.float, 0.0005)
-        g2.set_av("facsafe", ts_tstream_type.float, 0.2)
-        g2.set_av("dts", ts_tstream_type.int, 1)
+    # save probes every  nth step, from the beginning
+    g2.set_av("nstep_save_probe", ts_tstream_type.int, nstep_save_probe)
 
-        # g2.set_av("sfin",ts_tstream_type.float,0.5)
-        # g2.set_av("facsecin",ts_tstream_type.float,0.005)
-        g2.set_av("dampin",ts_tstream_type.float,10.0)
+    # other configuration variables
+    g2.set_av("dts_conv", ts_tstream_type.float, 0.0005)
+    g2.set_av("facsafe", ts_tstream_type.float, 0.2)
+    g2.set_av("dts", ts_tstream_type.int, 1)
 
-        # use mixing lengths and flow guess from steady calculation
-        g2.set_av("restart", ts_tstream_type.int, 1)
-        g2.set_av("poisson_restart", ts_tstream_type.int, 1)
-        g2.set_av("poisson_nstep", ts_tstream_type.int, 0)
+    # g2.set_av("sfin",ts_tstream_type.float,0.5)
+    # g2.set_av("facsecin",ts_tstream_type.float,0.005)
+    g2.set_av("dampin",ts_tstream_type.float,10.0)
 
-        # load balance for 1 GPUs
-        ts_tstream_load_balance.load_balance(g2, 1)
+    # use mixing lengths and flow guess from steady calculation
+    g2.set_av("restart", ts_tstream_type.int, 1)
+    g2.set_av("poisson_restart", ts_tstream_type.int, 1)
+    g2.set_av("poisson_nstep", ts_tstream_type.int, 0)
 
-        # Reset spurious application variable
-        g2.set_av("if_ale", ts_tstream_type.int, 0)
+    # load balance for 1 GPUs
+    ts_tstream_load_balance.load_balance(g2, 1)
 
-        # write out unsteady input file
-        g2.write_hdf5(fname_out)
+    # Reset spurious application variable
+    g2.set_av("if_ale", ts_tstream_type.int, 0)
+
+    # write out unsteady input file
+    g2.write_hdf5(fname_out)
