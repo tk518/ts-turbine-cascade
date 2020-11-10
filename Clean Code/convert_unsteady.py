@@ -8,7 +8,7 @@ if __name__ == "__main__":
 
     # Number of rotor blade passing periods to run for
     # Change me so that the computaion reaches a periodic state
-    ncycle = 16
+    ncycle = 80
 
     # Time steps per cycle - leave at 72
     nstep_cycle = 72
