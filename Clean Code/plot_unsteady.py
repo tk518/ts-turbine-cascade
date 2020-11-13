@@ -200,11 +200,11 @@ frequencies = np.fft.fftfreq(len(P1) , dt)
 
 #Frequency domain presentation
 plt.plot(frequencies, abs(fourierTransform))
-plt.title('FFT 0 to 80 passes at Midpoint; Mach ='+str(Mach))
+plt.title('FFT 75 to 80 passes at Midpoint; Mach = 0.70')
 plt.xlabel('Frequency')  
 plt.ylabel('Amplitude')
 plt.show()
-plt.savefig('FFT_fullCFD.pdf')  # Write out a pdf file
+plt.savefig('FFT_fullCFD_mid.pdf')  # Write out a pdf file
 
 P2 = P2 - np.mean(P2)
 fourierTransform = np.fft.fft(P2)
@@ -212,11 +212,11 @@ frequencies = np.fft.fftfreq(len(P2) , dt)
 
 #Frequency domain presentation
 plt.plot(frequencies, abs(fourierTransform))
-plt.title('FFT 0 to 80 passes at Leading edge; Mach ='+str(Mach))
+plt.title('FFT 75 to 80 passes at Leading edge; Mach = 0.70 ')
 plt.xlabel('Frequency')  
 plt.ylabel('Amplitude')
 plt.show()
-plt.savefig('FFT_fullCFD.pdf')  # Write out a pdf file
+plt.savefig('FFT_fullCFD_leading.pdf')  # Write out a pdf file
 
 P3 = P3 - np.mean(P3)
 fourierTransform = np.fft.fft(P3)
@@ -224,8 +224,8 @@ frequencies = np.fft.fftfreq(len(P3) , dt)
 
 #Frequency domain presentation
 plt.plot(frequencies, abs(fourierTransform))
-plt.title('FFT 0 to 80 passes at Trailing edge; Mach ='+str(Mach))
+plt.title('FFT 75 to 80 passes at Trailing edge; Mach = 0.70')
 plt.xlabel('Frequency')  
 plt.ylabel('Amplitude')
 plt.show()
-plt.savefig('FFT_fullCFD.pdf')  # Write out a pdf file
+plt.savefig('FFT_fullCFD_trailing.pdf')  # Write out a pdf file
