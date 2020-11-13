@@ -62,9 +62,11 @@ dt = 1./freq/float(nstep_cycle)
 # Number of time steps = num cycles * steps per cycle
 # nt = ncycle * nstep_cycle
 nt = np.shape(Dat_ps['ro'])[-1]
-print(nt)
+print('Number of cycles =', ncycle)
 # Make non-dimensional time vector = time in seconds * blade passing frequency
 ft = np.linspace(0.,float(nt-1)*dt,nt) * freq
+
+print('ft =', ft)
 
 # Get secondary vars, things like static pressure, rotor-relative Mach, etc.
 Dat_ps = probe.secondary(Dat_ps, rpm, cp, ga)
