@@ -60,9 +60,9 @@ nstep_cycle = g.get_av('nstep_cycle')  # Time steps per cycle
 # Individual time step in seconds = blade passing period / steps per cycle
 dt = 1./freq/float(nstep_cycle)
 # Number of time steps = num cycles * steps per cycle
-nt = ncycle * nstep_cycle
+#nt = ncycle * nstep_cycle
 '''???'''
-#nt = np.shape(Dat_ps['ro'])[-1] 
+nt = np.shape(Dat_ps['ro'])[-1] 
 print('Number of cycles =', ncycle)
 print('nt =', nt)
 # Make non-dimensional time vector = time in seconds * blade passing frequency

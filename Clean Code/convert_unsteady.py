@@ -14,10 +14,10 @@ if __name__ == "__main__":
     nstep_cycle = 72
 
     # Which time step to start saving probes
-    nstep_save_start =  (ncycle-3)*nstep_cycle
+    nstep_save_start =  (ncycle-5)*nstep_cycle
 
     # Number of time steps between probes
-    nstep_save_probe = 9
+    nstep_save_probe = 1
 
     # File name of the steady soln to read in
     fname = "output_1.hdf5"
