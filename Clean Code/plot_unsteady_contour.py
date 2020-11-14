@@ -128,27 +128,30 @@ plt.show()  # Render the plot
 plt.savefig('unst_Cp_cont.pdf')  # Write out a pdf file
 
 # Entropy
-for time in [0.0, 0.2, 0.4, 0.6, 0.8]:
+for stepsize in [0.00, 0.25, 0.50, 0.75]:
     f,a = plt.subplots()  # Create a figure and axis to plot into
-    plt.set_cmap('cubehelix_r')
+    #plt.set_cmap('cubehelix_r')
     lev = np.linspace(-8.,25.0,21)
     # Loop over all blocks
+    time_reading = nstep_cycle * 4 + stepsize * nstep_cycle
+    print('time_reading = ', time_reading)
     for Di in Dat:
         # Indices
         # :, all x
         # 0, probe is at constant j
         # :, all rt
         # -1, last time step
-        xnow = Di['x'][:,0,:, nstep_cycle * 4 + time * nstep_cycle]
-        rtnow = Di['rt'][:,0,:, nstep_cycle * 4 + time * nstep_cycle]
-        Pnow = Di['pstat'][:,0,:, nstep_cycle * 4 + time * nstep_cycle]
-        Tnow = Di['tstat'][:,0,:, nstep_cycle * 4 + time * nstep_cycle]
+        xnow = Di['x'][:,0,:, int(time_reading)]
+        rtnow = Di['rt'][:,0,:, int(time_reading)]
+        Pnow = Di['pstat'][:,0,:, int(time_reading)]
+        Tnow = Di['tstat'][:,0,:, int(time_reading)]
         # Change in entropy relative to mean upstream state
         Dsnow = cp * np.log(Tnow/T1) - rgas*np.log(Pnow/P1)
         a.contourf(xnow, rtnow, Dsnow, lev)
     a.axis('equal')
     plt.grid(False)
-    plt.tight_layout()  # Remove extraneous white space
     plt.title('Entropy contour plot at ft = ' + str(time))
+    plt.tight_layout()  # Remove extraneous white space
+
     plt.show()  # Render the plot
     plt.savefig('unst_s_cont_ft_=_' +str(time)+'.pdf')  # Write out a pdf file
