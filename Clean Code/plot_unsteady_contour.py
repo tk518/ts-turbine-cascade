@@ -104,7 +104,7 @@ _, T2 = rotor_outlet.area_avg_1d('tstat')
 
 # Finished reading data, now make some plots
 #
-'''
+
 # Static pressure
 for stepsize in [0.00, 0.25, 0.50, 0.75]:
     f,a = plt.subplots()  # Create a figure and axis to plot into
@@ -131,7 +131,7 @@ for stepsize in [0.00, 0.25, 0.50, 0.75]:
     plt.title('Static pressure contour plot at ft = ' + str(stepsize))
     plt.show()  # Render the plot
     plt.savefig('unst_Cp_cont_ft_=_' +str(stepsize)+ '.pdf')  # Write out a pdf file
-'''
+
 
 # Entropy
 for stepsize in [0.00, 0.25, 0.50, 0.75]:
@@ -157,8 +157,37 @@ for stepsize in [0.00, 0.25, 0.50, 0.75]:
     plt.grid(False)
     plt.tight_layout()  # Remove extraneous white space
     plt.title('Entropy contour plot at ft = ' + str(stepsize))
-    plt.set_cmap('Greens')
-    plot = a.pcolor(data)
-    f.colorbar(plot)
+
+    #plt.imshow(mat, origin="lower", cmap='Greens', interpolation='nearest')
+
     plt.show()  # Render the plot
     plt.savefig('unst_s_cont_ft_=_' +str(stepsize)+'.pdf')  # Write out a pdf file
+
+'''
+#Density 
+for stepsize in [0.00, 0.25, 0.50, 0.75]:
+    f,a = plt.subplots()  # Create a figure and axis to plot into
+    plt.cm
+    #axins1 = inset_axes(a, width='10%', height='2%', loc='lower right')
+    lev = np.linspace(-1.4,0.,42)
+    time_reading = nstep_cycle * 4 + stepsize * nstep_cycle
+    # Loop over all blocks
+    for Di in Dat:
+        # Indices
+        # :, all x
+        # 0, probe is at constant j
+        # :, all rt
+        # -1, last time step
+        xnow = Di['x'][:,0,:,int(time_reading)]
+        rtnow = Di['rt'][:,0,:,int(time_reading)]
+        Ronow = Di['ro'][:,0,:,int(time_reading)]
+        Cpnow = (Ronow - Po1)/(Po1-P2)
+        a.contourf(xnow, rtnow, Cpnow, lev)
+    a.axis('equal')
+    plt.grid(False)
+    plt.tight_layout()  # Remove extraneous white space
+    plt.colorbar()
+    plt.title('Static density contour plot at ft = ' + str(stepsize))
+    plt.show()  # Render the plot
+    plt.savefig('unst_rho_cont_ft_=_' +str(stepsize)+ '.pdf')  # Write out a pdf file
+    '''

@@ -407,6 +407,9 @@ for Mai in [0.70]:
         fourierTransform = np.fft.fft(P1)
         frequencies = np.fft.fftfreq(len(P1) , dt)
 
+        print('Fourier frequencies = ', frequencies)
+        print('fourierTransform = ', fourierTransform)
+
         #Frequency domain presentation
         plt.plot(frequencies, abs(fourierTransform))
         plt.title('FFT ' +str(n_cycles_repeating)+ ' to 80 passes at midpoint; Mach ='+str(Mach))
@@ -419,6 +422,7 @@ for Mai in [0.70]:
         fourierTransform = np.fft.fft(P2)
         frequencies = np.fft.fftfreq(len(P2) , dt)
 
+'''
         #Frequency domain presentation
         plt.plot(frequencies, abs(fourierTransform))
         plt.title('FFT ' +str(n_cycles_repeating)+ ' to 80 passes at Leading edge; Mach ='+str(Mach))
@@ -439,3 +443,4 @@ for Mai in [0.70]:
         plt.show()
         plt.savefig('FFT_fullCFD.pdf')  # Write out a pdf file
 
+'''
