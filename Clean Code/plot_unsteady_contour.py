@@ -106,26 +106,30 @@ _, T2 = rotor_outlet.area_avg_1d('tstat')
 #
 
 # Static pressure
-f,a = plt.subplots()  # Create a figure and axis to plot into
-#plt.set_cmap('cubehelix')
-lev = np.linspace(-1.4,0.,21)
-# Loop over all blocks
-for Di in Dat:
-    # Indices
-    # :, all x
-    # 0, probe is at constant j
-    # :, all rt
-    # -1, last time step
-    xnow = Di['x'][:,0,:,-1]
-    rtnow = Di['rt'][:,0,:,-1]
-    Pnow = Di['pstat'][:,0,:,-1]
-    Cpnow = (Pnow - Po1)/(Po1-P2)
-    a.contourf(xnow, rtnow, Cpnow, lev)
-a.axis('equal')
-plt.grid(False)
-plt.tight_layout()  # Remove extraneous white space
-plt.show()  # Render the plot
-plt.savefig('unst_Cp_cont.pdf')  # Write out a pdf file
+for stepsize in [0.00, 0.25, 0.50, 0.75]:
+    f,a = plt.subplots()  # Create a figure and axis to plot into
+    #plt.set_cmap('cubehelix')
+    lev = np.linspace(-1.4,0.,21)
+    time_reading = nstep_cycle * 4 + stepsize * nstep_cycle
+    # Loop over all blocks
+    for Di in Dat:
+        # Indices
+        # :, all x
+        # 0, probe is at constant j
+        # :, all rt
+        # -1, last time step
+        xnow = Di['x'][:,0,:,int(time_reading)]
+        rtnow = Di['rt'][:,0,:,int(time_reading)]
+        Pnow = Di['pstat'][:,0,:,int(time_reading)]
+        Cpnow = (Pnow - Po1)/(Po1-P2)
+        a.contourf(xnow, rtnow, Cpnow, lev)
+    a.axis('equal')
+    plt.grid(False)
+    plt.tight_layout()  # Remove extraneous white space
+    plt.colorbar()
+    plt.title('Static pressure contour plot at ft = ' + str(stepsize))
+    plt.show()  # Render the plot
+    plt.savefig('unst_Cp_cont_ft_=_' +str(stepsize)+ '.pdf')  # Write out a pdf file
 
 # Entropy
 for stepsize in [0.00, 0.25, 0.50, 0.75]:
@@ -134,7 +138,7 @@ for stepsize in [0.00, 0.25, 0.50, 0.75]:
     lev = np.linspace(-8.,25.0,21)
     # Loop over all blocks
     time_reading = nstep_cycle * 4 + stepsize * nstep_cycle
-    print('time_reading = ', int(time_reading))
+    #print('time_reading = ', int(time_reading))
     for Di in Dat:
         # Indices
         # :, all x
@@ -150,8 +154,8 @@ for stepsize in [0.00, 0.25, 0.50, 0.75]:
         a.contourf(xnow, rtnow, Dsnow, lev)
     a.axis('equal')
     plt.grid(False)
-    plt.title('Entropy contour plot at ft = ' + str(stepsize))
     plt.tight_layout()  # Remove extraneous white space
-
+    plt.title('Entropy contour plot at ft = ' + str(stepsize))
+    plt.colorbar()
     plt.show()  # Render the plot
     plt.savefig('unst_s_cont_ft_=_' +str(stepsize)+'.pdf')  # Write out a pdf file
