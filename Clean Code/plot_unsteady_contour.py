@@ -150,8 +150,8 @@ for stepsize in [0.00, 0.25, 0.50, 0.75]:
         a.contourf(xnow, rtnow, Dsnow, lev)
     a.axis('equal')
     plt.grid(False)
-    plt.title('Entropy contour plot at ft = ' + str(time))
+    plt.title('Entropy contour plot at ft = ' + str(stepsize))
     plt.tight_layout()  # Remove extraneous white space
 
     plt.show()  # Render the plot
-    plt.savefig('unst_s_cont_ft_=_' +str(time)+'.pdf')  # Write out a pdf file
+    plt.savefig('unst_s_cont_ft_=_' +str(stepsize)+'.pdf')  # Write out a pdf file
