@@ -205,8 +205,8 @@ P_fourier_penultimate = P_fourier_penultimate - np.mean(P_fourier_penultimate)
 fourierTransform = np.fft.fft(P_fourier_penultimate)
 frequencies = np.fft.fftfreq(len(P_fourier_penultimate) , dt)
 
-print('Fourier frequencies penultimate = ', frequencies)
-print('fourierTransform penultimate = ', fourierTransform)
+#print('Fourier frequencies penultimate = ', frequencies)
+#print('fourierTransform penultimate = ', fourierTransform)
 
 #Frequency domain presentation
 plt.plot(frequencies, abs(fourierTransform))
@@ -220,8 +220,8 @@ P_fourier_prepenultimate = P_fourier_prepenultimate - np.mean(P_fourier_prepenul
 fourierTransform = np.fft.fft(P_fourier_prepenultimate)
 frequencies = np.fft.fftfreq(len(P_fourier_prepenultimate) , dt)
 
-print('Fourier frequencies prepenultimate = ', frequencies)
-print('fourierTransform prepenultimate = ', fourierTransform)
+#print('Fourier frequencies prepenultimate = ', frequencies)
+#print('fourierTransform prepenultimate = ', fourierTransform)
 
 #Frequency domain presentation
 plt.plot(frequencies, abs(fourierTransform))
