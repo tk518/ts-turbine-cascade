@@ -134,7 +134,7 @@ for stepsize in [0.00, 0.25, 0.50, 0.75]:
     lev = np.linspace(-8.,25.0,21)
     # Loop over all blocks
     time_reading = nstep_cycle * 4 + stepsize * nstep_cycle
-    print('time_reading = ', time_reading)
+    print('time_reading = ', int(time_reading))
     for Di in Dat:
         # Indices
         # :, all x
