@@ -64,10 +64,10 @@ dt = 1./freq/float(nstep_cycle)
 '''???'''
 nt = np.shape(Dat_ps['ro'])[-1] 
 print('Number of cycles =', ncycle)
-print('nt =', nt)
+#print('nt =', nt)
 # Make non-dimensional time vector = time in seconds * blade passing frequency
 ft = np.linspace(0.,float(nt-1)*dt,nt) * freq
-print('ft =', ft)
+#print('ft =', ft)
 
 # Get secondary vars, things like static pressure, rotor-relative Mach, etc.
 Dat_ps = probe.secondary(Dat_ps, rpm, cp, ga)
@@ -90,8 +90,8 @@ imid = int(di/2)
 # k = 0 because the patch is at const pitchwise position, on pressure surface
 # n = : for all instants in time 
 P = Dat_ps['pstat'][0,jmid,0,:]
-print('Length of pressure data =',len(P))
-print('Pressure data =', P)
+#print('Length of pressure data =',len(P))
+#print('Pressure data =', P)
 # Divide pressure by mean value
 # P is a one-dimensional vector of values of static pressure at each instant in
 # time; np.mean is a function that returns the mean of an array
@@ -198,6 +198,9 @@ P1 = P1 - np.mean(P1)
 fourierTransform = np.fft.fft(P1)
 frequencies = np.fft.fftfreq(len(P1) , dt)
 
+print('Fourier frequencies = ', frequencies)
+print('fourierTransform = ', fourierTransform)
+
 #Frequency domain presentation
 plt.plot(frequencies, abs(fourierTransform))
 plt.title('FFT 75 to 80 passes at Midpoint; Mach = 0.70')
@@ -205,7 +208,7 @@ plt.xlabel('Frequency')
 plt.ylabel('Amplitude')
 plt.show()
 plt.savefig('FFT_fullCFD_mid.pdf')  # Write out a pdf file
-
+'''
 P2 = P2 - np.mean(P2)
 fourierTransform = np.fft.fft(P2)
 frequencies = np.fft.fftfreq(len(P2) , dt)
@@ -229,3 +232,4 @@ plt.xlabel('Frequency')
 plt.ylabel('Amplitude')
 plt.show()
 plt.savefig('FFT_fullCFD_trailing.pdf')  # Write out a pdf file
+'''
