@@ -198,6 +198,8 @@ prepenulatimate = ncycle - 2*nstep_cycle
 
 P_fourier_penultimate = Dat_ps['pstat'][imid,jmid,0, penultimate:]
 P_fourier_prepenultimate = Dat_ps['pstat'][imid,jmid,0, prepenulatimate:penultimate]
+print('length penultimate =', P_fourier_penultimate)
+print('length prepenultimate =', P_fourier_prepenultimate)
 #FFT plot
 P_fourier_penultimate = P_fourier_penultimate - np.mean(P_fourier_penultimate)
 fourierTransform = np.fft.fft(P_fourier_penultimate)
