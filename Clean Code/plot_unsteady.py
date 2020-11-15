@@ -193,8 +193,9 @@ plt.savefig('unsteady_P.pdf')  # Write out a pdf file
 #Point where the change becomes cyclical (number of cycles before the unsteadiness is predictable)
 n_cycles_repeating = 50
 nt = np.shape(Dat_ps['ro'])[-1] 
-penultimate = ncycle - nstep_cycle 
-prepenulatimate = ncycle - 2*nstep_cycle
+
+penultimate = nt - nstep_cycle 
+prepenulatimate = nt - 2*nstep_cycle
 
 P_fourier_penultimate = Dat_ps['pstat'][imid,jmid,0, penultimate:]
 P_fourier_prepenultimate = Dat_ps['pstat'][imid,jmid,0, prepenulatimate:penultimate]
@@ -256,3 +257,23 @@ plt.ylabel('Amplitude')
 plt.show()
 plt.savefig('FFT_fullCFD_trailing.pdf')  # Write out a pdf file
 '''
+
+
+#Testing how the level as to which the pressure is repeating.
+absolute_pressure_difference = []
+percentage_pressure_difference = []
+
+for point in range(0,nstep_cycle):
+    #compare point in penultimate cycle to final cycle
+    #penultimate point - point 1
+    point1 = prepenulatimate + point
+    #final point - point 2
+    point2 = penultimate + point
+    difference = Dat_ps['pstat'][imid,jmid,0, point1] - Dat_ps['pstat'][imid,jmid,0, point2]
+    percentage_difference = difference / Dat_ps['pstat'][imid,jmid,0, point2]
+
+    #Add results into list
+    absolute_pressure_difference.append(abs(difference))
+    percentage_pressure_difference.append(abs(percentage_difference))
+print('Maximum percentage cycle difference = ', max(percentage_pressure_difference), '%')
+print('Maximum absolute cycle difference = ', max(absolute_pressure_difference))
