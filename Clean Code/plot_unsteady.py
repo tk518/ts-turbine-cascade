@@ -199,8 +199,8 @@ prepenulatimate = nt - 2*nstep_cycle
 
 P_fourier_penultimate = Dat_ps['pstat'][imid,jmid,0, penultimate:]
 P_fourier_prepenultimate = Dat_ps['pstat'][imid,jmid,0, prepenulatimate:penultimate]
-print('length penultimate =', len(P_fourier_penultimate))
-print('length prepenultimate =', len(P_fourier_prepenultimate))
+#print('length penultimate =', len(P_fourier_penultimate))
+#print('length prepenultimate =', len(P_fourier_prepenultimate))
 #FFT plot
 P_fourier_penultimate = P_fourier_penultimate - np.mean(P_fourier_penultimate)
 fourierTransform = np.fft.fft(P_fourier_penultimate)
@@ -270,10 +270,12 @@ for point in range(0,nstep_cycle):
     #final point - point 2
     point2 = penultimate + point
     difference = Dat_ps['pstat'][imid,jmid,0, point1] - Dat_ps['pstat'][imid,jmid,0, point2]
-    percentage_difference = difference / Dat_ps['pstat'][imid,jmid,0, point2]
+    percentage_difference = difference * 100 / Dat_ps['pstat'][imid,jmid,0, point2]
 
     #Add results into list
     absolute_pressure_difference.append(abs(difference))
     percentage_pressure_difference.append(abs(percentage_difference))
+
+print('percentage pressure difference = ', percentage_pressure_difference)
 print('Maximum percentage cycle difference = ', max(percentage_pressure_difference), '%')
 print('Maximum absolute cycle difference = ', max(absolute_pressure_difference))
