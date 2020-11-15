@@ -192,22 +192,43 @@ plt.savefig('unsteady_P.pdf')  # Write out a pdf file
 
 #Point where the change becomes cyclical (number of cycles before the unsteadiness is predictable)
 n_cycles_repeating = 50
+nt = np.shape(Dat_ps['ro'])[-1] 
+penultimate = ncycle - nstep_cycle 
+prepenulatimate = ncycle - 2*nstep_cycle
 
+P_fourier_penultimate = Dat_ps['pstat'][imid,jmid,0, penultimate:]
+P_fourier_prepenultimate = Dat_ps['pstat'][imid,jmid,0, prepenulatimate:penultimate]
 #FFT plot
-P1 = P1 - np.mean(P1)
-fourierTransform = np.fft.fft(P1)
-frequencies = np.fft.fftfreq(len(P1) , dt)
+P_fourier_penultimate = P_fourier_penultimate - np.mean(P_fourier_penultimate)
+fourierTransform = np.fft.fft(P_fourier_penultimate)
+frequencies = np.fft.fftfreq(len(P_fourier_penultimate) , dt)
 
-print('Fourier frequencies = ', frequencies)
-print('fourierTransform = ', fourierTransform)
+print('Fourier frequencies penultimate = ', frequencies)
+print('fourierTransform penultimate = ', fourierTransform)
 
 #Frequency domain presentation
 plt.plot(frequencies, abs(fourierTransform))
-plt.title('FFT 75 to 80 passes at Midpoint; Mach = 0.70')
+plt.title('FFT 79 to 80 passes at Midpoint; Mach = 0.70')
 plt.xlabel('Frequency')  
 plt.ylabel('Amplitude')
 plt.show()
 plt.savefig('FFT_fullCFD_mid.pdf')  # Write out a pdf file
+
+P_fourier_prepenultimate = P_fourier_prepenultimate - np.mean(P_fourier_prepenultimate)
+fourierTransform = np.fft.fft(P_fourier_prepenultimate)
+frequencies = np.fft.fftfreq(len(P_fourier_prepenultimate) , dt)
+
+print('Fourier frequencies prepenultimate = ', frequencies)
+print('fourierTransform prepenultimate = ', fourierTransform)
+
+#Frequency domain presentation
+plt.plot(frequencies, abs(fourierTransform))
+plt.title('FFT 78 to 79 passes at Midpoint; Mach = 0.70')
+plt.xlabel('Frequency')  
+plt.ylabel('Amplitude')
+plt.show()
+plt.savefig('FFT_fullCFD_mid.pdf')  # Write out a pdf file
+
 '''
 P2 = P2 - np.mean(P2)
 fourierTransform = np.fft.fft(P2)
