@@ -3,6 +3,7 @@ import numpy as np  # Multidimensional array library
 import probe  # Code for reading TS probe output
 import matplotlib.pyplot as plt  # Plotting library
 from ts import ts_tstream_reader, ts_tstream_cut  # TS grid reader
+from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 
 #
 # Set variables here
@@ -108,7 +109,8 @@ _, T2 = rotor_outlet.area_avg_1d('tstat')
 # Static pressure
 for stepsize in [0.00, 0.25, 0.50, 0.75]:
     f,a = plt.subplots()  # Create a figure and axis to plot into
-    #plt.set_cmap('cubehelix')
+    plt.cm
+    #axins1 = inset_axes(a, width='10%', height='2%', loc='lower right')
     lev = np.linspace(-1.4,0.,21)
     time_reading = nstep_cycle * 4 + stepsize * nstep_cycle
     # Loop over all blocks
@@ -137,6 +139,7 @@ for stepsize in [0.00, 0.25, 0.50, 0.75]:
     #plt.set_cmap('cubehelix_r')
     lev = np.linspace(-8.,25.0,21)
     # Loop over all blocks
+    p
     time_reading = nstep_cycle * 4 + stepsize * nstep_cycle
     #print('time_reading = ', int(time_reading))
     for Di in Dat:
