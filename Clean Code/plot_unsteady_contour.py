@@ -134,7 +134,7 @@ for stepsize in [0.00, 0.25, 0.50, 0.75]:
 
 
 # Entropy
-for stepsize in range(0,72):
+for stepsize in range(1,73):
     f,a = plt.subplots()  # Create a figure and axis to plot into
     lev = np.linspace(-8.,25.0,42)
     # Loop over all blocks
@@ -158,9 +158,9 @@ for stepsize in range(0,72):
     plt.tight_layout()  # Remove extraneous white space
     #plt.title('Entropy contour plot at ft = ' + str(stepsize/72))
     #plt.imshow(mat, origin="lower", cmap='Greens', interpolation='nearest')
-    plt.savefig('unst_s_cont_vid_000' +str(stepsize)+'.png')  # Write out a pdf file
-
-plt.show()  # Render the plot
+    #plt.savefig('unst_s_cont_vid_000' +"%04d"%stepsize +'.png')  # Write out a pdf file
+    plt.savefig('unst_s_cont_vid' + "{0:0=4d}".format(stepsize) +'.png')  # Write out a pdf file
+#plt.show()  # Render the plot
 '''
 #Density 
 for stepsize in [0.00, 0.25, 0.50, 0.75]:
