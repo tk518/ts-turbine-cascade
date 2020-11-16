@@ -103,7 +103,7 @@ a.plot(ft,P_hat,'-')  # Plot our data as a new line
 plt.xlabel('Time, Rotor Periods, $ft$')  # Horizontal axis label
 plt.ylabel('Static Pressure, $p/\overline{p}$')  # Vertical axis label
 plt.tight_layout()  # Remove extraneous white space
-plt.show()  # Render the plot
+#plt.show()  # Render the plot
 plt.savefig('unsteady_P.pdf')  # Write out a pdf file
 
 #
@@ -145,7 +145,7 @@ plt.xlabel('Axial Chord Fraction, $\hat{x}$')  # Horizontal axis label
 plt.ylabel(
         r'Static Pressure')
 plt.tight_layout()  # Remove extraneous white space
-plt.show()  # Render the plot
+#plt.show()  # Render the plot
 plt.savefig('P_x.pdf')  # Write out a pdf file
 
 #
@@ -186,7 +186,7 @@ plt.legend()
 plt.xlabel('Time, Rotor Periods, $ft$')  # Horizontal axis label
 plt.ylabel('Static Pressure, $p/\overline{p}$')  # Vertical axis label
 plt.tight_layout()  # Remove extraneous white space
-plt.show()  # Render the plot
+#plt.show()  # Render the plot
 plt.savefig('unsteady_P.pdf')  # Write out a pdf file
 
 
@@ -214,7 +214,7 @@ plt.plot(frequencies, abs(fourierTransform))
 plt.title('FFT 79 to 80 passes at Midpoint; Mach = 0.70')
 plt.xlabel('Frequency')  
 plt.ylabel('Amplitude')
-plt.show()
+#plt.show()
 plt.savefig('FFT_fullCFD_mid.pdf')  # Write out a pdf file
 
 P_fourier_prepenultimate = P_fourier_prepenultimate - np.mean(P_fourier_prepenultimate)
@@ -229,7 +229,7 @@ plt.plot(frequencies, abs(fourierTransform))
 plt.title('FFT 78 to 79 passes at Midpoint; Mach = 0.70')
 plt.xlabel('Frequency')  
 plt.ylabel('Amplitude')
-plt.show()
+#plt.show()
 plt.savefig('FFT_fullCFD_mid.pdf')  # Write out a pdf file
 
 '''
@@ -242,7 +242,7 @@ plt.plot(frequencies, abs(fourierTransform))
 plt.title('FFT 75 to 80 passes at Leading edge; Mach = 0.70 ')
 plt.xlabel('Frequency')  
 plt.ylabel('Amplitude')
-plt.show()
+#plt.show()
 plt.savefig('FFT_fullCFD_leading.pdf')  # Write out a pdf file
 
 P3 = P3 - np.mean(P3)
@@ -254,7 +254,7 @@ plt.plot(frequencies, abs(fourierTransform))
 plt.title('FFT 75 to 80 passes at Trailing edge; Mach = 0.70')
 plt.xlabel('Frequency')  
 plt.ylabel('Amplitude')
-plt.show()
+#plt.show()
 plt.savefig('FFT_fullCFD_trailing.pdf')  # Write out a pdf file
 '''
 
@@ -299,3 +299,5 @@ print('Average absolute pressure difference = ', sum(test[0])/len(test[0]))
 print('Average percentage pressure difference = ', sum(test[1])*100/len(test[1]), '%')
 print('Maximum percentage cycle difference = ', max(test[1])*100, '%')
 print('Maximum absolute cycle difference = ', max(test[0]))
+
+plt.show()
