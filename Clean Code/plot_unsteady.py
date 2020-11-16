@@ -277,18 +277,25 @@ def test_cyclicity(Dat_p, nsteps_cycle, nts):
         #final point - point 2
         point2 = penultimates + point
         difference = Dat_p['pstat'][imid,jmid,0, point1] - Dat_p['pstat'][imid,jmid,0, point2]
-        percentage_difference = difference / Dat_ps['pstat'][imid,jmid,0, point2]
+        percentage_difference = difference / Dat_p['pstat'][imid,jmid,0, point2]
 
         #Add results into list
         absolute_pressure_difference.append(difference)
         percentage_pressure_difference.append(abs(percentage_difference))
 
-    return(absolute_pressure_difference, percentage_pressure_difference)
+    #'Average absolute pressure difference = ', sum(absolute_pressure_difference)/len(absolute_pressure_difference)
+    #'Average percentage pressure difference = ', sum(percentage_pressure_difference)/len(percentage_pressure_difference)
+    #'Maximum percentage cycle difference = ', max(percentage_pressure_difference)*100, '%'
+    #'Maximum absolute cycle difference = ', max(absolute_pressure_difference)
 
-    print('Average absolute pressure difference = ', sum(absolute_pressure_difference)/len(absolute_pressure_difference))
-    print('Average percentage pressure difference = ', sum(percentage_pressure_difference)/len(percentage_pressure_difference))
-    print('Maximum percentage cycle difference = ', max(percentage_pressure_difference)*100, '%')
-    print('Maximum absolute cycle difference = ', max(absolute_pressure_difference))
+    return(absolute_pressure_difference, percentage_pressure_difference, )
 
 
-test_cyclicity(Dat_ps, nstep_cycle, nt)
+
+
+test = test_cyclicity(Dat_ps, nstep_cycle, nt)
+
+print('Average absolute pressure difference = ', sum(test[0])/len(test[0]))
+print('Average percentage pressure difference = ', sum(test[1])/len(test[1]))
+print('Maximum percentage cycle difference = ', max(test[1])*100, '%')
+print('Maximum absolute cycle difference = ', max(test[0]))
