@@ -260,22 +260,35 @@ plt.savefig('FFT_fullCFD_trailing.pdf')  # Write out a pdf file
 
 
 #Testing how the level as to which the pressure is repeating.
-absolute_pressure_difference = []
-percentage_pressure_difference = []
 
-for point in range(0,nstep_cycle):
-    #compare point in penultimate cycle to final cycle
-    #penultimate point - point 1
-    point1 = prepenulatimate + point
-    #final point - point 2
-    point2 = penultimate + point
-    difference = Dat_ps['pstat'][imid,jmid,0, point1] - Dat_ps['pstat'][imid,jmid,0, point2]
-    percentage_difference = difference * 100 / Dat_ps['pstat'][imid,jmid,0, point2]
 
-    #Add results into list
-    absolute_pressure_difference.append(abs(difference))
-    percentage_pressure_difference.append(abs(percentage_difference))
 
-print('percentage pressure difference = ', percentage_pressure_difference)
-print('Maximum percentage cycle difference = ', max(percentage_pressure_difference), '%')
-print('Maximum absolute cycle difference = ', max(absolute_pressure_difference))
+def test_cyclicity(Dat_p, nsteps_cycle, nts):
+
+    absolute_pressure_difference = []
+    percentage_pressure_difference = []
+    penultimates = nts - nsteps_cycle 
+    prepenulatimates = nts - 2*nsteps_cycle
+
+    for point in range(0,nsteps_cycle):
+        #compare point in penultimate cycle to final cycle
+        #penultimate point - point 1
+        point1 = prepenulatimates + point
+        #final point - point 2
+        point2 = penultimates + point
+        difference = Dat_p['pstat'][imid,jmid,0, point1] - Dat_p['pstat'][imid,jmid,0, point2]
+        percentage_difference = difference / Dat_ps['pstat'][imid,jmid,0, point2]
+
+        #Add results into list
+        absolute_pressure_difference.append(difference)
+        percentage_pressure_difference.append(abs(percentage_difference))
+
+    return(absolute_pressure_difference, percentage_pressure_difference)
+
+    print('Average absolute pressure difference = ', sum(absolute_pressure_difference)/len(absolute_pressure_difference))
+    print('Average percentage pressure difference = ', sum(percentage_pressure_difference)/len(percentage_pressure_difference))
+    print('Maximum percentage cycle difference = ', max(percentage_pressure_difference)*100, '%')
+    print('Maximum absolute cycle difference = ', max(absolute_pressure_difference))
+
+
+test_cyclicity(Dat_ps, nstep_cycle, nt)
