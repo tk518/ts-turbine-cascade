@@ -108,7 +108,7 @@ _, T2 = rotor_outlet.area_avg_1d('tstat')
 # Static pressure
 for stepsize in [0.00, 0.25, 0.50, 0.75]:
     f,a = plt.subplots()  # Create a figure and axis to plot into
-    plt.cm
+    #plt.cm
     #axins1 = inset_axes(a, width='10%', height='2%', loc='lower right')
     lev = np.linspace(-1.4,0.,42)
     time_reading = nstep_cycle * 4 + stepsize * nstep_cycle
@@ -127,18 +127,18 @@ for stepsize in [0.00, 0.25, 0.50, 0.75]:
     a.axis('equal')
     plt.grid(False)
     plt.tight_layout()  # Remove extraneous white space
-    plt.colorbar()
+    #plt.colorbar()
     plt.title('Static pressure contour plot at ft = ' + str(stepsize))
-    plt.show()  # Render the plot
+    #plt.show()  # Render the plot
     plt.savefig('unst_Cp_cont_ft_=_' +str(stepsize)+ '.pdf')  # Write out a pdf file
 
 
 # Entropy
-for stepsize in [0.00, 0.25, 0.50, 0.75]:
+for stepsize in range(0,72):
     f,a = plt.subplots()  # Create a figure and axis to plot into
     lev = np.linspace(-8.,25.0,42)
     # Loop over all blocks
-    time_reading = nstep_cycle * 4 + stepsize * nstep_cycle
+    time_reading = nstep_cycle * 4 + stepsize
     #print('time_reading = ', int(time_reading))
     for Di in Dat:
         # Indices
@@ -156,13 +156,11 @@ for stepsize in [0.00, 0.25, 0.50, 0.75]:
     a.axis('equal')
     plt.grid(False)
     plt.tight_layout()  # Remove extraneous white space
-    plt.title('Entropy contour plot at ft = ' + str(stepsize))
-
+    #plt.title('Entropy contour plot at ft = ' + str(stepsize/72))
     #plt.imshow(mat, origin="lower", cmap='Greens', interpolation='nearest')
+    plt.savefig('unst_s_cont_vid_000' +str(stepsize)+'.png')  # Write out a pdf file
 
-    plt.show()  # Render the plot
-    plt.savefig('unst_s_cont_ft_=_' +str(stepsize)+'.pdf')  # Write out a pdf file
-
+plt.show()  # Render the plot
 '''
 #Density 
 for stepsize in [0.00, 0.25, 0.50, 0.75]:

@@ -296,6 +296,6 @@ def test_cyclicity(Dat_p, nsteps_cycle, nts):
 test = test_cyclicity(Dat_ps, nstep_cycle, nt)
 
 print('Average absolute pressure difference = ', sum(test[0])/len(test[0]))
-print('Average percentage pressure difference = ', sum(test[1])/len(test[1]))
+print('Average percentage pressure difference = ', sum(test[1])*100/len(test[1]), '%')
 print('Maximum percentage cycle difference = ', max(test[1])*100, '%')
 print('Maximum absolute cycle difference = ', max(test[0]))
