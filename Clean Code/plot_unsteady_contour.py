@@ -146,10 +146,10 @@ for stepsize in range(1,73):
         # 0, probe is at constant j
         # :, all rt
         # -1, last time step
-        xnow = Di['x'][:,0,:, int(time_reading)]
-        rtnow = Di['rt'][:,0,:, int(time_reading)]
-        Pnow = Di['pstat'][:,0,:, int(time_reading)]
-        Tnow = Di['tstat'][:,0,:, int(time_reading)]
+        xnow = Di['x'][:,0,:, int(time_reading-1)]
+        rtnow = Di['rt'][:,0,:, int(time_reading-1)]
+        Pnow = Di['pstat'][:,0,:, int(time_reading-1)]
+        Tnow = Di['tstat'][:,0,:, int(time_reading-1)]
         # Change in entropy relative to mean upstream state
         Dsnow = cp * np.log(Tnow/T1) - rgas*np.log(Pnow/P1)
         a.contourf(xnow, rtnow, Dsnow, lev)
