@@ -158,6 +158,8 @@ for stepsize in range(1,97):
         # 0, probe is at constant j
         # :, all rt
         # -1, last time step
+        if stepsize == 1:
+            rnow = Di['r'][:,0,:,int(time_reading-1)]
         xnow = Di['x'][:,0,:,int(time_reading-1)]
         rtnow = Di['rt'][:,0,:,int(time_reading-1)]
         Pnow = Di['pstat'][:,0,:,int(time_reading-1)]
@@ -174,4 +176,4 @@ for stepsize in range(1,97):
     plt.tight_layout()  # Remove extraneous white space
     plt.savefig('unst_s_cont_vid' + "{0:0=4d}".format(stepsize) +'.png')  # Write out a pdf file
 
-plt.show()  # Render the plot
+#plt.show()  # Render the plot
