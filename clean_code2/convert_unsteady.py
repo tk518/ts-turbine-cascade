@@ -8,17 +8,17 @@ if __name__ == "__main__":
 
     # Number of rotor blade passing periods to run for
     # Change me so that the computaion reaches a periodic state
-    ncycle = 12
+    ncycle = 80
 
     # Time steps per cycle 
     # Increased a bit because usually have fewer rotor blades
     nstep_cycle = 96
 
     # Which time step to start saving probes
-    nstep_save_start =  (ncycle-3)*nstep_cycle
+    nstep_save_start =  (ncycle-5)*nstep_cycle
 
     # Number of time steps between probes
-    nstep_save_probe = 9
+    nstep_save_probe = 1
 
     # File name of the steady soln to read in
     fname = "output_1.hdf5"

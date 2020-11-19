@@ -119,7 +119,7 @@ del_theta = Omega * dt
 
 # Static pressure
 f,a = plt.subplots()  # Create a figure and axis to plot into
-plt.set_cmap('cubehelix')
+#plt.set_cmap('cubehelix')
 lev = np.linspace(-1.4,0.,21)
 # Loop over all blocks
 for i, Di in enumerate(Dat):
@@ -146,30 +146,32 @@ plt.tight_layout()  # Remove extraneous white space
 plt.savefig('unst_Cp_cont.pdf')  # Write out a pdf file
 
 # Entropy
-f,a = plt.subplots()  # Create a figure and axis to plot into
-plt.set_cmap('cubehelix_r')
-lev = np.linspace(-8.,25.0,21)
-# Loop over all blocks
-for i, Di in enumerate(Dat):
-    # Indices
-    # :, all x
-    # 0, probe is at constant j
-    # :, all rt
-    # -1, last time step
-    xnow = Di['x'][:,0,:,-1]
-    rtnow = Di['rt'][:,0,:,-1]
-    Pnow = Di['pstat'][:,0,:,-1]
-    Tnow = Di['tstat'][:,0,:,-1]
-    # Change in entropy relative to mean upstream state
-    Dsnow = cp * np.log(Tnow/T1) - rgas*np.log(Pnow/P1)
-    # If this is a stator, offset backwards by del_theta
-    if g.get_bv('rpm',bid_probe[i])==0:
-        tnow = rtnow / rnow + del_theta
-        rtnow = tnow * rnow
-    a.contourf(xnow, rtnow, Dsnow, lev)
-a.axis('equal')
-plt.grid(False)
-plt.tight_layout()  # Remove extraneous white space
-plt.savefig('unst_s_cont.pdf')  # Write out a pdf file
+for stepsize in range(1,97):
+    f,a = plt.subplots()  # Create a figure and axis to plot into
+    #plt.set_cmap('cubehelix_r')
+    lev = np.linspace(-8.,25.0,21)
+    time_reading = nstep_cycle * 4 + stepsize
+    # Loop over all blocks
+    for i, Di in enumerate(Dat):
+        # Indices
+        # :, all x
+        # 0, probe is at constant j
+        # :, all rt
+        # -1, last time step
+        xnow = Di['x'][:,0,:,int(time_reading-1)]
+        rtnow = Di['rt'][:,0,:,int(time_reading-1)]
+        Pnow = Di['pstat'][:,0,:,int(time_reading-1)]
+        Tnow = Di['tstat'][:,0,:,int(time_reading-1)]
+        # Change in entropy relative to mean upstream state
+        Dsnow = cp * np.log(Tnow/T1) - rgas*np.log(Pnow/P1)
+        # If this is a stator, offset backwards by del_theta
+        if g.get_bv('rpm',bid_probe[i])==0:
+            tnow = rtnow / rnow + del_theta
+            rtnow = tnow * rnow
+        a.contourf(xnow, rtnow, Dsnow, lev)
+    a.axis('equal')
+    plt.grid(False)
+    plt.tight_layout()  # Remove extraneous white space
+    plt.savefig('unst_s_cont_vid' + "{0:0=4d}".format(stepsize) +'.png')  # Write out a pdf file
 
 plt.show()  # Render the plot
