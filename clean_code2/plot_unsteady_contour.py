@@ -169,10 +169,10 @@ for stepsize in range(1,97):
         Dsnow = cp * np.log(Tnow/T1) - rgas*np.log(Pnow/P1)
         # If this is a stator, offset backwards by del_theta
         
-        if not g.get_bv('rpm',bid_probe[i])==0.:
-            tnow = rtnow / rnow + del_theta
-            rtnow = tnow * rnow
-        a.contourf(xnow, rtnow, Cpnow, lev)
+        if not g.get_bv('rpm',bid_probe[i])==0:
+            tnow = rtnow / rnow
+            rtnow = (tnow -del_theta) * rnow
+        a.contourf(xnow, rtnow, Dsnow, lev)
 
     a.axis('equal')
     plt.grid(False)
