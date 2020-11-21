@@ -111,7 +111,8 @@ _, T2 = rotor_outlet.area_avg_1d('tstat')
 
 
 # Angular movement per time step
-del_theta = Omega * dt
+del_theta = Omega * dt*nstep_save_probe
+print(del_theta)
 # We must add this as an offset between the blade rows because the mesh is
 # moved to the next time step before the probes are written out!
 
