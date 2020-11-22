@@ -166,6 +166,35 @@ for Mai in [0.65,0.75,0.81]:
     #   There is a counterpart np.amin
     #   * Vary the Mach number in `make_design.py` and compare the above for
     #   different Mach numbers
+
+def test_cyclicity(Dat_p, nsteps_cycle, nts):
+
+absolute_pressure_difference = []
+percentage_pressure_difference = []
+penultimates = nts - nsteps_cycle 
+prepenulatimates = nts - 2*nsteps_cycle
+
+for point in range(0,nsteps_cycle):
+    #compare point in penultimate cycle to final cycle
+    #penultimate point - point 1
+    point1 = prepenulatimates + point
+    #final point - point 2
+    point2 = penultimates + point
+    difference = Dat_p['pstat'][imid,jmid,0, point1] - Dat_p['pstat'][imid,jmid,0, point2]
+    percentage_difference = difference / Dat_p['pstat'][imid,jmid,0, point2]
+
+    #Add results into list
+    absolute_pressure_difference.append(difference)
+    percentage_pressure_difference.append(abs(percentage_difference))
+
+#'Average absolute pressure difference = ', sum(absolute_pressure_difference)/len(absolute_pressure_difference)
+#'Average percentage pressure difference = ', sum(percentage_pressure_difference)/len(percentage_pressure_difference)
+#'Maximum percentage cycle difference = ', max(percentage_pressure_difference)*100, '%'
+#'Maximum absolute cycle difference = ', max(absolute_pressure_difference)
+
+return(absolute_pressure_difference, percentage_pressure_difference, )
+
+
 n = 0
 p_hat1 = []
 P1 = []
@@ -241,52 +270,28 @@ for Mai in [0.65, 0.75, 0.81]:
     Dat_ps = probe.secondary(Dat_ps, rpm, cp, ga)
     Dat_ss = probe.secondary(Dat_ss, rpm, cp, ga)
 
-
-    P1,append(Dat_ps['pstat'][imid,jmid,0,:])
+    P1.append(Dat_ps['pstat'][imid,jmid,0,:])
     P_hat1.append(P1[n] / np.mean(P1[n]))
     Mach.append(Mai)
-    n =+ 1
-'''
-    def test_cyclicity(Dat_p, nsteps_cycle, nts):
+    n = n + 1
 
-    absolute_pressure_difference = []
-    percentage_pressure_difference = []
-    penultimates = nts - nsteps_cycle 
-    prepenulatimates = nts - 2*nsteps_cycle
-
-    for point in range(0,nsteps_cycle):
-        #compare point in penultimate cycle to final cycle
-        #penultimate point - point 1
-        point1 = prepenulatimates + point
-        #final point - point 2
-        point2 = penultimates + point
-        difference = Dat_p['pstat'][imid,jmid,0, point1] - Dat_p['pstat'][imid,jmid,0, point2]
-        percentage_difference = difference / Dat_p['pstat'][imid,jmid,0, point2]
-
-        #Add results into list
-        absolute_pressure_difference.append(difference)
-        percentage_pressure_difference.append(abs(percentage_difference))
-
-    #'Average absolute pressure difference = ', sum(absolute_pressure_difference)/len(absolute_pressure_difference)
-    #'Average percentage pressure difference = ', sum(percentage_pressure_difference)/len(percentage_pressure_difference)
-    #'Maximum percentage cycle difference = ', max(percentage_pressure_difference)*100, '%'
-    #'Maximum absolute cycle difference = ', max(absolute_pressure_difference)
-
-    return(absolute_pressure_difference, percentage_pressure_difference, )
 
     test = test_cyclicity(Dat_ps, nstep_cycle, nt)
 
-    print('Average absolute pressure difference = at Mach %.2f', sum(test[0])/len(test[0]) % Mai)
-    print('Average percentage pressure difference = ', sum(test[1])*100/len(test[1]), '%')
-    print('Maximum percentage cycle difference = ', max(test[1])*100, '%')
-    print('Maximum absolute cycle difference = ', max(test[0]))
-'''
+    print('Average absolute pressure difference = at Mach %.2f' % Mai, sum(test[0])/len(test[0]))
+    print('Average percentage pressure difference = at Mach %.2f' % Mai, sum(test[1])*100/len(test[1]), '%')
+    print('Maximum percentage cycle difference = at Mach %.2f' % Mai, max(test[1])*100, '%')
+    print('Maximum absolute cycle difference = at Mach %.2f' % Mai, max(test[0]))
+
 
 f,a = plt.subplots()  # Create a figure and axis to plot into
+
 for x in range(0, n):
-    a.plot(ft,P_hat1[x],'-', label = 'Midpoint @ Mach = %.2f' % Mach[n])  # Plot our data as a new line
+    a.plot(ft,P_hat1[x],'-', label = 'Midpoint @ Mach = %.2f' % Mach[x])  # Plot our data as a new line
+
 plt.xlabel('Time, Rotor Periods, $ft$')  # Horizontal axis label
 plt.ylabel('Static Pressure, $p/\overline{p}$')  # Vertical axis label
+plt.legend()
 plt.tight_layout()  # Remove extraneous white space
-plt.savefig('unsteady_P_Ma_%.2f.pdf' % Mai)  # Write out a pdf file
+plt.savefig('unsteady_P_at_different_Mach_No.pdf' % Mai)  # Write out a pdf file
 plt.show()
