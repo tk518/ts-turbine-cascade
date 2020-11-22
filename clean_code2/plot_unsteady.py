@@ -7,7 +7,40 @@ from ts import ts_tstream_reader  # TS grid reader
 #
 # Set variables here
 #
-for Mai in [0.65,0.75,0.81]:
+
+def test_cyclicity(Dat_p, nsteps_cycle, nts):
+
+    absolute_pressure_difference = []
+    percentage_pressure_difference = []
+    penultimates = nts - nsteps_cycle 
+    prepenulatimates = nts - 2*nsteps_cycle
+
+    for point in range(0,nsteps_cycle):
+        #compare point in penultimate cycle to final cycle
+        #penultimate point - point 1
+        point1 = prepenulatimates + point
+        #final point - point 2
+        point2 = penultimates + point
+        difference = Dat_p['pstat'][imid,jmid,0, point1] - Dat_p['pstat'][imid,jmid,0, point2]
+        percentage_difference = difference / Dat_p['pstat'][imid,jmid,0, point2]
+
+        #Add results into list
+        absolute_pressure_difference.append(difference)
+        percentage_pressure_difference.append(abs(percentage_difference))
+
+    #'Average absolute pressure difference = ', sum(absolute_pressure_difference)/len(absolute_pressure_difference)
+    #'Average percentage pressure difference = ', sum(percentage_pressure_difference)/len(percentage_pressure_difference)
+    #'Maximum percentage cycle difference = ', max(percentage_pressure_difference)*100, '%'
+    #'Maximum absolute cycle difference = ', max(absolute_pressure_difference)
+
+    return(absolute_pressure_difference, percentage_pressure_difference)
+
+n = 0
+P_hat1 = []
+P1 = []
+Mach = []
+
+for Mai in [0.65,0.70,0.75,0.81]:
     output_file_name = "output_2"+ '_Ma_%.2f' % Mai # Location of TS output file
 
     # We identify a region of the grid using block and patch IDs
@@ -149,7 +182,20 @@ for Mai in [0.65,0.75,0.81]:
     plt.tight_layout()  # Remove extraneous white space
     plt.savefig('P_x_Ma_%.2f.pdf' % Mai)  # Write out a pdf file
 
-    plt.show()  # Render the plots
+    P1.append(Dat_ps['pstat'][imid,jmid,0,:])
+    P_hat1.append(P1[n] / np.mean(P1[n]))
+    Mach.append(Mai)
+    n = n + 1
+
+    test = test_cyclicity(Dat_ps, nstep_cycle, nt)
+
+    print('Average absolute pressure difference = at Mach %.2f' % Mai, sum(test[0])/len(test[0]))
+    print('Average percentage pressure difference = at Mach %.2f' % Mai, sum(test[1])*100/len(test[1]), '%')
+    print('Maximum percentage cycle difference = at Mach %.2f' % Mai, max(test[1])*100, '%')
+    print('Maximum absolute cycle difference = at Mach %.2f' % Mai, max(test[0]))
+
+
+plt.show()  # Render the plots
     #
     # Other things to try
     #
@@ -165,124 +211,7 @@ for Mai in [0.65,0.75,0.81]:
     #   np.amax( pressure, axis=? ) to take the maximum value over one index (time)
     #   There is a counterpart np.amin
     #   * Vary the Mach number in `make_design.py` and compare the above for
-    #   different Mach numbers
-
-def test_cyclicity(Dat_p, nsteps_cycle, nts):
-
-    absolute_pressure_difference = []
-    percentage_pressure_difference = []
-    penultimates = nts - nsteps_cycle 
-    prepenulatimates = nts - 2*nsteps_cycle
-
-    for point in range(0,nsteps_cycle):
-        #compare point in penultimate cycle to final cycle
-        #penultimate point - point 1
-        point1 = prepenulatimates + point
-        #final point - point 2
-        point2 = penultimates + point
-        difference = Dat_p['pstat'][imid,jmid,0, point1] - Dat_p['pstat'][imid,jmid,0, point2]
-        percentage_difference = difference / Dat_p['pstat'][imid,jmid,0, point2]
-
-        #Add results into list
-        absolute_pressure_difference.append(difference)
-        percentage_pressure_difference.append(abs(percentage_difference))
-
-    #'Average absolute pressure difference = ', sum(absolute_pressure_difference)/len(absolute_pressure_difference)
-    #'Average percentage pressure difference = ', sum(percentage_pressure_difference)/len(percentage_pressure_difference)
-    #'Maximum percentage cycle difference = ', max(percentage_pressure_difference)*100, '%'
-    #'Maximum absolute cycle difference = ', max(absolute_pressure_difference)
-
-    return(absolute_pressure_difference, percentage_pressure_difference, )
-
-
-n = 0
-p_hat1 = []
-P1 = []
-Mach = []
-
-for Mai in [0.65, 0.75, 0.81]:
-    output_file_name = "output_2"+ '_Ma_%.2f' % Mai # Location of TS output file
-
-    # We identify a region of the grid using block and patch IDs
-    pid_probe_ps = 9  # Patch ID of probe on pressure side
-    pid_probe_ss = 10  # Patch ID of probe on suction side
-
-    #
-    # This next section contains code to read in the data and process it into a
-    # convenient form. Only a vague undestanding of this section is needed.
-    #
-
-    # Load the grid 
-    tsr = ts_tstream_reader.TstreamReader()
-    g = tsr.read(output_file_name + '.hdf5')
-
-    # Determine number of blades in each row
-    bids = [0,g.get_nb()-1]
-    fracann = np.array([g.get_bv('fracann',bi) for bi in bids])
-    nblade = np.array([g.get_bv('nblade',bi) for bi in bids])
-    nb_row = np.round(fracann * nblade)
-    bid_probe = int(nb_row[0]+1)  # Block ID where probes are located
-
-
-    # Determine the number of grid points on probe patches
-    # (We index the TS grid using i = streamwise, j = spanwise, k = pitchwise)
-    p = g.get_patch(bid_probe,pid_probe_ps)
-    di = p.ien - p.ist
-    dj = p.jen - p.jst
-    probe_shape = [di, dj, 1]  # Numbers of points in i, j, k directions
-
-    # Index for the mid-span
-    jmid = int(dj/2)
-
-    # Assemble file names for the probes using % substitution
-    probe_name_ps = output_file_name + '_probe_%d_%d.dat' % (bid_probe,pid_probe_ps)
-    probe_name_ss = output_file_name + '_probe_%d_%d.dat' % (bid_probe,pid_probe_ss)
-
-    # Read the probes
-    # The probe data are separate dictionary for each surface of the blade The
-    # dictionary is keyed by variable name; the values are numpy arrays with
-    # indexes [i = streamwise, j = spanwise, k = pitchwise, n = timewise]
-    # For example, to get density at time instant n as a function of
-    # axial distance at mid-radius:
-    #   Dat_ps['ro'][:,jmid,0,n]
-    Dat_ps = probe.read_dat(probe_name_ps, probe_shape)
-    Dat_ss = probe.read_dat(probe_name_ss, probe_shape)
-
-    # Here we extract some parameters from the TS grid to use later
-    rpm = g.get_bv('rpm',1)  # RPM in rotor row
-    cp = g.get_av('cp')  # Specific heat capacity at const p
-    ga = g.get_av('ga')  # Specific heat ratio
-
-    # Get information about time discretisation from TS grid
-    freq = g.get_av('frequency')  # Blade passing frequency
-    ncycle = g.get_av('ncycle')  # Number of cycles
-    nstep_cycle = g.get_av('nstep_cycle')  # Time steps per cycle
-    # Individual time step in seconds = blade passing period / steps per cycle
-    dt = 1./freq/float(nstep_cycle)
-    # Number of time steps = num cycles * steps per cycle
-    # nt = ncycle * nstep_cycle
-    nt = np.shape(Dat_ps['ro'])[-1]
-    print(nt)
-    # Make non-dimensional time vector = time in seconds * blade passing frequency
-    ft = np.linspace(0.,float(nt-1)*dt,nt) * freq
-
-    # Get secondary vars, things like static pressure, rotor-relative Mach, etc.
-    Dat_ps = probe.secondary(Dat_ps, rpm, cp, ga)
-    Dat_ss = probe.secondary(Dat_ss, rpm, cp, ga)
-
-    P1.append(Dat_ps['pstat'][imid,jmid,0,:])
-    P_hat1.append(P1[n] / np.mean(P1[n]))
-    Mach.append(Mai)
-    n = n + 1
-
-
-    test = test_cyclicity(Dat_ps, nstep_cycle, nt)
-
-    print('Average absolute pressure difference = at Mach %.2f' % Mai, sum(test[0])/len(test[0]))
-    print('Average percentage pressure difference = at Mach %.2f' % Mai, sum(test[1])*100/len(test[1]), '%')
-    print('Maximum percentage cycle difference = at Mach %.2f' % Mai, max(test[1])*100, '%')
-    print('Maximum absolute cycle difference = at Mach %.2f' % Mai, max(test[0]))
-
+    #   different Mach numbers   
 
 f,a = plt.subplots()  # Create a figure and axis to plot into
 
@@ -293,5 +222,5 @@ plt.xlabel('Time, Rotor Periods, $ft$')  # Horizontal axis label
 plt.ylabel('Static Pressure, $p/\overline{p}$')  # Vertical axis label
 plt.legend()
 plt.tight_layout()  # Remove extraneous white space
-plt.savefig('unsteady_P_at_different_Mach_No.pdf' % Mai)  # Write out a pdf file
+plt.savefig('unsteady_P_at_different_Mach_No.pdf')  # Write out a pdf file
 plt.show()

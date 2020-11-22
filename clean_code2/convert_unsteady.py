@@ -7,7 +7,7 @@ from ts import ts_tstream_load_balance, ts_tstream_patch_kind
 fnamein = "output_1"
 
 if __name__ == "__main__":
-    for Mai in [0.6, 0.65, 0.7, 0.75, 0.81, 0.85, 0.9]:
+    for Mai in [0.65, 0.7, 0.75, 0.81]:
         # Number of rotor blade passing periods to run for
         # Change me so that the computaion reaches a periodic state
         ncycle = 70
@@ -26,8 +26,8 @@ if __name__ == "__main__":
         fname_now = fnamein + '_Ma_%.2f.hdf5' % Mai
 
         # File name of the new unsteady input file to write out
-        fname_out = "input_2.hdf5"
-
+        fname_out = "input_2_Ma_%.2f.hdf5" % Mai
+        
         # Put blade-to-blade probes on vane?
         vane_b2b_probe = True
 
@@ -38,7 +38,7 @@ if __name__ == "__main__":
 
         # Read in the converged steady solution
         tsr = ts_tstream_reader.TstreamReader()
-        g = tsr.read(fname)
+        g = tsr.read(fname_now)
         bids = g.get_block_ids()
 
         # add blade-to-blade probe patches
