@@ -169,30 +169,30 @@ for Mai in [0.65,0.75,0.81]:
 
 def test_cyclicity(Dat_p, nsteps_cycle, nts):
 
-absolute_pressure_difference = []
-percentage_pressure_difference = []
-penultimates = nts - nsteps_cycle 
-prepenulatimates = nts - 2*nsteps_cycle
+    absolute_pressure_difference = []
+    percentage_pressure_difference = []
+    penultimates = nts - nsteps_cycle 
+    prepenulatimates = nts - 2*nsteps_cycle
 
-for point in range(0,nsteps_cycle):
-    #compare point in penultimate cycle to final cycle
-    #penultimate point - point 1
-    point1 = prepenulatimates + point
-    #final point - point 2
-    point2 = penultimates + point
-    difference = Dat_p['pstat'][imid,jmid,0, point1] - Dat_p['pstat'][imid,jmid,0, point2]
-    percentage_difference = difference / Dat_p['pstat'][imid,jmid,0, point2]
+    for point in range(0,nsteps_cycle):
+        #compare point in penultimate cycle to final cycle
+        #penultimate point - point 1
+        point1 = prepenulatimates + point
+        #final point - point 2
+        point2 = penultimates + point
+        difference = Dat_p['pstat'][imid,jmid,0, point1] - Dat_p['pstat'][imid,jmid,0, point2]
+        percentage_difference = difference / Dat_p['pstat'][imid,jmid,0, point2]
 
-    #Add results into list
-    absolute_pressure_difference.append(difference)
-    percentage_pressure_difference.append(abs(percentage_difference))
+        #Add results into list
+        absolute_pressure_difference.append(difference)
+        percentage_pressure_difference.append(abs(percentage_difference))
 
-#'Average absolute pressure difference = ', sum(absolute_pressure_difference)/len(absolute_pressure_difference)
-#'Average percentage pressure difference = ', sum(percentage_pressure_difference)/len(percentage_pressure_difference)
-#'Maximum percentage cycle difference = ', max(percentage_pressure_difference)*100, '%'
-#'Maximum absolute cycle difference = ', max(absolute_pressure_difference)
+    #'Average absolute pressure difference = ', sum(absolute_pressure_difference)/len(absolute_pressure_difference)
+    #'Average percentage pressure difference = ', sum(percentage_pressure_difference)/len(percentage_pressure_difference)
+    #'Maximum percentage cycle difference = ', max(percentage_pressure_difference)*100, '%'
+    #'Maximum absolute cycle difference = ', max(absolute_pressure_difference)
 
-return(absolute_pressure_difference, percentage_pressure_difference, )
+    return(absolute_pressure_difference, percentage_pressure_difference, )
 
 
 n = 0
