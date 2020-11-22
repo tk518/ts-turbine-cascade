@@ -7,8 +7,8 @@ from ts import ts_tstream_reader  # TS grid reader
 #
 # Set variables here
 #
-for Mai in [0.65,0.70,0.75,0.80]:
-    output_file_name = "output_2"+ '_Ma_%.2f.hdf5' % Mai # Location of TS output file
+for Mai in [0.65,0.75,0.81]:
+    output_file_name = "output_2"+ '_Ma_%.2f' % Mai # Location of TS output file
 
     # We identify a region of the grid using block and patch IDs
     pid_probe_ps = 9  # Patch ID of probe on pressure side
@@ -166,9 +166,13 @@ for Mai in [0.65,0.70,0.75,0.80]:
     #   There is a counterpart np.amin
     #   * Vary the Mach number in `make_design.py` and compare the above for
     #   different Mach numbers
+n = 0
+p_hat1 = []
+P1 = []
+Mach = []
 
-for Mai in [0.65, 0.70, 0.75, 0.80]:
-    output_file_name = "output_2"+ '_Ma_%.2f.hdf5' % Mai # Location of TS output file
+for Mai in [0.65, 0.75, 0.81]:
+    output_file_name = "output_2"+ '_Ma_%.2f' % Mai # Location of TS output file
 
     # We identify a region of the grid using block and patch IDs
     pid_probe_ps = 9  # Patch ID of probe on pressure side
@@ -237,12 +241,11 @@ for Mai in [0.65, 0.70, 0.75, 0.80]:
     Dat_ps = probe.secondary(Dat_ps, rpm, cp, ga)
     Dat_ss = probe.secondary(Dat_ss, rpm, cp, ga)
 
-    P1 = Dat_ps['pstat'][imid,jmid,0,:]
-    P_hat1 = P1 / np.mean(P1)
 
-    f,a = plt.subplots()  # Create a figure and axis to plot into
-    a.plot(ft,P_hat1,'-', label = 'Midpoint @ Mach = %.2f' % Mai)  # Plot our data as a new line
-
+    P1,append(Dat_ps['pstat'][imid,jmid,0,:])
+    P_hat1.append(P1[n] / np.mean(P1[n]))
+    Mach.append(Mai)
+    n =+ 1
 '''
     def test_cyclicity(Dat_p, nsteps_cycle, nts):
 
@@ -278,6 +281,10 @@ for Mai in [0.65, 0.70, 0.75, 0.80]:
     print('Maximum percentage cycle difference = ', max(test[1])*100, '%')
     print('Maximum absolute cycle difference = ', max(test[0]))
 '''
+
+f,a = plt.subplots()  # Create a figure and axis to plot into
+for x in range(0, n):
+    a.plot(ft,P_hat1[x],'-', label = 'Midpoint @ Mach = %.2f' % Mach[n])  # Plot our data as a new line
 plt.xlabel('Time, Rotor Periods, $ft$')  # Horizontal axis label
 plt.ylabel('Static Pressure, $p/\overline{p}$')  # Vertical axis label
 plt.tight_layout()  # Remove extraneous white space
