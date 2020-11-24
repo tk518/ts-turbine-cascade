@@ -81,7 +81,7 @@ for Mai in [0.65,0.70,0.75,0.81]:
     # Arbitrary datum temperatures for entropy level
     Pdat=16e5
     Tdat=1600.
-    bid_rotor = 5
+    bid_rotor = g.get_nb()-1 #change 1
     b_rotor = g.get_block(bid_rotor)
 
     # Get cuts at rotor inlet and exit to form Cp
@@ -109,10 +109,12 @@ for Mai in [0.65,0.70,0.75,0.81]:
     _, T1 = rotor_inlet.area_avg_1d('tstat')
     _, T2 = rotor_outlet.area_avg_1d('tstat')
 
+    #Determine sector size 
+    dtheta_sector = 2. * np.pi * g.get_bv('fracann',0)
 
     # Angular movement per time step
-    del_theta = Omega * dt*nstep_save_probe
-    print(del_theta)
+    dtheta_step = Omega * dt
+
     # We must add this as an offset between the blade rows because the mesh is
     # moved to the next time step before the probes are written out!
 
@@ -149,35 +151,16 @@ for Mai in [0.65,0.70,0.75,0.81]:
     plt.savefig('unst_Cp_cont_Ma_%.2f.pdf' % Mai)  # Write out a pdf file
 
     # Entropy
-    for stepsize in range(1,7): #(1, 97) gets all the steps
+    for stepsize in range(nt): #(1, 97) gets all the steps
         f,a = plt.subplots()  # Create a figure and axis to plot into
         #plt.set_cmap('cubehelix_r')
-        lev = np.linspace(-8.,25.0,61)
-        time_reading = nstep_cycle * 4 + stepsize*16 #get rid of 16 to capture all
-        # Loop over all blocks
-        for i, Di in enumerate(Dat):
-            # Indices
-            # :, all x
-            # 0, probe is at constant j
-            # :, all rt
-            # -1, last time step
-            xnow = Di['x'][:,0,:,int(time_reading-1)]
-            rtnow = Di['rt'][:,0,:,int(time_reading-1)]
-            rnow = Di['r'][:,0,:,int(time_reading-1)]
-            Pnow = Di['pstat'][:,0,:,int(time_reading-1)]
-            Tnow = Di['tstat'][:,0,:,int(time_reading-1)]
-            # Change in entropy relative to mean upstream state
-            Dsnow = cp * np.log(Tnow/T1) - rgas*np.log(Pnow/P1)
-            # If this is a stator, offset backwards by del_theta
-            
-            if not g.get_bv('rpm',bid_probe[i])==0:
-                tnow = rtnow / rnow
-                rtnow = (tnow -del_theta) * rnow
-            a.contourf(xnow, rtnow, Dsnow, lev)
-
+        lev = np.linspace(-8.,35.0,21)
+        probe.render_frame(a, Dat,'ds', it, lev, Omega, dt*nstep_save_probe,nstep_cycle/nstep_save_probe, dtheta_sector)
         a.axis('equal')
         plt.grid(False)
+        a.axis('off')
+        a.set_ylim([0.,dtheta_sector*Dat[0]['r'][0,0,0,0]])
         plt.tight_layout()  # Remove extraneous white space
-        plt.savefig('unst_s_cont_Ma_%.2f_' % Mai + "{0:0=4d}".format(stepsize) +'.png')  # Write out a pdf file
-
+        plt.savefig('%d.png'%it,dpi=200)
+        plt.close(f)
     #plt.show()  # Render the plot
