@@ -155,12 +155,12 @@ for Mai in [0.65,0.70,0.75,0.81]:
         f,a = plt.subplots()  # Create a figure and axis to plot into
         #plt.set_cmap('cubehelix_r')
         lev = np.linspace(-8.,35.0,21)
-        probe.render_frame(a, Dat,'ds', it, lev, Omega, dt*nstep_save_probe,nstep_cycle/nstep_save_probe, dtheta_sector)
+        probe.render_frame(a, Dat,'ds', stepsize, lev, Omega, dt*nstep_save_probe,nstep_cycle/nstep_save_probe, dtheta_sector)
         a.axis('equal')
         plt.grid(False)
         a.axis('off')
         a.set_ylim([0.,dtheta_sector*Dat[0]['r'][0,0,0,0]])
         plt.tight_layout()  # Remove extraneous white space
-        plt.savefig('%d.png'%it,dpi=200)
+        plt.savefig('%d.png'%stepsize,dpi=200)
         plt.close(f)
     #plt.show()  # Render the plot
