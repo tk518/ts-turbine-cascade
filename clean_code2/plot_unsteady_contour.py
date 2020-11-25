@@ -7,8 +7,8 @@ from ts import ts_tstream_reader, ts_tstream_cut  # TS grid reader
 #
 # Set variables here
 #
-for Mai in [0.65,0.70,0.75,0.81]:
-    output_file_name = 'output_2_Ma_%.2f' % Mai  # Location of TS output file
+for Mai in [0.70]:
+    output_file_name = 'output_2'  # Location of TS output file
 
     # Load the grid 
     tsr = ts_tstream_reader.TstreamReader()
@@ -55,7 +55,9 @@ for Mai in [0.65,0.70,0.75,0.81]:
 
     # Here we extract some parameters from the TS grid to use later
     rpm = g.get_bv('rpm',g.get_nb()-1)  # RPM in rotor row
+    print(rpm)
     Omega = rpm / 60. * np.pi * 2.
+    print(Omega)
     cp = g.get_av('cp')  # Specific heat capacity at const p
     ga = g.get_av('ga')  # Specific heat ratio
     rgas = cp * (1.-1./ga)
@@ -69,19 +71,18 @@ for Mai in [0.65,0.70,0.75,0.81]:
     nstep_save_probe = g.get_av('nstep_save_probe')  # Time steps per cycle
     # Individual time step in seconds = blade passing period / steps per cycle
     dt = 1./freq/float(nstep_cycle)
+
     # Number of time steps = num cycles * steps per cycle
     # nt = ncycle * nstep_cycle
     nt = np.shape(Dat[0]['ro'])[-1]
     print(dt)
     # Make non-dimensional time vector = time in seconds * blade passing frequency
 
-    # Get secondary vars, things like static pressure, rotor-relative Mach, etc.
-    Dat = [probe.secondary(Di, rpm, cp, ga) for Di in Dat]
 
     # Arbitrary datum temperatures for entropy level
     Pdat=16e5
     Tdat=1600.
-    bid_rotor = g.get_nb()-1 #change 1
+    bid_rotor = g.get_nb()-1
     b_rotor = g.get_block(bid_rotor)
 
     # Get cuts at rotor inlet and exit to form Cp
@@ -109,18 +110,22 @@ for Mai in [0.65,0.70,0.75,0.81]:
     _, T1 = rotor_inlet.area_avg_1d('tstat')
     _, T2 = rotor_outlet.area_avg_1d('tstat')
 
-    #Determine sector size 
+    rpms = [g.get_bv('rpm',b) for b in g.get_block_ids()]
+    print(rpms)
+    # Get secondary vars, things like static pressure, rotor-relative Mach, etc.
+    Dat = [probe.secondary(Di, rpmi, cp, ga, P1, T1) for Di, rpmi in zip(Dat,rpms)]
+
+    # Determine sector size
     dtheta_sector = 2. * np.pi * g.get_bv('fracann',0)
 
     # Angular movement per time step
     dtheta_step = Omega * dt
-
     # We must add this as an offset between the blade rows because the mesh is
     # moved to the next time step before the probes are written out!
 
     # Finished reading data, now make some plots
 
-
+'''
     # Static pressure
     f,a = plt.subplots()  # Create a figure and axis to plot into
     #plt.set_cmap('cubehelix')
@@ -149,6 +154,7 @@ for Mai in [0.65,0.70,0.75,0.81]:
     plt.grid(False)
     plt.tight_layout()  # Remove extraneous white space
     plt.savefig('unst_Cp_cont_Ma_%.2f.pdf' % Mai)  # Write out a pdf file
+'''
 
     # Entropy
     for stepsize in range(nt): #(1, 97) gets all the steps
