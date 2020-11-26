@@ -224,3 +224,7 @@ plt.legend()
 plt.tight_layout()  # Remove extraneous white space
 plt.savefig('unsteady_P_at_different_Mach_No.pdf')  # Write out a pdf file
 plt.show()
+
+#I want to see 
+#a) blowing ratio for multiple Mach numbers
+#b) Static pressure change and velocity at the same point on the same graph

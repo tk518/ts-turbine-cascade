@@ -9,6 +9,9 @@ from ts import ts_tstream_cut  # TS cutter
 #
 # Set variables here
 #
+BR=[]
+n = 0
+Mach = []
 for Mai in [0.65,0.70,0.75,0.81]:
         output_file_name = "output_2"+ '_Ma_%.2f' % Mai  # Location of TS output file
 
@@ -138,7 +141,7 @@ for Mai in [0.65,0.70,0.75,0.81]:
         Cd = 0.7
 
         # Calculate BR
-        BR = model.evaluate( Pinf_Poc, roVinf_Po_cpToc, Cd, ga )
+        BR.append(model.evaluate( Pinf_Poc, roVinf_Po_cpToc, Cd, ga ))
 
         #
         # Finished reading data, now make some plots
@@ -159,16 +162,28 @@ for Mai in [0.65,0.70,0.75,0.81]:
         plt.tight_layout()  # Remove extraneous white space
         plt.savefig('hole_posn.pdf')  # Write out a pdf file
 
+        
         # Plot the Blowing ratios
         f,a = plt.subplots()  # Create a figure and axis to plot into
-        a.plot(ft, BR.T)
+        a.plot(ft, BR[n].T)
         a.set_ylabel('Hole Blowing Ratio, $BR$')
         a.set_xlabel('Time, Vane Periods')
         plt.tight_layout()  # Remove extraneous white space
-        plt.savefig('BR.pdf')  # Write out a pdf file
+        plt.savefig('BR_Ma_%.2f.pdf' %Mai)  # Write out a pdf file
 
-        plt.show()  # Render the plots
-        quit()
+        Mach.append(Mai)
+        n = n + 1
+
+f,a = plt.subplots()
+for x in range(len(Mach)):
+        a.plot(ft, BR[x].T, '-', label = 'Mach = %.2f' % Mach[x])
+a.set_ylabel('Hole Blowing Ratio, $BR$')
+a.set_xlabel('Time, Vane Periods')
+plt.tight_layout()  # Remove extraneous white space
+plt.savefig('BR_all_Mach.pdf')
+
+plt.show()  # Render the plots
+       
         #
         # Other things to try
         #

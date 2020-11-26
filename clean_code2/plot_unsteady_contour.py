@@ -126,34 +126,18 @@ for Mai in [0.70]:
     # Finished reading data, now make some plots
 
 '''
-    # Static pressure
-    f,a = plt.subplots()  # Create a figure and axis to plot into
-    #plt.set_cmap('cubehelix')
-    lev = np.linspace(-1.4,0.,61)
-    # Loop over all blocks
-    for i, Di in enumerate(Dat):
-        # Indices
-        # :, all x
-        # 0, probe is at constant j
-        # :, all rt
-        # -1, last time step
-        xnow = Di['x'][:,0,:,-1]
-        rtnow = Di['rt'][:,0,:,-1]
-        rnow = Di['r'][:,0,:,-1]
-        Pnow = Di['pstat'][:,0,:,-1]
-        Cpnow = (Pnow - Po1)/(Po1-P2)
-
-        # If this is a stator, offset backwards by del_theta
-        # If this is a stator, offset backwards by del_theta
-        if not g.get_bv('rpm',bid_probe[i])==0.:
-            tnow = rtnow / rnow + del_theta
-            rtnow = tnow * rnow
-        a.contourf(xnow, rtnow, Cpnow, lev)
-
-    a.axis('equal')
-    plt.grid(False)
-    plt.tight_layout()  # Remove extraneous white space
-    plt.savefig('unst_Cp_cont_Ma_%.2f.pdf' % Mai)  # Write out a pdf file
+ for stepsize in range(nt): #(1, 97) gets all the steps
+        f,a = plt.subplots()  # Create a figure and axis to plot into
+        #plt.set_cmap('cubehelix_r')
+        lev = np.linspace(-8.,35.0,21)
+        probe.render_frame(a, Dat,'pstat', stepsize, lev, Omega, dt*nstep_save_probe,nstep_cycle/nstep_save_probe, dtheta_sector)
+        a.axis('equal')
+        plt.grid(False)
+        a.axis('off')
+        a.set_ylim([0.,dtheta_sector*Dat[0]['r'][0,0,0,0]])
+        plt.tight_layout()  # Remove extraneous white space
+        plt.savefig('static_pressure_%d.png'%stepsize,dpi=200)
+        plt.close(f)
 '''
 
     # Entropy
@@ -167,6 +151,6 @@ for Mai in [0.70]:
         a.axis('off')
         a.set_ylim([0.,dtheta_sector*Dat[0]['r'][0,0,0,0]])
         plt.tight_layout()  # Remove extraneous white space
-        plt.savefig('%d.png'%stepsize,dpi=200)
+        plt.savefig('entropy_%d.png'%stepsize,dpi=200)
         plt.close(f)
     #plt.show()  # Render the plot
