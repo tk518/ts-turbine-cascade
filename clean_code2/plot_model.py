@@ -86,10 +86,10 @@ for Mai in [0.65,0.70,0.75,0.81]:
         ft = np.linspace(0.,float(nt-1)*dt,nt) * freq
 
         # Get secondary vars, things like static pressure, rotor-relative Mach, etc.
-        Dat_ps = probe.secondary(Dat_ps, rpm, cp, ga)
-        Dat_ss = probe.secondary(Dat_ss, rpm, cp, ga)
-        Dat_ps_free = probe.secondary(Dat_ps_free, rpm, cp, ga)
-        Dat_ss_free = probe.secondary(Dat_ss_free, rpm, cp, ga)
+        Dat_ps = probe.secondary(Dat_ps, rpm, cp, ga, 1, 1)
+        Dat_ss = probe.secondary(Dat_ss, rpm, cp, ga, 1, 1)
+        Dat_ps_free = probe.secondary(Dat_ps_free, rpm, cp, ga, 1, 1)
+        Dat_ss_free = probe.secondary(Dat_ss_free, rpm, cp, ga, 1, 1)
 
         # Cut the rotor inlet
         Pdat = 1e5
@@ -148,21 +148,22 @@ for Mai in [0.65,0.70,0.75,0.81]:
         #
 
         # Plot the hole position
-        f,a = plt.subplots()  # Create a figure and axis to plot into
+        if n = 0:
+                f,a = plt.subplots()  # Create a figure and axis to plot into
 
-        x = Dat_ps['x'][:,jmid,0,0]
-        rt_ps = Dat_ps['rt'][:,jmid,0,0]
-        rt_ss = Dat_ss['rt'][:,jmid,0,0]
-        a.plot(x,rt_ps,'-k')  # Blade pressure surface
-        a.plot(x,rt_ss,'-k')  # Blade suction surface
-        a.plot(x[ihole_ss],rt_ss[ihole_ss],'b*')  # SS hole location
-        a.plot(x[ihole_ps],rt_ps[ihole_ps],'r*')  # PS hole location 
-        plt.axis('equal')
-        plt.axis('off')
-        plt.tight_layout()  # Remove extraneous white space
-        plt.savefig('hole_posn.pdf')  # Write out a pdf file
+                x = Dat_ps['x'][:,jmid,0,0]
+                rt_ps = Dat_ps['rt'][:,jmid,0,0]
+                rt_ss = Dat_ss['rt'][:,jmid,0,0]
+                a.plot(x,rt_ps,'-k')  # Blade pressure surface
+                a.plot(x,rt_ss,'-k')  # Blade suction surface
+                a.plot(x[ihole_ss],rt_ss[ihole_ss],'b*')  # SS hole location
+                a.plot(x[ihole_ps],rt_ps[ihole_ps],'r*')  # PS hole location 
+                plt.axis('equal')
+                plt.axis('off')
+                plt.tight_layout()  # Remove extraneous white space
+                plt.savefig('hole_posn.pdf')  # Write out a pdf file
 
-        
+
         # Plot the Blowing ratios
         f,a = plt.subplots()  # Create a figure and axis to plot into
         a.plot(ft, BR[n].T)

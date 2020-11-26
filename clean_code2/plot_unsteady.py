@@ -184,6 +184,30 @@ for Mai in [0.65,0.70,0.75,0.81]:
 
     P1.append(Dat_ps['pstat'][imid,jmid,0,:])
     P_hat1.append(P1[n] / np.mean(P1[n]))
+
+    # Choose a hole position
+    ihole_ps = 20
+    ihole_ss = 40
+
+    # Pull out data for model
+
+    Vp = Dat_ps['vrel'][ihole_ps,jmid,0,:]
+    Vs = Dat_ss['vrel'][ihole_ss,jmid,0,:]
+    Pps = Dat_ps['pstat'][ihole_ps,jmid,0,:]
+    Pss = Dat_ss['pstat'][ihole_ss,jmid,0,:]
+
+    #For pressure side only to begin
+    f,a = plt.subplots()  # Create a figure and axis to plot into
+
+    a.plot(ft,Pps,'-', label = 'Static pressure')  # Plot our data as a new line
+    a.plot(ft,Vps,'-', label = 'Relative velocity')  # Plot our data as a new line
+    plt.xlabel('Time, Rotor Periods, $ft$')  # Horizontal axis label
+    #plt.ylabel('Static Pressure, $p/\overline{p}$')  # Vertical axis label
+    plt.legend()
+    plt.title('Pressure side plot for Velocity and pressure @ Mach %.2f' % Mai)
+    plt.tight_layout()  # Remove extraneous white space
+    plt.savefig('Velocity_Pressure_Ma_%.2f.pdf' %Mai)  # Write out a pdf file
+
     Mach.append(Mai)
     n = n + 1
 
@@ -226,5 +250,5 @@ plt.savefig('unsteady_P_at_different_Mach_No.pdf')  # Write out a pdf file
 plt.show()
 
 #I want to see 
-#a) blowing ratio for multiple Mach numbers
-#b) Static pressure change and velocity at the same point on the same graph
+#a) blowing ratio for multiple Mach numbers [x]
+#b) Static pressure change and velocity at the same point on the same graph [ ]
