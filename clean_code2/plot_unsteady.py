@@ -107,8 +107,8 @@ for Mai in [0.65,0.70,0.75,0.81]:
     ft = np.linspace(0.,float(nt-1)*dt,nt) * freq
 
     # Get secondary vars, things like static pressure, rotor-relative Mach, etc.
-    Dat_ps = probe.secondary(Dat_ps, rpm, cp, ga)
-    Dat_ss = probe.secondary(Dat_ss, rpm, cp, ga)
+    Dat_ps = probe.secondary(Dat_ps, rpm, cp, ga, 1, 1)
+    Dat_ss = probe.secondary(Dat_ss, rpm, cp, ga, 1, 1)
 
     #
     # Finished reading data, now make some plots
@@ -193,14 +193,18 @@ for Mai in [0.65,0.70,0.75,0.81]:
 
     Vp = Dat_ps['vrel'][ihole_ps,jmid,0,:]
     Vs = Dat_ss['vrel'][ihole_ss,jmid,0,:]
-    Pps = Dat_ps['pstat'][ihole_ps,jmid,0,:]
-    Pss = Dat_ss['pstat'][ihole_ss,jmid,0,:]
+    Pp = Dat_ps['pstat'][ihole_ps,jmid,0,:]
+    Ps = Dat_ss['pstat'][ihole_ss,jmid,0,:]
+    Vp_hat = Vp/np.mean(Vp)
+    Vs_hat = Vs/np.mean(Vs)
+    Pp_hat = Pp/np.mean(Pp)
+    Ps_hat = Ps/np.mean(Ps)
 
     #For pressure side only to begin
     f,a = plt.subplots()  # Create a figure and axis to plot into
 
-    a.plot(ft,Pps,'-', label = 'Static pressure')  # Plot our data as a new line
-    a.plot(ft,Vps,'-', label = 'Relative velocity')  # Plot our data as a new line
+    a.plot(ft,Pp_hat,'-', label = 'Static pressure/Mean static pressure')  # Plot our data as a new line
+    a.plot(ft,Vp_hat,'-', label = 'Relative velocity/ Mean relative velocity')  # Plot our data as a new line
     plt.xlabel('Time, Rotor Periods, $ft$')  # Horizontal axis label
     #plt.ylabel('Static Pressure, $p/\overline{p}$')  # Vertical axis label
     plt.legend()
