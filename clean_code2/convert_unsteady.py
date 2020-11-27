@@ -38,7 +38,7 @@ if __name__ == "__main__":
 
         # Read in the converged steady solution
         tsr = ts_tstream_reader.TstreamReader()
-        g = tsr.read(fname_now)
+        g = tsr.read(fname)
         bids = g.get_block_ids()
 
         # add blade-to-blade probe patches
