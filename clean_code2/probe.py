@@ -66,7 +66,8 @@ def render_frame(a, d, varname, it, lev, Omega, dt, nstep_cycle, sector_size):
         rtnow = di['rt'][:,0,:,it]
         rnow = di['r'][:,0,:,it]
         varnow = di[varname][:,0,:,it]
-
+        if varname == 'pstat':
+            print di[varname][:,0,:,it]
         # If this is a stator, offset backwards by del_theta
         if di['rpm']==0.:
             rtnow = (rtnow/rnow - Omega*it*dt) * rnow

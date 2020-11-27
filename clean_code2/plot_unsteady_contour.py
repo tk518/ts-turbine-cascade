@@ -125,7 +125,7 @@ for Mai in [0.70]:
 
     # Finished reading data, now make some plots
 
-'''
+
  for stepsize in range(nt): #(1, 97) gets all the steps
         f,a = plt.subplots()  # Create a figure and axis to plot into
         #plt.set_cmap('cubehelix_r')
@@ -154,3 +154,4 @@ for Mai in [0.70]:
         plt.savefig('entropy_%d.png'%stepsize,dpi=200)
         plt.close(f)
     #plt.show()  # Render the plot
+    '''
