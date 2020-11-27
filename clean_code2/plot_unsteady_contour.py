@@ -8,7 +8,7 @@ from ts import ts_tstream_reader, ts_tstream_cut  # TS grid reader
 # Set variables here
 #
 for Mai in [0.70]:
-    output_file_name = 'output_2'  # Location of TS output file
+    output_file_name = 'output_2_Ma_%.2f' %Mai  # Location of TS output file
 
     # Load the grid 
     tsr = ts_tstream_reader.TstreamReader()
@@ -54,7 +54,7 @@ for Mai in [0.70]:
         Dat.append(probe.read_dat(probe_name, probe_shape))
 
     # Here we extract some parameters from the TS grid to use later
-    rpm = g.get_bv('rpm',g.get_nb()-1)  # RPM in rotor row
+    rpm = g.get_bv('rpm',g.get_nb()-1)  # RPM in rotor row 
     print(rpm)
     Omega = rpm / 60. * np.pi * 2.
     print(Omega)
