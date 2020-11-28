@@ -107,8 +107,9 @@ for Mai in [0.70, 0.81]:
     ft = np.linspace(0.,float(nt-1)*dt,nt) * freq
 
     # Get secondary vars, things like static pressure, rotor-relative Mach, etc.
-    Dat_ps = probe.secondary(Dat_ps, rpm, cp, ga, 1, 1)
-    Dat_ss = probe.secondary(Dat_ss, rpm, cp, ga, 1, 1)
+    P1, T1 = 1e5, 300.
+    Dat_ps = probe.secondary(Dat_ps, rpm, cp, ga, P1, T1)
+    Dat_ss = probe.secondary(Dat_ss, rpm, cp, ga, P1, T1)
 
     #
     # Finished reading data, now make some plots
