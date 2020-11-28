@@ -40,7 +40,7 @@ P_hat1 = []
 P1 = []
 Mach = []
 
-for Mai in [0.65,0.70,0.75,0.81]:
+for Mai in [0.70, 0.81]:
     output_file_name = "output_2"+ '_Ma_%.2f' % Mai # Location of TS output file
 
     # We identify a region of the grid using block and patch IDs
@@ -255,4 +255,4 @@ plt.show()
 
 #I want to see 
 #a) blowing ratio for multiple Mach numbers [x]
-#b) Static pressure change and velocity at the same point on the same graph [ ]
+#b) Static pressure change and velocity at the same point on the same graph [x]
