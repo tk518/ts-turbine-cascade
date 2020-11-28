@@ -61,7 +61,7 @@ for Mai in [0.70, 0.81]:
     fracann = np.array([g.get_bv('fracann',bi) for bi in bids])
     nblade = np.array([g.get_bv('nblade',bi) for bi in bids])
     nb_row = np.round(fracann * nblade)
-    bid_probe = int(nb_row[0]+1)  # Block ID where probes are located
+    bid_probe = int(nb_row[0])  # Block ID where probes are located
 
 
     # Determine the number of grid points on probe patches
