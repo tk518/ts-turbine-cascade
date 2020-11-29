@@ -125,7 +125,7 @@ for Mai in [0.70]:
 
     # Finished reading data, now make some plots
 
-
+    '''
     for stepsize in range(nt): #(1, 97) gets all the steps
         f,a = plt.subplots()  # Create a figure and axis to plot into
         #plt.set_cmap('cubehelix_r')
@@ -136,7 +136,20 @@ for Mai in [0.70]:
         a.axis('off')
         a.set_ylim([0.,dtheta_sector*Dat[0]['r'][0,0,0,0]])
         plt.tight_layout()  # Remove extraneous white space
-        plt.savefig('static_pressure_%d.png'%stepsize,dpi=200)
+        plt.savefig('pressure_coeff_%d.png'%stepsize,dpi=200)
+        plt.close(f)
+    '''
+    for stepsize in range(nt): #(1, 97) gets all the steps
+        f,a = plt.subplots()  # Create a figure and axis to plot into
+        #plt.set_cmap('cubehelix_r')
+        lev = np.linspace(0.,2.,41)
+        probe.render_frame(a, Dat,'pmean', stepsize, lev, Omega, dt*nstep_save_probe,nstep_cycle/nstep_save_probe, dtheta_sector, Po1, P2)
+        a.axis('equal')
+        plt.grid(False)
+        a.axis('off')
+        a.set_ylim([0.,dtheta_sector*Dat[0]['r'][0,0,0,0]])
+        plt.tight_layout()  # Remove extraneous white space
+        plt.savefig('mean_static_pressure_%d.png'%stepsize,dpi=200)
         plt.close(f)
 '''
 
