@@ -58,15 +58,15 @@ def secondary(d, rpm, cp, ga, Pref, Tref):
 
     return d
 
-def render_frame(a, d, varname, it, lev, Omega, dt, nstep_cycle, sector_size):
+def render_frame(a, d, varname, it, lev, Omega, dt, nstep_cycle, sector_size, Po1, P2):
     """Plot out contours of a variable at time step it."""
 
     for i, di in enumerate(d):
         xnow = di['x'][:,0,:,it]
         rtnow = di['rt'][:,0,:,it]
         rnow = di['r'][:,0,:,it]
-        if varname == 'pmean':
-            varnow = di['pstat'][:,0,:,it]/np.mean(di['pstat'][:,0,:,:],axis=1)
+        if varname == 'Cp':
+            varnow = (di['pstat'][:,0,:,it] - Po1)/(Po1-P2)
         else:
             varnow = di[varname][:,0,:,it]
         # If this is a stator, offset backwards by del_theta
