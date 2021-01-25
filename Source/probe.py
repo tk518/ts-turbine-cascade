@@ -69,7 +69,7 @@ def render_frame(a, d, varname, it, lev, Omega, dt, nstep_cycle, sector_size, Po
             varnow = (di['pstat'][:,0,:,it] - Po1)/(Po1-P2)
             print(varnow)
         elif varname == 'pmean':
-            varnow = di['pstat'][:,0,:,it]/(np.mean(di['pstat'][:,0,:,it],axis = 1))
+            varnow = np.divide(di['pstat'][:,0,:,it], np.mean(di['pstat'][:,0,:,:],axis = 2))
             print(varnow)
         else:
             varnow = di[varname][:,0,:,it]

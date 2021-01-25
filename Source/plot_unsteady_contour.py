@@ -129,7 +129,7 @@ for Mai in [0.70]:
     for stepsize in range(nt): #(1, 97) gets all the steps
         f,a = plt.subplots()  # Create a figure and axis to plot into
         #plt.set_cmap('cubehelix_r')
-        lev = np.linspace(-2.,0.,41)
+        lev = np.linspace(-1.2,0.,61)
         probe.render_frame(a, Dat,'Cp', stepsize, lev, Omega, dt*nstep_save_probe,nstep_cycle/nstep_save_probe, dtheta_sector, Po1, P2)
         a.axis('equal')
         plt.grid(False)

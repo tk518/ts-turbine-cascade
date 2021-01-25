@@ -166,9 +166,10 @@ for Mai in [0.65,0.70,0.75,0.81]:
 
         # Plot the Blowing ratios
         f,a = plt.subplots()  # Create a figure and axis to plot into
-        a.plot(ft, BR[n].T)
+        a.plot(ft, BR[n].T
         a.set_ylabel('Hole Blowing Ratio, $BR$')
         a.set_xlabel('Time, Vane Periods')
+        
         plt.tight_layout()  # Remove extraneous white space
         plt.savefig('BR_Ma_%.2f.pdf' %Mai)  # Write out a pdf file
 
