@@ -9,9 +9,9 @@ fnamein = "output_1"
 if __name__ == "__main__":
     for Psii in [1.6]:
 
-        for Phii in [0.4, 0.6, 0.8, 1.0, 1.2]:
+        for Phii in [0.45, 0.6, 0.8, 1.0, 1.15]:
 
-            for Mai in [0.65, 0.7, 0.75, 0.81]:
+            for Mai in [0.7]:
                 # Number of rotor blade passing periods to run for
                 # Change me so that the computaion reaches a periodic state
                 ncycle = 70
@@ -27,7 +27,7 @@ if __name__ == "__main__":
                 nstep_save_probe = 1
 
                 # File name of the steady soln to read in fnamein + '_psi_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f' % Mai + '.hdf5'
-                fname_now = fnamein + '_psi_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f' % Mai + '.hdf5'
+                fname =  'output_1_psi_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f' % Mai + '.hdf5'
 
                 # File name of the new unsteady input file to write out 'input_2_psi_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f' % Mai + '.hdf5'
                 fname_out = 'input_2_psi_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f' % Mai + '.hdf5'
