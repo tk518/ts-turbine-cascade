@@ -48,7 +48,7 @@ for Psii in [1.6]:
 
         for Mai in [0.70]:
 
-            output_file_name = 'output_1_psi_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f' % Mai + '.hdf5' # Location of TS output file
+            output_file_name = 'output_2_psi_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f' % Mai  # Location of TS output file
 
             # We identify a region of the grid using block and patch IDs
             pid_probe_ps = 9  # Patch ID of probe on pressure side
@@ -61,7 +61,7 @@ for Psii in [1.6]:
 
             # Load the grid 
             tsr = ts_tstream_reader.TstreamReader()
-            g = tsr.read(output_file_name, read_yplus=True)
+            g = tsr.read(output_file_name + '.hdf5', read_yplus=True)
 
             # Determine number of blades in each row
             bids = [0,g.get_nb()-1]
