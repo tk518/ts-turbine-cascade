@@ -9,15 +9,22 @@ from ts import ts_tstream_cut  # TS cutter
 #
 # Set variables here
 #
-BR=[]
-n = 0
-Mach = []
-for Psii in [1.6]:
 
-    for Phii in [0.45, 0.6, 0.8, 1.0, 1.15]:
+def rms(x):
+        sum = 0
+        for y in x:
+                sum = sum + y**2
+        rms = np.sqrt((1/len(x)) * sum)
+        return(rms)
+Data={}
+
+for Psii in [1.60]:
+
+    for Phii in [0.45, 0.60, 0.80, 1.00, 1.15]:
+
+        #Mach = []
 
         for Mai in [0.70]:
-
 
                 output_file_name = 'output_2_psi_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f' % Mai  # Location of TS output file
 
@@ -147,7 +154,7 @@ for Psii in [1.6]:
                 Cd = 0.7
 
                 # Calculate BR
-                BR.append(model.evaluate( Pinf_Poc, roVinf_Po_cpToc, Cd, ga ))
+                BR = model.evaluate( Pinf_Poc, roVinf_Po_cpToc, Cd, ga )
 
                 #
                 # Finished reading data, now make some plots
@@ -169,19 +176,43 @@ for Psii in [1.6]:
                         plt.tight_layout()  # Remove extraneous white space
                         plt.savefig('hole_posn.pdf')  # Write out a pdf file
 
+                
+                #peak to peak amplitude
+
+                #pressure side, if pressure side is [0]
+                ptp_ps = max(BR.T[0])-min(BR.T[0])
+                #suction side, if pressure side is [1]
+                ptp_ss = max(BR.T[1])-min(BR.T[1])
+
+                #rms BR
+                #pressure side, if pressure side is [0]
+                rms_ps = rms(BR.T[0])
+                #suction side, if pressure side is [1]
+                rms_ps = rms(BR.T[1])
+
+                #key in form 'Ma_0.70_psi_1.60_phi_0.45'
+                Data['Ma_'+str(Mai)+'_psi_'+str(Psii)+'_phi_'+str(Phii)] = [BR.T[0],BR.T[1],ptp_ps,ptp_ss,rms_ps,rms_ss]
+                #find out which way round
 
                 # Plot the Blowing ratios
                 f,a = plt.subplots()  # Create a figure and axis to plot into
-                a.plot(ft, BR[n].T
+                a.plot(ft, BR.T)
                 a.set_ylabel('Hole Blowing Ratio, $BR$')
                 a.set_xlabel('Time, Vane Periods')
-                
                 plt.tight_layout()  # Remove extraneous white space
-                plt.savefig('BR_Ma_%.2f.pdf' %Mai)  # Write out a pdf file
+                plt.savefig('BR_psi_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f' % Mai + '.pdf')  # Write out a pdf file
 
-                Mach.append(Mai)
-                n = n + 1
+#looking through phi
+#Pressure side peak-to-peak graph
+f,a = plt.subplots()
+for Phii in [0.45, 0.60, 0.80, 1.00, 1.15]:
+        a.plot(Phii, Data['Ma_0.70_psi_1.60_phi_%.2f' %Phii][2], 'o')
+a.set_ylabel('Pressure side hole Peak-to-peak Blowing Ratio, $BR$')
+a.set_xlabel('Phi')
+plt.tight_layout()        
+plt.savefig('Pressure_side_peak-to-peak_blowing_ratio_vs_phi.pdf')
 
+'''
 f,a = plt.subplots()
 for x in range(len(Mach)):
         a.plot(ft, BR[x].T, '-', label = 'Mach = %.2f' % Mach[x])
@@ -191,20 +222,5 @@ plt.tight_layout()  # Remove extraneous white space
 plt.savefig('BR_all_Mach.pdf')
 
 plt.show()  # Render the plots
-       
-        #
-        # Other things to try
-        #
-        #   See https://numpy.org/doc/stable/ for documentation on Numpy
-        #
-        #   * Frequency spectrum of unsteady pressure at a point, use the Fast
-        #   Fourier Transform function np.fft.fft( pressure, axis=?) to get Fourier
-        #   coefficients for a series expansion in time. Get frequencies for the bins
-        #   using np.fft.fftfreq( len(pressure) , dt)
-        #   * Time-mean pressure distribution on pressure and suction sides using
-        #   np.mean with the correct axis argument
-        #   * Minimum and maximum pressure at each axial location. Use function
-        #   np.amax( pressure, axis=? ) to take the maximum value over one index (time)
-        #   There is a counterpart np.amin
-        #   * Vary the Mach number in `make_design.py` and compare the above for
-        #   different Mach numbers
+'''       
+      
