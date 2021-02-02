@@ -11,7 +11,7 @@ from ts import ts_tstream_cut  # TS cutter
 #
 
 def rms(x):
-        ms = np.sqrt(np.mean(x**2))
+        ms = np.sqrt(np.mean(x**2, axis = 1))
         return(ms)
 
 Data={}
@@ -47,7 +47,7 @@ for Psii in [1.60]:
                 fracann = np.array([g.get_bv('fracann',bi) for bi in bids])
                 nblade = np.array([g.get_bv('nblade',bi) for bi in bids])
                 nb_row = np.round(fracann * nblade)
-                bid_probe = int(nb_row[0]+1)  # Block ID where probes are located
+                bid_probe = int(nb_row[0])  # Block ID where probes are located
 
 
                 # Determine the number of grid points on probe patches
@@ -158,11 +158,11 @@ for Psii in [1.60]:
 
                 # Calculate BR
                 BR = model.evaluate( Pinf_Poc, roVinf_Po_cpToc, Cd, ga )
-
+                print 'BR: ', BR
                 #
                 # Finished reading data, now make some plots
                 #
-
+                '''
                 # Plot the hole position
                 if n == 0:
                         f,a = plt.subplots()  # Create a figure and axis to plot into
@@ -179,13 +179,13 @@ for Psii in [1.60]:
                         plt.tight_layout()  # Remove extraneous white space
                         plt.savefig('hole_posn.pdf')  # Write out a pdf file
 
-                
+                '''
                 #peak to peak amplitude
 
                 #pressure side, if pressure side is [0]
-                ptp_ps = max(BR.T[0])-min(BR.T[0])
+                ptp_ps = np.max(BR.T[0], axis = 1) - np.min(BR.T[0], axis = 1)
                 #suction side, if pressure side is [1]
-                ptp_ss = max(BR.T[1])-min(BR.T[1])
+                ptp_ss = np.max(BR.T[1], axis = 1) - np.min(BR.T[1], axis = 1)
 
                 #rms BR
                 #pressure side, if pressure side is [0]
@@ -194,21 +194,21 @@ for Psii in [1.60]:
                 rms_ps = rms(BR.T[1])
 
                 #key in form 'Ma_0.70_psi_1.60_phi_0.45'
-                Data['Ma_'+str(Mai)+'_psi_'+str(Psii)+'_phi_'+str(Phii)] = [BR.T[0],BR.T[1],ptp_ps,ptp_ss,rms_ps,rms_ss]
+                Data['Ma_'+"{:.2f}".format(Mai)+'_psi_'+"{:.2f}".format(Psii)+'_phi_'+"{:.2f}".format(Phii)] = [BR.T[0],BR.T[1],ptp_ps,ptp_ss,rms_ps,rms_ss]
                 #find out which way round
 
-                # Plot the Blowing ratios
+                # Plot the peak-to-peak Blowing ratios on pressure surface along chord
                 f,a = plt.subplots()  # Create a figure and axis to plot into
-                a.plot(ft, BR.T)
-                a.set_ylabel('Hole Blowing Ratio, $BR$')
-                a.set_xlabel('Time, Vane Periods')
+                a.plot(x, Data['Ma_0.70_psi_1.60_phi_%.2f' %Phii][2])
+                a.set_ylabel('Peak to Peak Blowing Ratio, $BR$')
+                a.set_xlabel('Chord, x')
                 plt.tight_layout()  # Remove extraneous white space
-                plt.savefig('BR_psi_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f' % Mai + '.pdf')  # Write out a pdf file
+                plt.savefig('BR_psi_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f' % Mai + '_along_chord.pdf')  # Write out a pdf file
 
                 n = n + 1
                 
-print 'number of simulations iterated: ', n      
 
+'''
 #looking through phi
 #Pressure side peak-to-peak graph
 f,a = plt.subplots()
@@ -245,7 +245,7 @@ a.set_ylabel('Suction side hole rms Blowing Ratio, $BR$')
 a.set_xlabel('Phi')
 plt.tight_layout()        
 plt.savefig('Pressure_side_rms_blowing_ratio_vs_phi.pdf')
-
+'''
 plt.show()
 
 '''
