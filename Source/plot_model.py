@@ -192,7 +192,7 @@ for Psii in [1.60]:
                 rms_ss = rms(BR.T[1])
 
                 #key in form 'Ma_0.70_psi_1.60_phi_0.45'
-                Data['Ma_'+str(Mai)+'_psi_'+str(Psii)+'_phi_'+str(Phii)] = [BR.T[0],BR.T[1],ptp_ps,ptp_ss,rms_ps,rms_ss]
+                Data['Ma_'+"{:.2f}".format(Mai)+'_psi_'+"{:.2f}".format(Psii)+'_phi_'+"{:.2f}".format(Phii)] = [BR.T[0],BR.T[1],ptp_ps,ptp_ss,rms_ps,rms_ss]
                 #find out which way round
 
                 # Plot the Blowing ratios
