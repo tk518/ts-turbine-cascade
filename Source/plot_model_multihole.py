@@ -135,18 +135,22 @@ for Psii in [1.60]:
                 TR = 0.5
                 Toc = TR * To1
 
+                x = Dat_ps['x'][:,jmid,0,0]
+                print(x.min())
+                print(x.max())
+
                 # Choose a hole position
-                ihole_ps = 20
+                ihole_ps = x
                 ihole_ss = 40
 
                 # Pull out data for model
 
-                roinf = np.stack((Dat_ps_free['ro'][ihole_ps,jmid,0,:],
-                                Dat_ss_free['ro'][ihole_ss,jmid,0,:]))
-                Vinf = np.stack((Dat_ps_free['vrel'][ihole_ps,jmid,0,:],
-                                Dat_ss_free['vrel'][ihole_ss,jmid,0,:]))
-                Pinf = np.stack((Dat_ps_free['pstat'][ihole_ps,jmid,0,:],
-                                Dat_ss_free['pstat'][ihole_ss,jmid,0,:]))
+                roinf = np.stack((Dat_ps_free['ro'][:,jmid,0,:],
+                                Dat_ss_free['ro'][:,jmid,0,:]))
+                Vinf = np.stack((Dat_ps_free['vrel'][:,jmid,0,:],
+                                Dat_ss_free['vrel'][:,jmid,0,:]))
+                Pinf = np.stack((Dat_ps_free['pstat'][:,jmid,0,:],
+                                Dat_ss_free['pstat'][:,jmid,0,:]))
 
                 # Nondimensionalise data
                 Pinf_Poc, roVinf_Po_cpToc = model.normalise(Poc, Toc, Pinf, roinf, Vinf, cp)
