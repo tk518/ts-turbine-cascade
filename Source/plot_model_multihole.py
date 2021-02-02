@@ -191,7 +191,7 @@ for Psii in [1.60]:
                 #pressure side, if pressure side is [0]
                 rms_ps = rms(BR.T[0])
                 #suction side, if pressure side is [1]
-                rms_ps = rms(BR.T[1])
+                rms_ss = rms(BR.T[1])
 
                 #key in form 'Ma_0.70_psi_1.60_phi_0.45'
                 Data['Ma_'+"{:.2f}".format(Mai)+'_psi_'+"{:.2f}".format(Psii)+'_phi_'+"{:.2f}".format(Phii)] = [BR.T[0],BR.T[1],ptp_ps,ptp_ss,rms_ps,rms_ss]
@@ -208,17 +208,19 @@ for Psii in [1.60]:
                 n = n + 1
                 
 
-'''
+
 #looking through phi
 #Pressure side peak-to-peak graph
 f,a = plt.subplots()
 for Phii in [0.45, 0.60, 0.80, 1.00, 1.15]:
-        a.plot(Phii, Data['Ma_0.70_psi_1.60_phi_%.2f' %Phii][2], 'x')
-a.set_ylabel('Pressure side hole Peak-to-peak Blowing Ratio, $BR$')
-a.set_xlabel('Phi')
-plt.tight_layout()        
+        a.plot(x, Data['Ma_0.70_psi_1.60_phi_%.2f' %Phii][2], '-', label = 'BR @ Phi = %.2f' %Phii)
+plt.cbookylabel('Pressure side Peak-to-peak Blowing Ratio, $BR$')
+plt.xlabel('Chord, $x$')
+plt.tight_layout()
+plt.ylim(0,0.9)        
 plt.savefig('Pressure_side_peak-to-peak_blowing_ratio_vs_phi.pdf')
 
+'''
 #Pressure side rms graph
 f,a = plt.subplots()
 for Phii in [0.45, 0.60, 0.80, 1.00, 1.15]:
