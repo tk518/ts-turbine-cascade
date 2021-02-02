@@ -42,14 +42,14 @@ for Psii in [1.60]:
 
                 # Load the grid 
                 tsr = ts_tstream_reader.TstreamReader()
-                g = tsr.read(output_file_name + '.hdf5')
+                g = tsr.read(output_file_name + '.hdf5', read_yplus=True)
 
                 # Determine number of blades in each row
                 bids = [0,g.get_nb()-1]
                 fracann = np.array([g.get_bv('fracann',bi) for bi in bids])
                 nblade = np.array([g.get_bv('nblade',bi) for bi in bids])
                 nb_row = np.round(fracann * nblade)
-                bid_probe = int(nb_row[0]+1)  # Block ID where probes are located
+                bid_probe = int(nb_row[0])  # Block ID where probes are located
 
 
                 # Determine the number of grid points on probe patches
@@ -162,7 +162,7 @@ for Psii in [1.60]:
                 #
 
                 # Plot the hole position
-                if n = 0:
+                if n == 0:
                         f,a = plt.subplots()  # Create a figure and axis to plot into
 
                         x = Dat_ps['x'][:,jmid,0,0]
@@ -189,7 +189,7 @@ for Psii in [1.60]:
                 #pressure side, if pressure side is [0]
                 rms_ps = rms(BR.T[0])
                 #suction side, if pressure side is [1]
-                rms_ps = rms(BR.T[1])
+                rms_ss = rms(BR.T[1])
 
                 #key in form 'Ma_0.70_psi_1.60_phi_0.45'
                 Data['Ma_'+str(Mai)+'_psi_'+str(Psii)+'_phi_'+str(Phii)] = [BR.T[0],BR.T[1],ptp_ps,ptp_ss,rms_ps,rms_ss]
@@ -204,9 +204,11 @@ for Psii in [1.60]:
                 plt.savefig('BR_psi_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f' % Mai + '.pdf')  # Write out a pdf file
 
                 n = n + 1
-                
-print 'number of simulations iterated: ', n      
 
+print 'number of simulations iterated: ', n      
+print Data
+
+'''
 #looking through phi
 #Pressure side peak-to-peak graph
 f,a = plt.subplots()
@@ -245,7 +247,7 @@ plt.tight_layout()
 plt.savefig('Pressure_side_rms_blowing_ratio_vs_phi.pdf')
 
 plt.show()
-
+'''
 '''
 f,a = plt.subplots()
 for x in range(len(Mach)):
