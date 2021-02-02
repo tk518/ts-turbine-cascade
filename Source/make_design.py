@@ -10,34 +10,33 @@ Lam = 0.5  # Degree of reaction (0.4 to 0.6)
 # Ma = 0.9  # Vane exit Mach number (0.6 to 0.9)
 eta = 0.9  # Polytropic efficiency (leave this for now)
 gap_chord = 0.5  # Spacing between stator and rotor
-slip_vane = True  # Apply non-slip condition to vane surface
 guess_file = None #'guess.hdf5'  # Solution to use as initial guess, or None
 
-
 # Check that the code works for many Mach
-if slip_vane == False:
-    for Psii in [1.6]:
+slip_vane = False  # Apply non-slip condition to vane surface
+for Psii in [1.6]:
 
-        for Phii in [0.45, 0.6, 0.8, 1.0, 1.15]:
+    for Phii in [0.45, 0.6, 0.8, 1.0, 1.15]:
 
-            for Mai in [0.7]:
+        for Mai in [0.7]:
 
-                # Create a file name for this Mach using % substitution
-                fname_now = fname + '_psi_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f' % Mai + '.hdf5'
+            # Create a file name for this Mach using % substitution
+            fname_now = fname + '_psi_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f' % Mai + '.hdf5'
 
-                # Call out to the design generation code
-                # It is complicated so best to think of it as a black box!
-                design.generate(fname_now, Phii, Psii, Lam, Mai, eta, gap_chord, slip_vane, guess_file )
-    Else:
-        for Psii in [1.6]:
+            # Call out to the design generation code
+            # It is complicated so best to think of it as a black box!
+            design.generate(fname_now, Phii, Psii, Lam, Mai, eta, gap_chord, slip_vane, guess_file )
 
-            for Phii in [0.45, 0.6, 0.8, 1.0, 1.15]:
+slip_vane = True # Apply non-slip condition to vane surface
+for Psii in [1.6]:
 
-                for Mai in [0.7]:
+    for Phii in [0.45, 0.6, 0.8, 1.0, 1.15]:
 
-                    # Create a file name for this Mach using % substitution
-                    fname_now = fname + '_psi_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f' % Mai + '_slip.hdf5'
+        for Mai in [0.7]:
 
-                    # Call out to the design generation code
-                    # It is complicated so best to think of it as a black box!
-                    design.generate(fname_now, Phii, Psii, Lam, Mai, eta, gap_chord, slip_vane, guess_file )
+            # Create a file name for this Mach using % substitution
+            fname_now = fname + '_psi_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f' % Mai + '_slip.hdf5'
+
+            # Call out to the design generation code
+            # It is complicated so best to think of it as a black box!
+            design.generate(fname_now, Phii, Psii, Lam, Mai, eta, gap_chord, slip_vane, guess_file )
