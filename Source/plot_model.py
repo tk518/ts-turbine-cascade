@@ -11,18 +11,14 @@ from ts import ts_tstream_cut  # TS cutter
 #
 
 def rms(x):
-        sum = 0
-        for y in x:
-                sum = sum + y**2
-        rms = np.sqrt((1/len(x)) * sum)
-        return(rms)
+        ms = np.sqrt(np.mean(x**2))
+        return(ms)
 Data={}
-n = 0
 
 for Psii in [1.60]:
 
-    for Phii in [0.45, 0.60, 0.80, 1.00, 1.15]:
-
+    for Phii in [0.45, 0.60, 0.80, 1.00, 1.15]:   
+        n = 0
         #Mach = []
 
         for Mai in [0.70]:
@@ -156,15 +152,12 @@ for Psii in [1.60]:
 
                 # Calculate BR
                 BR = model.evaluate( Pinf_Poc, roVinf_Po_cpToc, Cd, ga )
-
-                #
+                print 'BR: ', BR
                 # Finished reading data, now make some plots
-                #
 
                 # Plot the hole position
                 if n == 0:
                         f,a = plt.subplots()  # Create a figure and axis to plot into
-
                         x = Dat_ps['x'][:,jmid,0,0]
                         rt_ps = Dat_ps['rt'][:,jmid,0,0]
                         rt_ss = Dat_ss['rt'][:,jmid,0,0]
@@ -175,9 +168,8 @@ for Psii in [1.60]:
                         plt.axis('equal')
                         plt.axis('off')
                         plt.tight_layout()  # Remove extraneous white space
-                        plt.savefig('hole_posn.pdf')  # Write out a pdf file
+                        plt.savefig('hole_posn_psi_%.2f' %Psii + '_phi_%.2f' %Phii + '.pdf')  # Write out a pdf file
 
-                
                 #peak to peak amplitude
 
                 #pressure side, if pressure side is [0]

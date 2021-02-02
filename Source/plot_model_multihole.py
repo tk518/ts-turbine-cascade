@@ -11,18 +11,16 @@ from ts import ts_tstream_cut  # TS cutter
 #
 
 def rms(x):
-        sum = 0
-        for y in x:
-                sum = sum + y**2
-        rms = np.sqrt((1/len(x)) * sum)
-        return(rms)
+        ms = np.sqrt(np.mean(x**2))
+        return(ms)
+
 Data={}
-n = 0
+
 
 for Psii in [1.60]:
 
     for Phii in [0.45, 0.60, 0.80, 1.00, 1.15]:
-
+        n = 0
         #Mach = []
 
         for Mai in [0.70]:
@@ -166,7 +164,7 @@ for Psii in [1.60]:
                 #
 
                 # Plot the hole position
-                if n = 0:
+                if n == 0:
                         f,a = plt.subplots()  # Create a figure and axis to plot into
 
                         x = Dat_ps['x'][:,jmid,0,0]
