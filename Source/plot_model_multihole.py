@@ -214,10 +214,11 @@ for Psii in [1.60]:
 f,a = plt.subplots()
 for Phii in [0.45, 0.60, 0.80, 1.00, 1.15]:
         a.plot(x, Data['Ma_0.70_psi_1.60_phi_%.2f' %Phii][2], '-', label = 'BR @ Phi = %.2f' %Phii)
-plt.cbookylabel('Pressure side Peak-to-peak Blowing Ratio, $BR$')
+plt.ylabel('Pressure side Peak-to-peak Blowing Ratio, $BR$')
 plt.xlabel('Chord, $x$')
 plt.tight_layout()
-plt.ylim(0,0.9)        
+#plt.ylim(0,0.9)        
+plt.legend()
 plt.savefig('Pressure_side_peak-to-peak_blowing_ratio_vs_phi.pdf')
 
 '''
