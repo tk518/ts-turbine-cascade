@@ -27,7 +27,7 @@ if slip_vane == False:
 
                 # Call out to the design generation code
                 # It is complicated so best to think of it as a black box!
-                design.generate(fname_now, phi, psi, Lam, Ma, eta, gap_chord, slip_vane, guess_file )
+                design.generate(fname_now, Phii, Psii, Lam, Mai, eta, gap_chord, slip_vane, guess_file )
     Else:
         for Psii in [1.6]:
 
@@ -40,4 +40,4 @@ if slip_vane == False:
 
                     # Call out to the design generation code
                     # It is complicated so best to think of it as a black box!
-                    design.generate(fname_now, phi, psi, Lam, Ma, eta, gap_chord, slip_vane, guess_file )
+                    design.generate(fname_now, Phii, Psii, Lam, Mai, eta, gap_chord, slip_vane, guess_file )
