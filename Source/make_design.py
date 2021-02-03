@@ -16,7 +16,7 @@ guess_file = None #'guess.hdf5'  # Solution to use as initial guess, or None
 slip_vane = False  # Apply non-slip condition to vane surface
 for Psii in [1.6]:
 
-    for Phii in [0.45, 0.6, 0.8, 1.0, 1.15]:
+    for Phii in [0.5, 0.7, 0.9, 1.1]:
 
         for Mai in [0.7]:
 
@@ -30,7 +30,7 @@ for Psii in [1.6]:
 slip_vane = True # Apply non-slip condition to vane surface
 for Psii in [1.6]:
 
-    for Phii in [0.45, 0.6, 0.8, 1.0, 1.15]:
+    for Phii in [0.5, 0.7, 0.9, 1.1]:
 
         for Mai in [0.7]:
 

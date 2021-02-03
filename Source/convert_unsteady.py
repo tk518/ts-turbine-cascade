@@ -9,7 +9,7 @@ fnamein = "output_1"
 if __name__ == "__main__":
     for Psii in [1.6]:
 
-        for Phii in [0.45, 0.6, 0.8, 1.0, 1.15]:
+        for Phii in [0.5, 0.7, 0.9, 1.1]:
 
             for Mai in [0.7]:
                 # Number of rotor blade passing periods to run for
