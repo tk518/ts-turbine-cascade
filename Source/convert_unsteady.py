@@ -4,14 +4,17 @@ import numpy as np  # Multidimensional array library
 from ts import ts_tstream_reader, ts_tstream_steady_to_unsteady, ts_tstream_type
 from ts import ts_tstream_load_balance, ts_tstream_patch_kind
 
+Phi = [0.4, 0.6, 0.8, 1.0, 1.20]
+Psi = [0.8, 1.2, 1.6, 2.0, 2.4]
+Ma = [0.7]
 fnamein = "output_1"
 
 if __name__ == "__main__":
-    for Psii in [1.6]:
+    for Psii in Psi:
 
-        for Phii in [0.5, 0.7, 0.9, 1.1]:
+        for Phii in Phi:
 
-            for Mai in [0.7]:
+            for Mai in Ma:
                 # Number of rotor blade passing periods to run for
                 # Change me so that the computaion reaches a periodic state
                 ncycle = 70
