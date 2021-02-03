@@ -11,14 +11,16 @@ Lam = 0.5  # Degree of reaction (0.4 to 0.6)
 eta = 0.9  # Polytropic efficiency (leave this for now)
 gap_chord = 0.5  # Spacing between stator and rotor
 guess_file = None #'guess.hdf5'  # Solution to use as initial guess, or None
-
+Phi = [0.45, 0.6, 0.8, 1.0, 1.15]
+Psi = [0.8, 1.2, 1.6, 2.0, 2.4]
+Ma = [0.7]
 # Check that the code works for many Mach
 slip_vane = False  # Apply non-slip condition to vane surface
-for Psii in [1.6]:
+for Psii in Psi:
 
-    for Phii in [0.5, 0.7, 0.9, 1.1]:
+    for Phii in Phi:
 
-        for Mai in [0.7]:
+        for Mai in Ma:
 
             # Create a file name for this Mach using % substitution
             fname_now = fname + '_psi_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f' % Mai + '.hdf5'
@@ -27,12 +29,12 @@ for Psii in [1.6]:
             # It is complicated so best to think of it as a black box!
             design.generate(fname_now, Phii, Psii, Lam, Mai, eta, gap_chord, slip_vane, guess_file )
 
-slip_vane = True # Apply non-slip condition to vane surface
-for Psii in [1.6]:
+slip_vane = True # Apply slip condition to vane surface
+for Psii in Psi:
 
-    for Phii in [0.5, 0.7, 0.9, 1.1]:
+    for Phii in Phi:
 
-        for Mai in [0.7]:
+        for Mai in Ma:
 
             # Create a file name for this Mach using % substitution
             fname_now = fname + '_psi_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f' % Mai + '_slip.hdf5'

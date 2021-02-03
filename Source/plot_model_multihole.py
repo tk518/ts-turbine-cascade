@@ -212,7 +212,7 @@ if slip == True:
                                 a.set_ylabel('Peak-to-Peak Blowing Ratio, $BR$')
                                 a.set_xlabel('Chord, x')
                                 plt.tight_layout()  # Remove extraneous white space
-                                plt.savefig('BR_psi_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f' % Mai + '_along_chord.pdf')  # Write out a pdf file
+                                plt.savefig('BR_psi_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f' % Mai + '_along_chord_slip.pdf')  # Write out a pdf file
 
                                 n = n + 1
                 
@@ -224,7 +224,7 @@ for Psii in [1.60]:
 
                 for Mai in [0.70]:
 
-                        output_file_name = 'output_2_psi_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f_slip' % Mai  # Location of TS output file
+                        output_file_name = 'output_2_psi_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f' % Mai  # Location of TS output file
 
                         # We identify a region of the grid using block and patch IDs
                         pid_probe_ps = 9  # Patch ID of surface probe on pressure side
@@ -393,7 +393,7 @@ for Psii in [1.60]:
                         rms_ss = rms(BR[1].T)
 
                         #key in form 'Ma_0.70_psi_1.60_phi_0.45'
-                        Data['Ma_'+"{:.2f}".format(Mai)+'_psi_'+"{:.2f}".format(Psii)+'_phi_'+"{:.2f}".format(Phii)+'_slip'] = [BR[0].T,BR[1].T,ptp_ps,ptp_ss,rms_ps,rms_ss]
+                        Data['Ma_'+"{:.2f}".format(Mai)+'_psi_'+"{:.2f}".format(Psii)+'_phi_'+"{:.2f}".format(Phii)] = [BR[0].T,BR[1].T,ptp_ps,ptp_ss,rms_ps,rms_ss]
                         #find out which way round
 
                         #print 'ptp_ps: ', ptp_ps
@@ -403,8 +403,8 @@ for Psii in [1.60]:
 
                         # Plot the peak-to-peak Blowing ratios on pressure surface along chord
                         f,a = plt.subplots()  # Create a figure and axis to plot into
-                        a.plot(x, Data['Ma_0.70_psi_1.60_phi_%.2f_slip' %Phii][2])
-                        a.plot(x, Data['Ma_0.70_psi_1.60_phi_%.2f_slip' %Phii][3])
+                        a.plot(x, Data['Ma_0.70_psi_1.60_phi_%.2f' %Phii][2])
+			a.plot(x, Data['Ma_0.70_psi_1.60_phi_%.2f' %Phii][3])
                         a.set_ylabel('Peak-to-Peak Blowing Ratio, $BR$')
                         a.set_xlabel('Chord, x')
                         plt.tight_layout()  # Remove extraneous white space
@@ -415,6 +415,10 @@ for Psii in [1.60]:
 
 #looking through phi
 #Pressure side peak-to-peak graph
+
+print 'difference between slip and normal ps: ', Data['Ma_0.70_psi_1.60_phi_0.45'][2] - Data['Ma_0.70_psi_1.60_phi_0.45_slip'][2]
+print 'difference between slip and normal ss: ', Data['Ma_0.70_psi_1.60_phi_0.45'][3] - Data['Ma_0.70_psi_1.60_phi_0.45_slip'][3]
+
 f,a = plt.subplots()
 
 n = len(Phi)
