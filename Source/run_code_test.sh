@@ -2,6 +2,7 @@
 #Make executable with chmod command
 
 #Create the steady input
+python make_design.py
 
 # Run the steady code through Turbostream
 for i in 0.80 1.20 1.60 2.00 2.40
