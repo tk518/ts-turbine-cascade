@@ -26,7 +26,7 @@ if __name__ == "__main__":
                 # Number of time steps between probes
                 nstep_save_probe = 1
 
-                ''' 
+                
                 #Non-slip code
 
                 # File name of the steady soln to read in fnamein + '_psi_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f' % Mai + '.hdf5'
@@ -43,7 +43,7 @@ if __name__ == "__main__":
 
                 # File name of the new unsteady input file to write out 'input_2_psi_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f' % Mai + '.hdf5'
                 fname_out = 'input_2_psi_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f' % Mai + '_slip.hdf5'
-
+                '''
                 # Put blade-to-blade probes on vane?
                 vane_b2b_probe = True
 
