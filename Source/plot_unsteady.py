@@ -36,17 +36,20 @@ def test_cyclicity(Dat_p, nsteps_cycle, nts):
     return(absolute_pressure_difference, percentage_pressure_difference)
 
 
+Phi = [0.40, 0.60, 0.80, 1.00, 1.20]
+Psi = [0.80, 1.20, 1.60, 2.00, 2.40]
+Ma =  [0.70]
 
-for Psii in [1.6]:
+for Psii in Psi:
 
-    for Phii in [0.45, 0.6, 0.8, 1.0, 1.15]:
+    for Phii in Phi:
 
         n = 0
         P_hat1 = []
         P1 = []
         Mach = []
 
-        for Mai in [0.70]:
+        for Mai in Ma:
 
             output_file_name = 'output_2_psi_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f' % Mai  # Location of TS output file
 

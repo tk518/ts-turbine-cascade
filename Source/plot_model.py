@@ -14,14 +14,17 @@ def rms(x):
         ms = np.sqrt(np.mean(x**2))
         return(ms)
 Data={}
+Phi = [0.40, 0.60, 0.80, 1.00, 1.20]
+Psi = [0.80, 1.20, 1.60, 2.00, 2.40]
+Ma =  [0.70]
 
-for Psii in [1.60]:
+for Psii in Psi:
 
-    for Phii in [0.45, 0.60, 0.80, 1.00, 1.15]:   
+    for Phii in Phi:   
         n = 0
         #Mach = []
 
-        for Mai in [0.70]:
+        for Mai in Ma:
 
                 output_file_name = 'output_2_psi_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f' % Mai  # Location of TS output file
 

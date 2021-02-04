@@ -16,17 +16,21 @@ def rms(x):
         return(ms)
 
 Data={}
-Phi = [0.45, 0.60, 0.80, 1.00, 1.15]
+
+Phi = [0.40, 0.60, 0.80, 1.00, 1.20]
+Psi = [0.80, 1.20, 1.60, 2.00, 2.40]
+Ma =  [0.70]
+
 slip = True
 
 if slip == True:
-        for Psii in [1.60]:
+        for Psii in Psi:
 
                 for Phii in Phi:
                         n = 0
                         #Mach = []
 
-                        for Mai in [0.70]:
+                        for Mai in Ma:
 
                                 output_file_name = 'output_2_psi_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f_slip' % Mai  # Location of TS output file
 
@@ -216,13 +220,13 @@ if slip == True:
 
                                 n = n + 1
                 
-for Psii in [1.60]:
+for Psii in Psi:
 
         for Phii in Phi:
                 n = 0
                 #Mach = []
 
-                for Mai in [0.70]:
+                for Mai in Ma:
 
                         output_file_name = 'output_2_psi_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f' % Mai  # Location of TS output file
 
@@ -413,11 +417,11 @@ for Psii in [1.60]:
                         n = n + 1
 
 
-#looking through phi
-#Pressure side peak-to-peak graph
+# looking through phi
+# Pressure side peak-to-peak graph
 
-print 'difference between slip and normal ps: ', Data['Ma_0.70_psi_1.60_phi_0.45'][2] - Data['Ma_0.70_psi_1.60_phi_0.45_slip'][2]
-print 'difference between slip and normal ss: ', Data['Ma_0.70_psi_1.60_phi_0.45'][3] - Data['Ma_0.70_psi_1.60_phi_0.45_slip'][3]
+# print 'difference between slip and normal ps: ', Data['Ma_0.70_psi_1.60_phi_0.45'][2] - Data['Ma_0.70_psi_1.60_phi_0.45_slip'][2]
+# print 'difference between slip and normal ss: ', Data['Ma_0.70_psi_1.60_phi_0.45'][3] - Data['Ma_0.70_psi_1.60_phi_0.45_slip'][3]
 
 f,a = plt.subplots()
 
