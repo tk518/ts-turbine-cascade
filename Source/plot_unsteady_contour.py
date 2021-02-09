@@ -7,11 +7,17 @@ from ts import ts_tstream_reader, ts_tstream_cut  # TS grid reader
 #
 # Set variables here
 #
-for Psii in [1.6]:
 
-    for Phii in [0.45, 0.6, 0.8, 1.0, 1.15]:
+Phi = [0.4, 0.6, 0.8, 1.0, 1.20]
+Psi = [0.8, 1.2, 1.6, 2.0, 2.4]
+Ma = [0.7]
 
-        for Mai in [0.70]:
+for Psii in Psi:
+
+    for Phii in Phi:   
+        n = 0
+
+        for Mai in Ma:
 
             output_file_name = 'output_2_psi_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f' % Mai  # Location of TS output file
 
@@ -154,22 +160,21 @@ for Psii in [1.6]:
                 a.axis('off')
                 a.set_ylim([0.,dtheta_sector*Dat[0]['r'][0,0,0,0]])
                 plt.tight_layout()  # Remove extraneous white space
-                plt.savefig('mean_static_pressure_%d.png'%stepsize,dpi=200)
+                plt.savefig('mean_static_pressure_psi_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f' % Mai +'_%d.png' %stepsize, dpi=200)
                 plt.close(f)
-'''
 
-    # Entropy
-    for stepsize in range(nt): #(1, 97) gets all the steps
-        f,a = plt.subplots()  # Create a figure and axis to plot into
-        #plt.set_cmap('cubehelix_r')
-        lev = np.linspace(-8.,35.0,21)
-        probe.render_frame(a, Dat,'ds', stepsize, lev, Omega, dt*nstep_save_probe,nstep_cycle/nstep_save_probe, dtheta_sector, Po1, P2)
-        a.axis('equal')
-        plt.grid(False)
-        a.axis('off')
-        a.set_ylim([0.,dtheta_sector*Dat[0]['r'][0,0,0,0]])
-        plt.tight_layout()  # Remove extraneous white space
-        plt.savefig('entropy_%d.png'%stepsize,dpi=200)
-        plt.close(f)
-    #plt.show()  # Render the plot
-    '''
+
+            # Entropy
+            for stepsize in range(nt): #(1, 97) gets all the steps
+                f,a = plt.subplots()  # Create a figure and axis to plot into
+                #plt.set_cmap('cubehelix_r')
+                lev = np.linspace(-8.,35.0,21)
+                probe.render_frame(a, Dat,'ds', stepsize, lev, Omega, dt*nstep_save_probe,nstep_cycle/nstep_save_probe, dtheta_sector, Po1, P2)
+                a.axis('equal')
+                plt.grid(False)
+                a.axis('off')
+                a.set_ylim([0.,dtheta_sector*Dat[0]['r'][0,0,0,0]])
+                plt.tight_layout()  # Remove extraneous white space
+                plt.savefig('Entropy_psi_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f' % Mai + 'step_%d.png' %stepsize, dpi=200)
+                plt.close(f)
+            #plt.show()  # Render the plot

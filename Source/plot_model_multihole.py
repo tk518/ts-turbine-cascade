@@ -196,9 +196,9 @@ if slip == True:
 
                                 #rms BR
                                 #pressure side, if pressure side is [0]
-                                rms_ps = rms(BR[0].T)
+                                rms_ps = rms(BR[0].T - np.mean(BR[0].T, axis = 0))
                                 #suction side, if pressure side is [1]
-                                rms_ss = rms(BR[1].T)
+                                rms_ss = rms(BR[1].T - np.mean(BR[1].T, axis = 0))
 
                                 #key in form 'Ma_0.70_psi_1.60_phi_0.45'
                                 Data['Ma_'+"{:.2f}".format(Mai)+'_psi_'+"{:.2f}".format(Psii)+'_phi_'+"{:.2f}".format(Phii)+'_slip'] = [BR[0].T,BR[1].T,ptp_ps,ptp_ss,rms_ps,rms_ss]
@@ -392,9 +392,9 @@ for Psii in Psi:
 
                         #rms BR
                         #pressure side, if pressure side is [0]
-                        rms_ps = rms(BR[0].T)
+                        rms_ps = rms(BR[0].T - np.mean(BR[0].T, axis = 0))
                         #suction side, if pressure side is [1]
-                        rms_ss = rms(BR[1].T)
+                        rms_ss = rms(BR[1].T - np.mean(BR[1].T, axis = 0))
 
                         #key in form 'Ma_0.70_psi_1.60_phi_0.45'
                         Data['Ma_'+"{:.2f}".format(Mai)+'_psi_'+"{:.2f}".format(Psii)+'_phi_'+"{:.2f}".format(Phii)] = [BR[0].T,BR[1].T,ptp_ps,ptp_ss,rms_ps,rms_ss]
@@ -497,7 +497,45 @@ if slip == True:
 else:
         plt.savefig('Suction_side_rms_blowing_ratio_vs_x.pdf')
 
+#Mean plot on suction and pressure sides
+f,a = plt.subplots()
+n = len(Phi)
+color=iter(cm.rainbow(np.linspace(0,1,n)))
+for Phii in Phi:
+	c = next(color)
+        a.plot(x, np.mean(Data['Ma_0.70_psi_1.60_phi_%.2f' %Phii][0], axis = 0), '-', label = 'BR @ Phi = %.2f' %Phii, c=c)
+        if slip == True:
+                a.plot(x, np.mean(Data['Ma_0.70_psi_1.60_phi_%.2f_slip' %Phii][0], axis = 0), '--', label = 'BR @ Phi = %.2f with slip' %Phii, c=c)
+a.set_ylabel('Pressure side mean Blowing Ratio, $BR$')
+a.set_xlabel('Axial displacement, $x$')
+plt.tight_layout()        
+plt.legend(loc="best", ncol=2)
+if slip == True:
+        plt.savefig('Pressure_side_mean_blowing_ratio_vs_x_slip.pdf')
+else:
+        plt.savefig('Pressure_side_mean_blowing_ratio_vs_x.pdf')
+
+#Mean plot on suction and pressure sides
+f,a = plt.subplots()
+n = len(Phi)
+color=iter(cm.rainbow(np.linspace(0,1,n)))
+for Phii in Phi:
+	c = next(color)
+        a.plot(x, np.mean(Data['Ma_0.70_psi_1.60_phi_%.2f' %Phii][1], axis = 0), '-', label = 'BR @ Phi = %.2f' %Phii, c=c)
+        if slip == True:
+                a.plot(x, np.mean(Data['Ma_0.70_psi_1.60_phi_%.2f_slip' %Phii][1], axis = 0), '--', label = 'BR @ Phi = %.2f with slip' %Phii, c=c)
+a.set_ylabel('Suction side mean Blowing Ratio, $BR$')
+a.set_xlabel('Axial displacement, $x$')
+plt.tight_layout()        
+plt.legend(loc="best", ncol=2)
+if slip == True:
+        plt.savefig('Suction_side_mean_blowing_ratio_vs_x_slip.pdf')
+else:
+        plt.savefig('Suction_side_mean_blowing_ratio_vs_x.pdf')
+
 plt.show()
+
+
 
 '''
 f,a = plt.subplots()

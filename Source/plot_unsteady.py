@@ -210,6 +210,7 @@ for Psii in Psi:
             Vs_hat = Vs/np.mean(Vs)
             Pp_hat = Pp/np.mean(Pp)
             Ps_hat = Ps/np.mean(Ps)
+            
 
             #For pressure side only to begin
             f,a = plt.subplots()  # Create a figure and axis to plot into
