@@ -71,6 +71,9 @@ def render_frame(a, d, varname, it, lev, Omega, dt, nstep_cycle, sector_size, Po
         elif varname == 'pmean':
             varnow = np.divide(di['pstat'][:,0,:,it] - np.mean(di['pstat'][:,0,:,:],axis = 2), np.mean(di['pstat'][:,0,:,:],axis = 2))
             print(varnow)
+        elif varname == 'pmean_ns':
+            varnow = di['pstat'][:,0,:,it] - np.mean(di['pstat'][:,0,:,:],axis = 2)
+            print(varnow)
         else:
             varnow = di[varname][:,0,:,it]
         # If this is a stator, offset backwards by del_theta

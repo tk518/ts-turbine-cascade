@@ -153,7 +153,7 @@ for Psii in Psi:
             for stepsize in range(nt): #(1, 97) gets all the steps
                 f,a = plt.subplots()  # Create a figure and axis to plot into
                 #plt.set_cmap('cubehelix_r')
-                lev = np.linspace(0.,2.,41)
+                lev = np.linspace(-0.015,0.015,201)
                 probe.render_frame(a, Dat,'pmean', stepsize, lev, Omega, dt*nstep_save_probe,nstep_cycle/nstep_save_probe, dtheta_sector, Po1, P2)
                 a.axis('equal')
                 plt.grid(False)
