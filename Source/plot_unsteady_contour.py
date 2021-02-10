@@ -3,6 +3,7 @@ import numpy as np  # Multidimensional array library
 import probe  # Code for reading TS probe output
 import matplotlib.pyplot as plt  # Plotting library
 from ts import ts_tstream_reader, ts_tstream_cut  # TS grid reader
+import os
 
 #
 # Set variables here
@@ -136,6 +137,17 @@ for Psii in Psi:
 
             # Finished reading data, now make some plots
 
+            #Creating folder to store images
+            path = os.getcwd()
+            print(path)
+            newpath = path + 'psi_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f' % Mai'
+            try:
+                os.mkdir(newpath)
+            except OSError:
+                print ("Creation of the directory %s failed" % newpath)
+            else:
+                print ("Successfully created the directory %s " % newpath)
+
             '''
             for stepsize in range(nt): #(1, 97) gets all the steps
                 f,a = plt.subplots()  # Create a figure and axis to plot into
@@ -160,7 +172,7 @@ for Psii in Psi:
                 a.axis('off')
                 a.set_ylim([0.,dtheta_sector*Dat[0]['r'][0,0,0,0]])
                 plt.tight_layout()  # Remove extraneous white space
-                plt.savefig('mean_static_pressure_psi_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f' % Mai +'_%d.png' %stepsize, dpi=200)
+                plt.savefig(newpath + '/mean_static_pressure_psi_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f' % Mai +'_%d.png' %stepsize, dpi=200)
                 plt.close(f)
 
 
@@ -175,6 +187,6 @@ for Psii in Psi:
                 a.axis('off')
                 a.set_ylim([0.,dtheta_sector*Dat[0]['r'][0,0,0,0]])
                 plt.tight_layout()  # Remove extraneous white space
-                plt.savefig('Entropy_psi_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f' % Mai + 'step_%d.png' %stepsize, dpi=200)
+                plt.savefig(newpath + '/Entropy_psi_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f' % Mai + 'step_%d.png' %stepsize, dpi=200)
                 plt.close(f)
             #plt.show()  # Render the plot
