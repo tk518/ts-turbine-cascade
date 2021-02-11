@@ -140,7 +140,7 @@ for Psii in Psi:
             #Creating folder to store images
             path = os.getcwd()
             print(path)
-            newpath = path + 'psi_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f' % Mai'
+            newpath = os.path.join(path, 'psi_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f' % Mai)
             try:
                 os.mkdir(newpath)
             except OSError:

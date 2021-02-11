@@ -7,6 +7,13 @@ from ts import ts_tstream_reader  # TS grid reader
 #
 # Set variables here
 #
+def rms(x):
+        ms = np.sqrt(np.mean(x**2, axis = 0))
+        return(ms)
+
+def ptp(x):
+    tp = np.max(x, axis = 0) - np.min(x, axis = 0)
+    return(tp)
 
 def test_cyclicity(Dat_p, nsteps_cycle, nts):
 
@@ -39,6 +46,8 @@ def test_cyclicity(Dat_p, nsteps_cycle, nts):
 Phi = [0.40, 0.60, 0.80, 1.00, 1.20]
 Psi = [0.80, 1.20, 1.60, 2.00, 2.40]
 Ma =  [0.70]
+Data={}
+slip = False
 
 for Psii in Psi:
 
@@ -145,13 +154,14 @@ for Psii in Psi:
             P_hat = P / np.mean(P)
 
             # Generate the graph
+            '''
             f,a = plt.subplots()  # Create a figure and axis to plot into
             a.plot(ft,P_hat,'-')  # Plot our data as a new line
             plt.xlabel('Time, Rotor Periods, $ft$')  # Horizontal axis label
             plt.ylabel('Static Pressure, $p/\overline{p}$')  # Vertical axis label
             plt.tight_layout()  # Remove extraneous white space
             plt.savefig('unsteady_P_Ma_%.2f.pdf' % Mai)  # Write out a pdf file
-
+            '''
             #
             # Plot time-mean density on pressure side as function of axial location
             #
@@ -164,6 +174,7 @@ for Psii in Psi:
             # j = jmid for mid-span radial location 
             # k = 0 because the patch is at const pitchwise position, on pressure surface
             # n = : for all instants in time
+            '''
             for Di in [Dat_ps, Dat_ss]:
                 P = Di['pstat'][:,jmid,0,:]
 
@@ -184,7 +195,7 @@ for Psii in Psi:
                 a.plot(x_hat,np.mean(P_hat,axis=1),'-k')  # Plot our data as a new line
                 a.plot(x_hat,np.min(P_hat,axis=1),'--k')  # Plot our data as a new line
                 a.plot(x_hat,np.max(P_hat,axis=1),'--k')  # Plot our data as a new line
-
+            
             plt.xlabel('Axial Chord Fraction, $\hat{x}$')  # Horizontal axis label
             # Vertical axis label, start string with r so that \r is not interpreted as a
             # special escape sequence for carriage return
@@ -192,7 +203,7 @@ for Psii in Psi:
                     r'Static Pressure')
             plt.tight_layout()  # Remove extraneous white space
             plt.savefig('P_x_Ma_%.2f.pdf' % Mai)  # Write out a pdf file
-
+            '''
             P1.append(Dat_ps['pstat'][imid,jmid,0,:])
             P_hat1.append(P1[n] / np.mean(P1[n]))
 
@@ -202,16 +213,19 @@ for Psii in Psi:
 
             # Pull out data for model
 
-            Vp = Dat_ps['vrel'][ihole_ps,jmid,0,:]
-            Vs = Dat_ss['vrel'][ihole_ss,jmid,0,:]
-            Pp = Dat_ps['pstat'][ihole_ps,jmid,0,:]
-            Ps = Dat_ss['pstat'][ihole_ss,jmid,0,:]
-            Vp_hat = Vp/np.mean(Vp)
-            Vs_hat = Vs/np.mean(Vs)
-            Pp_hat = Pp/np.mean(Pp)
-            Ps_hat = Ps/np.mean(Ps)
-            
+            Vp = Dat_ps['vrel'][:,jmid,0,:]
+            Vs = Dat_ss['vrel'][:,jmid,0,:]
+            Pp = Dat_ps['pstat'][:,jmid,0,:]
+            Ps = Dat_ss['pstat'][:,jmid,0,:]
+            Vp_hat = Vp/np.mean(Vp, axis = 0)
+            Vs_hat = Vs/np.mean(Vs, axis = 0)
+            Pp_hat = Pp/np.mean(Pp, axis = 0)
+            Ps_hat = Ps/np.mean(Ps, axis = 0)
+            x = Dat_ps['x'][:,jmid,0,0]
 
+            Data['Ma_'+"{:.2f}".format(Mai)+'_psi_'+"{:.2f}".format(Psii)+'_phi_'+"{:.2f}".format(Phii)] =[Vp_hat, Vs_hat, Pp_hat, Ps_hat]
+
+            '''
             #For pressure side only to begin
             f,a = plt.subplots()  # Create a figure and axis to plot into
 
@@ -226,8 +240,9 @@ for Psii in Psi:
 
             Mach.append(Mai)
             n = n + 1
+            '''
 
-            test = test_cyclicity(Dat_ps, nstep_cycle, nt)
+            test = test_cyclicity(Dat_ss, nstep_cycle, nt)
 
             print('Average absolute pressure difference = at Mach %.2f' % Mai, sum(test[0])/len(test[0]))
             print('Average percentage pressure difference = at Mach %.2f' % Mai, sum(test[1])*100/len(test[1]), '%')
@@ -235,8 +250,8 @@ for Psii in Psi:
             print('Maximum absolute cycle difference = at Mach %.2f' % Mai, max(test[0]))
 
 
-plt.show()  # Render the plots
-
+#plt.show()  # Render the plots
+'''
 f,a = plt.subplots()  # Create a figure and axis to plot into
 
 for x in range(0, n):
@@ -248,7 +263,118 @@ plt.legend()
 plt.tight_layout()  # Remove extraneous white space
 plt.savefig('unsteady_P_at_different_Mach_No.pdf')  # Write out a pdf file
 plt.show()
-
+'''
 #I want to see 
 #a) blowing ratio for multiple Mach numbers [x]
 #b) Static pressure change and velocity at the same point on the same graph [x]
+
+f,a = plt.subplots()
+n = len(Phi)
+color=iter(cm.rainbow(np.linspace(0,1,n)))
+for Phii in Phi:
+	c = next(color)
+	a.plot(x, ptp(Data['Ma_0.70_psi_1.60_phi_%.2f' %Phii][0]), '-', label = 'Phi = %.2f' %Phii, c=c)
+        if slip == True:
+                a.plot(x, ptp(Data['Ma_0.70_psi_1.60_phi_%.2f_slip' %Phii][0]), '--', label = 'Phi = %.2f with slip' %Phii, c=c)
+plt.ylabel('Pressure side Peak-to-peak Normalised Velocity, $V$')
+plt.xlabel('Axial displacement, $x$')
+plt.tight_layout()
+#plt.ylim(0,0.9)   
+plt.legend(loc="best", ncol=2)
+if slip == True:
+        plt.savefig('Pressure_side_peak-to-peak_velocity_vs_x_slip.pdf')
+else:
+        plt.savefig('Pressure_side_peak-to-peak_velocity_vs_x.pdf')
+
+#Pressure side rms graph
+f,a = plt.subplots()
+n = len(Phi)
+color=iter(cm.rainbow(np.linspace(0,1,n)))
+for Phii in Phi:
+	c = next(color)
+        a.plot(x, ptp(Data['Ma_0.70_psi_1.60_phi_%.2f' %Phii][1]), '-', label = 'Phi = %.2f' %Phii, c=c)
+        if slip == True:
+                a.plot(x, ptp(Data['Ma_0.70_psi_1.60_phi_%.2f_slip' %Phii][1]), '--', label = 'Phi = %.2f with slip' %Phii, c=c)
+a.set_ylabel('Suction side peak-to-peak Normalised Velocity, $V$')
+a.set_xlabel('Axial displacement, $x$')
+plt.tight_layout()  
+plt.legend(loc="best", ncol=2)     
+if slip == True: 
+        plt.savefig('Suction_side_peak-to-peak_velocity_vs_x_slip.pdf')
+else:
+        plt.savefig('Suction_side_peak-to-peak_velocity_vs_x.pdf')
+
+#Suction side peak-to-peak graph
+f,a = plt.subplots()
+n = len(Phi)
+color=iter(cm.rainbow(np.linspace(0,1,n)))
+for Phii in Phi:
+	c = next(color)
+        a.plot(x, ptp(Data['Ma_0.70_psi_1.60_phi_%.2f' %Phii][2]), '-', label = 'Phi = %.2f' %Phii, c=c)
+        if slip == True:
+                a.plot(x, ptp(Data['Ma_0.70_psi_1.60_phi_%.2f_slip' %Phii][2]), '--', label = 'Phi = %.2f with slip' %Phii, c=c)
+plt.ylabel('Pressure side Peak-to-peak pressure, $p$')
+plt.xlabel('Chord, $x$')
+plt.tight_layout()
+#plt.ylim(0,0.9)   
+plt.legend(loc="best", ncol=2)
+if slip == True:
+        plt.savefig('Pressure_side_peak-to-peak_pressure_vs_x_slip.pdf')
+else:
+        plt.savefig('Pressure_side_peak-to-peak_pressure_vs_x.pdf')
+
+#Suction side rms graph
+f,a = plt.subplots()
+n = len(Phi)
+color=iter(cm.rainbow(np.linspace(0,1,n)))
+for Phii in Phi:
+	c = next(color)
+        a.plot(x, ptp(Data['Ma_0.70_psi_1.60_phi_%.2f' %Phii][3]), '-', label = 'Phi = %.2f' %Phii, c=c)
+        if slip == True:
+                a.plot(x, ptp(Data['Ma_0.70_psi_1.60_phi_%.2f_slip' %Phii][3]), '--', label = 'Phi = %.2f with slip' %Phii, c=c)
+a.set_ylabel('Suction side Peak-to-peak pressure, $p$')
+a.set_xlabel('Axial displacement, $x$')
+plt.tight_layout()        
+plt.legend(loc="best", ncol=2)
+if slip == True:
+        plt.savefig('Suction_side_peak-to-peak_pressure_vs_x_slip.pdf')
+else:
+        plt.savefig('Suction_side_peak-to-peak_pressure_vs_x.pdf')
+'''
+#Mean plot on suction and pressure sides
+f,a = plt.subplots()
+n = len(Phi)
+color=iter(cm.rainbow(np.linspace(0,1,n)))
+for Phii in Phi:
+	c = next(color)
+        a.plot(x, np.mean(Data['Ma_0.70_psi_1.60_phi_%.2f' %Phii][0], axis = 0), '-', label = 'BR @ Phi = %.2f' %Phii, c=c)
+        if slip == True:
+                a.plot(x, np.mean(Data['Ma_0.70_psi_1.60_phi_%.2f_slip' %Phii][0], axis = 0), '--', label = 'BR @ Phi = %.2f with slip' %Phii, c=c)
+a.set_ylabel('Pressure side mean Blowing Ratio, $BR$')
+a.set_xlabel('Axial displacement, $x$')
+plt.tight_layout()        
+plt.legend(loc="best", ncol=2)
+if slip == True:
+        plt.savefig('Pressure_side_mean_blowing_ratio_vs_x_slip.pdf')
+else:
+        plt.savefig('Pressure_side_mean_blowing_ratio_vs_x.pdf')
+
+#Mean plot on suction and pressure sides
+f,a = plt.subplots()
+n = len(Phi)
+color=iter(cm.rainbow(np.linspace(0,1,n)))
+for Phii in Phi:
+	c = next(color)
+        a.plot(x, np.mean(Data['Ma_0.70_psi_1.60_phi_%.2f' %Phii][1], axis = 0), '-', label = 'BR @ Phi = %.2f' %Phii, c=c)
+        if slip == True:
+                a.plot(x, np.mean(Data['Ma_0.70_psi_1.60_phi_%.2f_slip' %Phii][1], axis = 0), '--', label = 'BR @ Phi = %.2f with slip' %Phii, c=c)
+a.set_ylabel('Suction side mean Blowing Ratio, $BR$')
+a.set_xlabel('Axial displacement, $x$')
+plt.tight_layout()        
+plt.legend(loc="best", ncol=2)
+if slip == True:
+        plt.savefig('Suction_side_mean_blowing_ratio_vs_x_slip.pdf')
+else:
+        plt.savefig('Suction_side_mean_blowing_ratio_vs_x.pdf')
+'''
+plt.show()
