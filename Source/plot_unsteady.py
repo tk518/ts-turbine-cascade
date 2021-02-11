@@ -3,6 +3,7 @@ import numpy as np  # Multidimensional array library
 import probe  # Code for reading TS probe output
 import matplotlib.pyplot as plt  # Plotting library
 from ts import ts_tstream_reader  # TS grid reader
+from matplotlib.pyplot import cm
 
 #
 # Set variables here
@@ -55,7 +56,7 @@ for Psii in Psi:
 
         n = 0
         P_hat1 = []
-        P1 = []
+        P2 = []
         Mach = []
 
         for Mai in Ma:
@@ -204,8 +205,8 @@ for Psii in Psi:
             plt.tight_layout()  # Remove extraneous white space
             plt.savefig('P_x_Ma_%.2f.pdf' % Mai)  # Write out a pdf file
             '''
-            P1.append(Dat_ps['pstat'][imid,jmid,0,:])
-            P_hat1.append(P1[n] / np.mean(P1[n]))
+            P2.append(Dat_ps['pstat'][imid,jmid,0,:])
+            P_hat1.append(P2[n] / np.mean(P2[n]))
 
             # Choose a hole position
             ihole_ps = 20
@@ -244,11 +245,13 @@ for Psii in Psi:
 
             test = test_cyclicity(Dat_ss, nstep_cycle, nt)
 
-            print('Average absolute pressure difference = at Mach %.2f' % Mai, sum(test[0])/len(test[0]))
-            print('Average percentage pressure difference = at Mach %.2f' % Mai, sum(test[1])*100/len(test[1]), '%')
-            print('Maximum percentage cycle difference = at Mach %.2f' % Mai, max(test[1])*100, '%')
-            print('Maximum absolute cycle difference = at Mach %.2f' % Mai, max(test[0]))
-
+            print 'Average absolute pressure difference = at Mach %.2f ' % Mai, sum(test[0])/len(test[0])
+            print 'Average percentage pressure difference = at Mach %.2f ' % Mai, sum(test[1])*100/len(test[1]), '%'
+            print 'Maximum percentage cycle difference = at Mach %.2f ' % Mai, max(test[1])*100, '%'
+            print 'Maximum absolute cycle difference = at Mach %.2f ' % Mai, max(test[0])
+            print '/n'
+            print 'len x: ', len(x)
+            print 'len ptp_ps: ', ptp(Data['Ma_'+"{:.2f}".format(Mai)+'_psi_'+"{:.2f}".format(Psii)+'_phi_'+"{:.2f}".format(Phii)][2])
 
 #plt.show()  # Render the plots
 '''
