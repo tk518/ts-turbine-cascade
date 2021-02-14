@@ -9,9 +9,10 @@ import os
 # Set variables here
 #
 
-Phi = [0.4, 0.6, 0.8, 1.0, 1.20]
-Psi = [0.8, 1.2, 1.6, 2.0, 2.4]
+Phi = [0.4]
+Psi = [1.6]
 Ma = [0.7]
+slip == True
 
 for Psii in Psi:
 
@@ -140,7 +141,10 @@ for Psii in Psi:
             #Creating folder to store images
             path = os.getcwd()
             print(path)
-            newpath = os.path.join(path, 'psi_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f' % Mai)
+            if slip == True:
+                newpath = os.path.join(path, 'psi_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f_slip' % Mai)
+            else:
+                newpath = os.path.join(path, 'psi_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f' % Mai)
             try:
                 os.mkdir(newpath)
             except OSError:
@@ -172,7 +176,10 @@ for Psii in Psi:
                 a.axis('off')
                 a.set_ylim([0.,dtheta_sector*Dat[0]['r'][0,0,0,0]])
                 plt.tight_layout()  # Remove extraneous white space
-                plt.savefig(newpath + '/mean_static_pressure_psi_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f' % Mai +'_%d.png' %stepsize, dpi=200)
+                if slip == True:
+                    plt.savefig(newpath + '/mean_static_pressure_psi_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f_slip' % Mai +'_%d.png' %stepsize, dpi=200)
+                else:
+                    plt.savefig(newpath + '/mean_static_pressure_psi_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f' % Mai +'_%d.png' %stepsize, dpi=200)
                 plt.close(f)
 
 
@@ -187,6 +194,9 @@ for Psii in Psi:
                 a.axis('off')
                 a.set_ylim([0.,dtheta_sector*Dat[0]['r'][0,0,0,0]])
                 plt.tight_layout()  # Remove extraneous white space
-                plt.savefig(newpath + '/Entropy_psi_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f' % Mai + 'step_%d.png' %stepsize, dpi=200)
+                if slip == True:
+                    plt.savefig(newpath + '/Entropy_psi_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f_slip' % Mai + '_%d.png' %stepsize, dpi=200)
+                else:
+                    plt.savefig(newpath + '/Entropy_psi_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f' % Mai + '_%d.png' %stepsize, dpi=200)
                 plt.close(f)
             #plt.show()  # Render the plot
