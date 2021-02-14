@@ -422,9 +422,8 @@ for Psii in Psi:
 
 # print 'difference between slip and normal ps: ', Data['Ma_0.70_psi_1.60_phi_0.45'][2] - Data['Ma_0.70_psi_1.60_phi_0.45_slip'][2]
 # print 'difference between slip and normal ss: ', Data['Ma_0.70_psi_1.60_phi_0.45'][3] - Data['Ma_0.70_psi_1.60_phi_0.45_slip'][3]
-
+'''
 f,a = plt.subplots()
-
 n = len(Phi)
 color=iter(cm.rainbow(np.linspace(0,1,n)))
 for Phii in Phi:
@@ -441,7 +440,7 @@ if slip == True:
         plt.savefig('Pressure_side_peak-to-peak_blowing_ratio_vs_x_slip.pdf')
 else:
         plt.savefig('Pressure_side_peak-to-peak_blowing_ratio_vs_x.pdf')
-
+'''
 #Pressure side rms graph
 f,a = plt.subplots()
 n = len(Phi)
@@ -450,7 +449,7 @@ for Phii in Phi:
 	c = next(color)
         a.plot(x, Data['Ma_0.70_psi_1.60_phi_%.2f' %Phii][4], '-', label = 'BR @ Phi = %.2f' %Phii, c=c)
         if slip == True:
-                a.plot(x, Data['Ma_0.70_psi_1.60_phi_%.2f_slip' %Phii][2], '--', label = 'BR @ Phi = %.2f with slip' %Phii, c=c)
+                a.plot(x, Data['Ma_0.70_psi_1.60_phi_%.2f_slip' %Phii][4], '--', label = 'BR @ Phi = %.2f with slip' %Phii, c=c)
 a.set_ylabel('Pressure side hole rms Blowing Ratio, $BR$')
 a.set_xlabel('Axial displacement, $x$')
 plt.tight_layout()  
@@ -459,7 +458,7 @@ if slip == True:
         plt.savefig('Pressure_side_rms_blowing_ratio_vs_x_slip.pdf')
 else:
         plt.savefig('Pressure_side_rms_blowing_ratio_vs_x.pdf')
-
+'''
 #Suction side peak-to-peak graph
 f,a = plt.subplots()
 n = len(Phi)
@@ -468,7 +467,7 @@ for Phii in Phi:
 	c = next(color)
         a.plot(x, Data['Ma_0.70_psi_1.60_phi_%.2f' %Phii][3], '-', label = 'BR @ Phi = %.2f' %Phii, c=c)
         if slip == True:
-                a.plot(x, Data['Ma_0.70_psi_1.60_phi_%.2f_slip' %Phii][2], '--', label = 'BR @ Phi = %.2f with slip' %Phii, c=c)
+                a.plot(x, Data['Ma_0.70_psi_1.60_phi_%.2f_slip' %Phii][3], '--', label = 'BR @ Phi = %.2f with slip' %Phii, c=c)
 plt.ylabel('Suction side Peak-to-peak Blowing Ratio, $BR$')
 plt.xlabel('Chord, $x$')
 plt.tight_layout()
@@ -478,7 +477,7 @@ if slip == True:
         plt.savefig('Suction_side_peak-to-peak_blowing_ratio_vs_x_slip.pdf')
 else:
         plt.savefig('Suction_side_peak-to-peak_blowing_ratio_vs_x.pdf')
-
+'''
 #Suction side rms graph
 f,a = plt.subplots()
 n = len(Phi)
@@ -487,7 +486,7 @@ for Phii in Phi:
 	c = next(color)
         a.plot(x, Data['Ma_0.70_psi_1.60_phi_%.2f' %Phii][5], '-', label = 'BR @ Phi = %.2f' %Phii, c=c)
         if slip == True:
-                a.plot(x, Data['Ma_0.70_psi_1.60_phi_%.2f_slip' %Phii][2], '--', label = 'BR @ Phi = %.2f with slip' %Phii, c=c)
+                a.plot(x, Data['Ma_0.70_psi_1.60_phi_%.2f_slip' %Phii][5], '--', label = 'BR @ Phi = %.2f with slip' %Phii, c=c)
 a.set_ylabel('Suction side rms Blowing Ratio, $BR$')
 a.set_xlabel('Axial displacement, $x$')
 plt.tight_layout()        
@@ -497,6 +496,43 @@ if slip == True:
 else:
         plt.savefig('Suction_side_rms_blowing_ratio_vs_x.pdf')
 
+#percentage differenece in rms blowing ratio
+#Pressure surface
+if slip == True:
+        f,a = plt.subplots()
+        n = len(Phi)
+        color=iter(cm.rainbow(np.linspace(0,1,n)))
+        for Phii in Phi:
+                c = next(color)
+                dif = abs(Data['Ma_0.70_psi_1.60_phi_%.2f' %Phii][4] - Data['Ma_0.70_psi_1.60_phi_%.2f_slip' %Phii][4])/Data['Ma_0.70_psi_1.60_phi_%.2f' %Phii][4]
+                a.plot(x, dif, '-', label = 'BR @ Phi = %.2f' %Phii, c=c)
+        a.set_ylabel('percentage difference, $%$')
+        a.set_xlabel('Axial displacement, $x$')
+        plt.tight_layout()  
+        plt.legend(loc="best", ncol=2)     
+        plt.savefig('Pressure_side_rms_blowing_ratio_difference.pdf')
+
+        f,a = plt.subplots()
+        n = len(Phi)
+        color=iter(cm.rainbow(np.linspace(0,1,n)))
+        for Phii in Phi:
+                c = next(color)
+                dif = abs(Data['Ma_0.70_psi_1.60_phi_%.2f' %Phii][5] - Data['Ma_0.70_psi_1.60_phi_%.2f_slip' %Phii][5])/Data['Ma_0.70_psi_1.60_phi_%.2f' %Phii][5]
+                a.plot(x, dif, '-', label = 'BR @ Phi = %.2f' %Phii, c=c)
+        a.set_ylabel('percentage difference, $%$')
+        a.set_xlabel('Axial displacement, $x$')
+        plt.tight_layout()  
+        plt.legend(loc="best", ncol=2)     
+        plt.savefig('Suction_side_rms_blowing_ratio_difference.pdf')
+
+
+
+
+
+
+
+
+'''
 #Mean plot on suction and pressure sides
 f,a = plt.subplots()
 n = len(Phi)
@@ -532,7 +568,7 @@ if slip == True:
         plt.savefig('Suction_side_mean_blowing_ratio_vs_x_slip.pdf')
 else:
         plt.savefig('Suction_side_mean_blowing_ratio_vs_x.pdf')
-
+'''
 plt.show()
 
 
