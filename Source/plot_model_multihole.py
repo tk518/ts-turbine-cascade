@@ -141,8 +141,8 @@ if slip == True:
                                 Toc = TR * To1
 
                                 x = Dat_ps['x'][:,jmid,0,0]
-                                print(x.min())
-                                print(x.max())
+                                #print(x.min())
+                                #print(x.max())
 
                                 # Choose a hole position
                                 ihole_ps = x
@@ -205,10 +205,10 @@ if slip == True:
                                 #find out which way round
 
                                 #print 'ptp_ps: ', ptp_ps
-                                print 'x: ', x
-                                print 'rns_ps: ',rms_ps
-                                print 'len x: ', len(x), 'len rms: ', len(rms_ps)		
-
+                                #print 'x: ', x
+                                #print 'rns_ps: ',rms_ps
+                                #print 'len x: ', len(x), 'len rms: ', len(rms_ps)		
+                                '''
                                 # Plot the peak-to-peak Blowing ratios on pressure surface along chord
                                 f,a = plt.subplots()  # Create a figure and axis to plot into
                                 a.plot(x, Data['Ma_0.70_psi_1.60_phi_%.2f_slip' %Phii][2])
@@ -217,7 +217,7 @@ if slip == True:
                                 a.set_xlabel('Chord, x')
                                 plt.tight_layout()  # Remove extraneous white space
                                 plt.savefig('BR_psi_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f' % Mai + '_along_chord_slip.pdf')  # Write out a pdf file
-
+                                '''
                                 n = n + 1
                 
 for Psii in Psi:
@@ -337,8 +337,8 @@ for Psii in Psi:
                         Toc = TR * To1
 
                         x = Dat_ps['x'][:,jmid,0,0]
-                        print(x.min())
-                        print(x.max())
+                        #print(x.min())
+                        #print(x.max())
 
                         # Choose a hole position
                         ihole_ps = x
@@ -401,10 +401,10 @@ for Psii in Psi:
                         #find out which way round
 
                         #print 'ptp_ps: ', ptp_ps
-                        print 'x: ', x
-                        print 'rns_ps: ',rms_ps
-                        print 'len x: ', len(x), 'len rms: ', len(rms_ps)		
-
+                        #print 'x: ', x
+                        #print 'rns_ps: ',rms_ps
+                        #print 'len x: ', len(x), 'len rms: ', len(rms_ps)		
+                        '''
                         # Plot the peak-to-peak Blowing ratios on pressure surface along chord
                         f,a = plt.subplots()  # Create a figure and axis to plot into
                         a.plot(x, Data['Ma_0.70_psi_1.60_phi_%.2f' %Phii][2])
@@ -413,7 +413,7 @@ for Psii in Psi:
                         a.set_xlabel('Chord, x')
                         plt.tight_layout()  # Remove extraneous white space
                         plt.savefig('BR_psi_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f' % Mai + '_along_chord.pdf')  # Write out a pdf file
-
+                        '''
                         n = n + 1
 
 
@@ -517,7 +517,7 @@ if slip == True:
         color=iter(cm.rainbow(np.linspace(0,1,n)))
         for Phii in Phi:
                 c = next(color)
-                dif = abs(Data['Ma_0.70_psi_1.60_phi_%.2f' %Phii][5] - Data['Ma_0.70_psi_1.60_phi_%.2f_slip' %Phii][5])/Data['Ma_0.70_psi_1.60_phi_%.2f' %Phii][5]
+                dif = (abs(Data['Ma_0.70_psi_1.60_phi_%.2f' %Phii][5] - Data['Ma_0.70_psi_1.60_phi_%.2f_slip' %Phii][5])/Data['Ma_0.70_psi_1.60_phi_%.2f' %Phii][5])*100
                 a.plot(x, dif, '-', label = 'BR @ Phi = %.2f' %Phii, c=c)
         a.set_ylabel('percentage difference, $%$')
         a.set_xlabel('Axial displacement, $x$')
