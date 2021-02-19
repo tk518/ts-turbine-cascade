@@ -65,21 +65,29 @@ def render_frame(a, d, varname, it, lev, Omega, dt, nstep_cycle, sector_size, Po
         xnow = di['x'][:,0,:,it]
         rtnow = di['rt'][:,0,:,it]
         rnow = di['r'][:,0,:,it]
-        if varname == 'Cp':
-            varnow = (di['pstat'][:,0,:,it] - Po1)/(Po1-P2)
-            #print(varnow)
-        elif varname == 'pmean':
-            varnow = np.divide(di['pstat'][:,0,:,it] - np.mean(di['pstat'][:,0,:,:],axis = 2), np.mean(di['pstat'][:,0,:,:],axis = 2))
-            #print(varnow)
-        elif varname == 'pmean_ns':
-            varnow = di['pstat'][:,0,:,it] - np.mean(di['pstat'][:,0,:,:],axis = 2)
-            #print(varnow)
-        else:
-            varnow = di[varname][:,0,:,it]
-        # If this is a stator, offset backwards by del_theta
         if di['rpm']==0.:
-            rtnow = (rtnow/rnow - Omega*it*dt) * rnow
+                rtnow = (rtnow/rnow - Omega*it*dt) * rnow
 
-        # Duplicate plots so the screen is always full
-        for ii in range(-2,6):
-            a.contourf(xnow, (rtnow/rnow + ii*sector_size)*rnow, varnow, lev)
+        if varname == 'ds':
+            varnow = di[varname][:,0,:,it]
+            for ii in range(-2,6):
+                a.contour(xnow, (rtnow/rnow + ii*sector_size)*rnow, varnow, lev)
+        else:
+            if varname == 'Cp':
+                varnow = (di['pstat'][:,0,:,it] - Po1)/(Po1-P2)
+                #print(varnow)
+            elif varname == 'pmean':
+                varnow = np.divide(di['pstat'][:,0,:,it] - np.mean(di['pstat'][:,0,:,:],axis = 2), np.mean(di['pstat'][:,0,:,:],axis = 2))
+                #print(varnow)
+            elif varname == 'pmean_ns':
+                varnow = di['pstat'][:,0,:,it] - np.mean(di['pstat'][:,0,:,:],axis = 2)
+                #print(varnow)
+            else:
+                varnow = di[varname][:,0,:,it]
+            # If this is a stator, offset backwards by del_theta
+            if di['rpm']==0.:
+                rtnow = (rtnow/rnow - Omega*it*dt) * rnow
+
+            # Duplicate plots so the screen is always full
+            for ii in range(-2,6):
+                a.contourf(xnow, (rtnow/rnow + ii*sector_size)*rnow, varnow, lev)

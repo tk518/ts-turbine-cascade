@@ -3,16 +3,17 @@ import numpy as np  # Multidimensional array library
 import probe  # Code for reading TS probe output
 import matplotlib.pyplot as plt  # Plotting library
 from ts import ts_tstream_reader, ts_tstream_cut  # TS grid reader
+from ts import ts_tstream_reader, ts_tstream_patch_kind
 import os
 
 #
 # Set variables here
 #
 
-Phi = [0.4]
+Phi = [0.4, 0.8, 1.2]
 Psi = [1.6]
 Ma = [0.7]
-slip == True
+slip = False
 
 for Psii in Psi:
 
@@ -20,35 +21,45 @@ for Psii in Psi:
         n = 0
 
         for Mai in Ma:
-
-            output_file_name = 'output_2_psi_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f' % Mai  # Location of TS output file
-
+            if slip == True:
+                output_file_name = 'output_2_psi_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f_slip' % Mai  # Location of TS output file
+            else:
+                 output_file_name = 'output_2_psi_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f' % Mai  # Location of TS output file
             # Load the grid 
             tsr = ts_tstream_reader.TstreamReader()
             g = tsr.read(output_file_name + '.hdf5')
 
-            pid_probe = 8   # Patch ID of probes
+            
+            #pid_probe = 8   # Patch ID of probes
+            print('***')
             bid_probe = []
             for bid in g.get_block_ids():
-                try:
-                    g.get_patch(bid, pid_probe)
-                    bid_probe.append(bid)
-                except:
-                    pass
+                for pid in g.get_patch_ids(bid):
+                    patch = g.get_patch(bid,pid)
+                    if patch.kind == ts_tstream_patch_kind.probe:
+                        rpm = g.get_bv('rpm',bid)
+                        ro_str = 'STATOR' if rpm==0 else 'ROTOR'
+                        di = patch.ien- patch.ist 
+                        dj = patch.jen- patch.jst
+                        dk = patch.ken- patch.kst
+                        if dj == 1:
+                            bid_probe.append((bid,pid))
+                        print('%s, bid=%d, pid=%d, di=%d, dj=%d, dk=%d' % (row_str, bid, pid, di, dj, dk))
+            print('***')
 
-
+            print 'bid_probe: ', bid_probe
+            print 'length bid_probe: ', len(bid_probe)
             # This next section contains code to read in the data and process it into a
             # convenient form. Only a vague undestanding of this section is needed.
-            #
-
             # Store all probe patches in a list
             Dat = []
             for i in range(len(bid_probe)):
-                bpi = bid_probe[i]
-                ppi = pid_probe
+                bpi = bid_probe[i][0]
+                ppi = bid_probe[i][1]
 
                 print('Reading probe %d of %d' % (i+1, len(bid_probe)))
-
+                print 'bpi: ', bpi
+                print 'ppi: ', ppi
                 # Determine the number of grid points on probe patches
                 # (We index the TS grid using i = streamwise, j = spanwise, k =
                 # pitchwise)
@@ -165,7 +176,7 @@ for Psii in Psi:
                 plt.tight_layout()  # Remove extraneous white space
                 plt.savefig('pressure_coeff_%d.png'%stepsize,dpi=200)
                 plt.close(f)
-            '''
+            
             for stepsize in range(nt): #(1, 97) gets all the steps
                 f,a = plt.subplots()  # Create a figure and axis to plot into
                 #plt.set_cmap('cubehelix_r')
@@ -199,4 +210,25 @@ for Psii in Psi:
                 else:
                     plt.savefig(newpath + '/Entropy_psi_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f' % Mai + '_%d.png' %stepsize, dpi=200)
                 plt.close(f)
+            '''
+
+            #Entropy contour with pressure plot
+            for stepsize in range(nt): #(1, 97) gets all the steps
+                f,a = plt.subplots()  # Create a figure and axis to plot into
+                #plt.set_cmap('cubehelix_r')
+                lev = np.linspace(-0.015,0.015,201)
+                probe.render_frame(a, Dat,'pmean', stepsize, lev, Omega, dt*nstep_save_probe,nstep_cycle/nstep_save_probe, dtheta_sector, Po1, P2)
+                lev = np.linspace(-8.,35.0,21)
+                probe.render_frame(a, Dat,'ds', stepsize, lev, Omega, dt*nstep_save_probe,nstep_cycle/nstep_save_probe, dtheta_sector, Po1, P2)
+                a.axis('equal')
+                plt.grid(False)
+                a.axis('off')
+                a.set_ylim([0.,dtheta_sector*Dat[0]['r'][0,0,0,0]])
+                plt.tight_layout()  # Remove extraneous white space
+                if slip == True:
+                    plt.savefig(newpath + '/combined_psi_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f_slip' % Mai +'_%d.png' %stepsize, dpi=200)
+                else:
+                    plt.savefig(newpath + '/combined_psi_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f' % Mai +'_%d.png' %stepsize, dpi=200)
+                plt.close(f)
+
             #plt.show()  # Render the plot
