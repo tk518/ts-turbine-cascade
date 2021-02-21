@@ -110,9 +110,10 @@ for Psii in Psi:
 
         # Determine the number of grid points on probe patches
         # (We index the TS grid using i = streamwise, j = spanwise, k = pitchwise)
-        p = g.get_patch(probes[0])
+        p = g.get_patch(probes[0][0],probes[0][1])
         di = p.ien - p.ist
         dj = p.jen - p.jst
+        dk = p.ken - p.kst
         probe_shape = [di, dj, dk]  # Numbers of points in i, j, k directions
         print('probe_shape [di, dj, dk]:', probe_shape)
 
@@ -120,7 +121,7 @@ for Psii in Psi:
         jmid = int(dj/2)
 
         # Assemble file names for the probes using % substitution
-        probe_name = output_file_name + '_probe_%d_%d.dat' % (probes[0],probes[1])
+        probe_name = output_file_name + '_probe_%d_%d.dat' % (probes[0][0],probes[0][1])
         #probe_name_ss = output_file_name + '_probe_%d_%d.dat' % (bid_probe,pid_probe_ss)
 
         # Read the probes
@@ -158,11 +159,6 @@ for Psii in Psi:
 
         #
         # Finished reading data, now make some plots
-        #
-
-        #
-        # Plot static pressure at mid-chord on pressure side edge as function of time
-        #
 
         # Streamwise index at mid-chord = number of points in streamwise dirn / 2
         imid = int(di/2)
@@ -191,10 +187,23 @@ for Psii in Psi:
         #
         # Plot time-mean density on pressure side as function of axial location
         #
+         path = os.getcwd()
+        print(path)
+        if slip == True:
+            newpath = os.path.join(path, 'psi_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f_slip' % Mai)
+        else:
+            newpath = os.path.join(path, 'psi_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f' % Mai)
+        try:
+            os.mkdir(newpath)
+        except OSError:
+            print ("Creation of the directory %s failed" % newpath)
+        else:
+            print ("Successfully created the directory %s " % newpath)
 
         # Generate the graph
+        k = np.linspace(0, dk-1, dk)
         f,a = plt.subplots()  # Create a figure and axis to plot into
-        a.plot(P_hat, probe_shape[2],'-', label = 'Static pressure/Mean static pressure')  # Plot our data as a new line
+        a.plot(P_hat, k,'-', label = 'Static pressure/Mean static pressure')  # Plot our data as a new line
         plt.xlabel('Time-averaged static pressure')  # Horizontal axis label
         #plt.ylabel('Static Pressure, $p/\overline{p}$')  # Vertical axis label
         plt.legend()
