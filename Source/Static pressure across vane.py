@@ -1,10 +1,12 @@
-"""This script reads in an unsteady solution and graphs the results."""
+
+"""This script reads and plots the blade-to-blade probes."""
 import numpy as np  # Multidimensional array library
 import probe  # Code for reading TS probe output
 import matplotlib.pyplot as plt  # Plotting library
-from ts import ts_tstream_reader  # TS grid reader
+from ts import ts_tstream_reader, ts_tstream_cut  # TS grid reader
+from ts import ts_tstream_reader, ts_tstream_patch_kind
+import os
 from matplotlib.pyplot import cm
-
 #
 # Set variables here
 #
@@ -72,19 +74,19 @@ for Psii in Psi:
         g = tsr.read(output_file_name + '.hdf5', read_yplus=True)
 
         print('***')
-            probes = []
-            for bid in g.get_block_ids():
-                for pid in g.get_patch_ids(bid):
-                    patch = g.get_patch(bid,pid)
-                    if patch.kind == ts_tstream_patch_kind.probe:
-                        rpm = g.get_bv('rpm',bid)
-                        row_str = 'STATOR' if rpm==0 else 'ROTOR'
-                        di = patch.ien- patch.ist 
-                        dj = patch.jen- patch.jst
-                        dk = patch.ken- patch.kst
-                        if row_str == 'STATOR':
-                            probes.append((bid,pid))
-                        print('%s, bid=%d, pid=%d, di=%d, dj=%d, dk=%d' % (row_str, bid, pid, di, dj, dk))
+        probes = []
+        for bid in g.get_block_ids():
+            for pid in g.get_patch_ids(bid):
+                patch = g.get_patch(bid,pid)
+                if patch.kind == ts_tstream_patch_kind.probe:
+                    rpm = g.get_bv('rpm',bid)
+                    row_str = 'STATOR' if rpm==0 else 'ROTOR'
+                    di = patch.ien- patch.ist 
+                    dj = patch.jen- patch.jst
+                    dk = patch.ken- patch.kst
+                    if row_str == 'STATOR':
+                        probes.append((bid,pid))
+                    print('%s, bid=%d, pid=%d, di=%d, dj=%d, dk=%d' % (row_str, bid, pid, di, dj, dk))
             print('***')
 
             '''
