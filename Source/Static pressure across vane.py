@@ -50,7 +50,7 @@ Phi = [0.80]
 Psi = [1.60]
 Ma =  [0.70]
 Data={}
-slip = False
+slip = True
 
 for Psii in Psi:
 
@@ -88,6 +88,33 @@ for Psii in Psi:
                         probes.append((bid,pid))
                     print('%s, bid=%d, pid=%d, di=%d, dj=%d, dk=%d' % (row_str, bid, pid, di, dj, dk))
         print('***')
+
+        # Arbitrary datum temperatures for entropy level
+        Pdat=16e5
+        Tdat=1600.
+        bid_rotor = g.get_nb()-1
+        b_rotor = g.get_block(bid_rotor)
+
+        # Get cuts at rotor inlet and exit to form Cp
+        rotor_inlet = ts_tstream_cut.TstreamStructuredCut()
+        rotor_inlet.read_from_grid(
+                g, Pdat, Tdat, bid_rotor,
+                ist = 0, ien=1,  # First streamwise
+                jst = 0, jen=b_rotor.nj,  # All radial
+                kst = 0, ken=b_rotor.nk  # All pitchwise
+                )
+        rotor_outlet = ts_tstream_cut.TstreamStructuredCut()
+        rotor_outlet.read_from_grid(
+                g, Pdat, Tdat, bid_rotor,
+                ist = b_rotor.ni-1, ien=b_rotor.ni,  # Last streamwise
+                jst = 0, jen=b_rotor.nj,  # All radial
+                kst = 0, ken=b_rotor.nk  # All pitchwise
+                )
+
+        # Pressure references
+        _, Po1 = rotor_inlet.mass_avg_1d('pstag')
+        _, P1 = rotor_inlet.area_avg_1d('pstat')
+        _, P2 = rotor_outlet.area_avg_1d('pstat')
 
         '''
         pid_probe_ps = 9  # Patch ID of probe on pressure side
@@ -169,12 +196,11 @@ for Psii in Psi:
         # k = 0 because the patch is at const pitchwise position, on pressure surface
         # n = : for all instants in time 
         P = Dat['pstat'][-1,jmid,:,:]
-
         # Divide pressure by mean value
         # P is a one-dimensional vector of values of static pressure at each instant in
         # time; np.mean is a function that returns the mean of an array
         P_hat = np.mean(P, axis = 1)
-
+        Cp = (P_hat - Po1)/(Po1-P2)
 
         if slip == True:
                     # Load the grid 
@@ -183,24 +209,50 @@ for Psii in Psi:
         
             print('***')
             probes1 = []
-            for bid in g.get_block_ids():
-                for pid in g.get_patch_ids(bid):
-                    patch = g.get_patch(bid,pid)
+            for bid in g1.get_block_ids():
+                for pid in g1.get_patch_ids(bid):
+                    patch = g1.get_patch(bid,pid)
                     if patch.kind == ts_tstream_patch_kind.probe:
-                        rpm = g.get_bv('rpm',bid)
+                        rpm = g1.get_bv('rpm',bid)
                         row_str = 'STATOR' if rpm==0 else 'ROTOR'
-                        di = patch.ien- patch.ist 
-                        dj = patch.jen- patch.jst
-                        dk = patch.ken- patch.kst
+                        di1 = patch.ien- patch.ist 
+                        dj1 = patch.jen- patch.jst
+                        dk1 = patch.ken- patch.kst
                         if row_str == 'STATOR':
                             probes1.append((bid,pid))
-                        print('%s, bid=%d, pid=%d, di=%d, dj=%d, dk=%d' % (row_str, bid, pid, di, dj, dk))
+                        print('%s, bid=%d, pid=%d, di=%d, dj=%d, dk=%d' % (row_str, bid, pid, di1, dj1, dk1))
             print('***')
 
             '''
             pid_probe_ps = 9  # Patch ID of probe on pressure side
             pid_probe_ss = 10  # Patch ID of probe on suction side
             '''
+            # Arbitrary datum temperatures for entropy level
+            Pdat=16e5
+            Tdat=1600.
+            bid_rotor = g.get_nb()-1
+            b_rotor = g.get_block(bid_rotor)
+
+            # Get cuts at rotor inlet and exit to form Cp
+            rotor_inlet = ts_tstream_cut.TstreamStructuredCut()
+            rotor_inlet.read_from_grid(
+                    g1, Pdat, Tdat, bid_rotor,
+                    ist = 0, ien=1,  # First streamwise
+                    jst = 0, jen=b_rotor.nj,  # All radial
+                    kst = 0, ken=b_rotor.nk  # All pitchwise
+                    )
+            rotor_outlet = ts_tstream_cut.TstreamStructuredCut()
+            rotor_outlet.read_from_grid(
+                    g1, Pdat, Tdat, bid_rotor,
+                    ist = b_rotor.ni-1, ien=b_rotor.ni,  # Last streamwise
+                    jst = 0, jen=b_rotor.nj,  # All radial
+                    kst = 0, ken=b_rotor.nk  # All pitchwise
+                    )
+
+            # Pressure references
+            _, Po11 = rotor_inlet.mass_avg_1d('pstag')
+            _, P11 = rotor_inlet.area_avg_1d('pstat')
+            _, P21 = rotor_outlet.area_avg_1d('pstat')
 
             #
             # This next section contains code to read in the data and process it into a
@@ -218,12 +270,12 @@ for Psii in Psi:
 
             # Determine the number of grid points on probe patches
             # (We index the TS grid using i = streamwise, j = spanwise, k = pitchwise)
-            p = g.get_patch(probes[0][0],probes[0][1])
-            di1 = p.ien - p.ist
-            dj1 = p.jen - p.jst
-            dk1 = p.ken - p.kst
+            p1 = g1.get_patch(probes1[0][0],probes1[0][1])
+            di1 = p1.ien - p1.ist
+            dj1 = p1.jen - p1.jst
+            dk1 = p1.ken - p1.kst
             probe_shape1 = [di1, dj1, dk1]  # Numbers of points in i, j, k directions
-            print('probe_shape [di, dj, dk]:', probe_shape)
+            print('probe_shape [di1, dj1, dk1]:', probe_shape1)
 
             # Index for the mid-span
             jmid = int(dj1/2)
@@ -261,8 +313,8 @@ for Psii in Psi:
             ft1 = np.linspace(0.,float(nt1-1)*dt1,nt1) * freq1
 
             # Get secondary vars, things like static pressure, rotor-relative Mach, etc.
-            P1, T1 = 1e5, 300.
-            Dat1 = probe.secondary(Dat1, rpm1, cp1, ga1, P1, T1)
+            P3, T1 = 1e5, 300.
+            Dat1 = probe.secondary(Dat1, rpm1, cp1, ga1, P3, T1)
             #Dat_ss = probe.secondary(Dat_ss, rpm, cp, ga, P1, T1)
 
             #
@@ -282,6 +334,7 @@ for Psii in Psi:
             # P is a one-dimensional vector of values of static pressure at each instant in
             # time; np.mean is a function that returns the mean of an array
             P_hat1 = np.mean(P1, axis = 1)
+            Cp1 = (P_hat1 - Po11)/(Po11-P21)
         # Generate the graph
         '''
         f,a = plt.subplots()  # Create a figure and axis to plot into
