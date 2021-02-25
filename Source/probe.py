@@ -70,6 +70,8 @@ def render_frame(a, d, varname, it, lev, Omega, dt, nstep_cycle, sector_size, Po
 
         if varname == 'ds':
             varnow = di[varname][:,0,:,it]
+            if di['rpm']==0.:
+                rtnow = (rtnow/rnow - Omega*it*dt) * rnow
             for ii in range(-2,6):
                 a.contour(xnow, (rtnow/rnow + ii*sector_size)*rnow, varnow, lev)
         else:
