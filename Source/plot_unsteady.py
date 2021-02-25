@@ -251,7 +251,7 @@ for Psii in Psi:
             print 'Maximum absolute cycle difference = at Mach %.2f ' % Mai, max(test[0])
             print '/n'
             print 'len x: ', len(x)
-            print 'len ptp_ps: ', ptp(Data['Ma_'+"{:.2f}".format(Mai)+'_psi_'+"{:.2f}".format(Psii)+'_phi_'+"{:.2f}".format(Phii)][2])
+            #print 'len ptp_ps: ', ptp(Data['Ma_'+"{:.2f}".format(Mai)+'_psi_'+"{:.2f}".format(Psii)+'_phi_'+"{:.2f}".format(Phii)][2])
 
 #plt.show()  # Render the plots
 '''
@@ -343,6 +343,32 @@ if slip == True:
         plt.savefig('Suction_side_peak-to-peak_pressure_vs_x_slip.pdf')
 else:
         plt.savefig('Suction_side_peak-to-peak_pressure_vs_x.pdf')
+
+#Pressure and velocity relative to each other pressure side
+f,a = plt.subplots()
+n = len(Phi)
+color=iter(cm.rainbow(np.linspace(0,1,n)))
+for Phii in Phi:
+	c = next(color)
+        # rel = velocity - pressure (normalised to same peak to peak)
+        relv = Data['Ma_0.70_psi_1.60_phi_%.2f' %Phii][0] - np.mean(Data['Ma_0.70_psi_1.60_phi_%.2f' %Phii][0], axis = 0)[:,None]
+        relp = Data['Ma_0.70_psi_1.60_phi_%.2f' %Phii][2] - np.mean(Data['Ma_0.70_psi_1.60_phi_%.2f' %Phii][2], axis = 0)[:,None]
+        relp = relp / ptp(Data['Ma_0.70_psi_1.60_phi_%.2f' %Phii][2])
+        rel = relp - relv
+        a.plot(x, np.mean(rel, axis = 0)), '-', label = 'Phi = %.2f' %Phii, c=c)
+        if slip == True:
+                a.plot(x, ptp(Data['Ma_0.70_psi_1.60_phi_%.2f_slip' %Phii][3]), '--', label = 'Phi = %.2f with slip' %Phii, c=c)
+a.set_ylabel('Suction side Peak-to-peak pressure, $p$')
+a.set_xlabel('Axial displacement, $x$')
+plt.tight_layout()        
+plt.legend(loc="best", ncol=2)
+if slip == True:
+        plt.savefig('Suction_side_peak-to-peak_pressure_vs_x_slip.pdf')
+else:
+        plt.savefig('Suction_side_peak-to-peak_pressure_vs_x.pdf')
+
+
+
 '''
 #Mean plot on suction and pressure sides
 f,a = plt.subplots()

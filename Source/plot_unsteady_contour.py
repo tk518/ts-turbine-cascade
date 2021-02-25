@@ -38,7 +38,7 @@ for Psii in Psi:
                     patch = g.get_patch(bid,pid)
                     if patch.kind == ts_tstream_patch_kind.probe:
                         rpm = g.get_bv('rpm',bid)
-                        ro_str = 'STATOR' if rpm==0 else 'ROTOR'
+                        row_str = 'STATOR' if rpm==0 else 'ROTOR'
                         di = patch.ien- patch.ist 
                         dj = patch.jen- patch.jst
                         dk = patch.ken- patch.kst

@@ -196,6 +196,8 @@ for Psii in Psi:
         # k = 0 because the patch is at const pitchwise position, on pressure surface
         # n = : for all instants in time 
         P = Dat['pstat'][-1,jmid,:,:]
+        V_rel = np.mean(Dat['vrel'][-1,jmid,:,:], axis = 1)
+        
         # Divide pressure by mean value
         # P is a one-dimensional vector of values of static pressure at each instant in
         # time; np.mean is a function that returns the mean of an array
@@ -329,6 +331,7 @@ for Psii in Psi:
             # k = 0 because the patch is at const pitchwise position, on pressure surface
             # n = : for all instants in time 
             P1 = Dat1['pstat'][-1,jmid,:,:]
+            V_rel1 = np.mean(Dat1['vrel'][-1,jmid,:,:], axis = 1)
 
             # Divide pressure by mean value
             # P is a one-dimensional vector of values of static pressure at each instant in
@@ -363,15 +366,22 @@ for Psii in Psi:
         k1 = np.linspace(0, dk1-1, dk1)
 
         f,a = plt.subplots()  # Create a figure and axis to plot into
-        a.plot(P_hat, k,'-', label = 'no slip', '-')  # Plot our data as a new line
-        a.plot(P_hat1, k1,'-', label = 'slip', '--')  # Plot our data as a new line
-        plt.xlabel('Time-averaged static pressure')  # Horizontal axis label
+        a.plot(Cp, k,'-', label = 'no slip')  # Plot our data as a new line
+        a.plot(Cp1, k1,'--', label = 'slip')  # Plot our data as a new line
+        plt.xlabel('Time-averaged Cp')  # Horizontal axis label
         #plt.ylabel('Static Pressure, $p/\overline{p}$')  # Vertical axis label
         #plt.legend()
-        plt.title('Pressure side plot for Velocity and pressure @ Mach %.2f' % Mai)
         plt.tight_layout()  # Remove extraneous white space
         plt.savefig(newpath + '/Pressure_pitchwise_psi_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f.pdf' % Mai, dpi=200)
         
+        f,a = plt.subplots()  # Create a figure and axis to plot into
+        a.plot(V_rel, k,'-', label = 'no slip')  # Plot our data as a new line
+        a.plot(V_rel1, k1,'--', label = 'slip')  # Plot our data as a new line
+        plt.xlabel('Time-averaged velocity')  # Horizontal axis label
+        #plt.ylabel('Static Pressure, $p/\overline{p}$')  # Vertical axis label
+        #plt.legend()
+        plt.tight_layout()  # Remove extraneous white space
+        plt.savefig(newpath + '/Velocity_pitchwise_psi_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f.pdf' % Mai, dpi=200)
 
         # Pull out data for model
         '''
