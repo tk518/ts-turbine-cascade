@@ -69,10 +69,8 @@ def render_frame(a, d, varname, it, lev, Omega, dt, nstep_cycle, sector_size, Po
                 rtnow = (rtnow/rnow - Omega*it*dt) * rnow
 
         if varname == 'ds':
-            varnow = di[varname][:,0,:,it]
-            if di['rpm']==0.:
-                rtnow = (rtnow/rnow - Omega*it*dt) * rnow
-                
+            varnow = di[varname][:,0,:,it]   
+            # Duplicate plots so the screen is always full   
             for ii in range(-2,6):
                 a.contour(xnow, (rtnow/rnow + ii*sector_size)*rnow, varnow, lev)
         else:
@@ -87,10 +85,6 @@ def render_frame(a, d, varname, it, lev, Omega, dt, nstep_cycle, sector_size, Po
                 #print(varnow)
             else:
                 varnow = di[varname][:,0,:,it]
-            # If this is a stator, offset backwards by del_theta
-            if di['rpm']==0.:
-                rtnow = (rtnow/rnow - Omega*it*dt) * rnow
-
             # Duplicate plots so the screen is always full
             for ii in range(-2,6):
                 a.contourf(xnow, (rtnow/rnow + ii*sector_size)*rnow, varnow, lev)
