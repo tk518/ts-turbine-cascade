@@ -175,22 +175,24 @@ for Psii in Psi:
                 #peak to peak amplitude
 
                 #pressure side, if pressure side is [0]
-                ptp_ps = max(BR.T[0])-min(BR.T[0])
+                ptp_ps = np.max(BR.T[0],axis = 1)- np.min(BR.T[0],axis = 1)
                 #suction side, if pressure side is [1]
-                ptp_ss = max(BR.T[1])-min(BR.T[1])
+                ptp_ss = np.max(BR.T[1],axis = 1)- np.min(BR.T[1],axis = 1)
 
+                '''
                 #rms BR
                 #pressure side, if pressure side is [0]
                 rms_ps = rms(BR.T[0])
                 #suction side, if pressure side is [1]
                 rms_ss = rms(BR.T[1])
+                '''
 
                 # Pull out data for model
                 Vp = Dat_ps['vrel'][ihole_ps,jmid,0,:]
                 Vs = Dat_ss['vrel'][ihole_ss,jmid,0,:]
                 Pp = Dat_ps['pstat'][ihole_ps,jmid,0,:]
                 Ps = Dat_ss['pstat'][ihole_ss,jmid,0,:]
-                Vp_hat = Vp/np.mean(Vp, axis = 1)
+                Vp_hat = np.divide(Vp , np.mean(Vp, axis = 1))
                 Vs_hat = Vs/np.mean(Vs, axis = 1)
                 Pp_hat = Pp/np.mean(Pp, axis = 1)
                 Ps_hat = Ps/np.mean(Ps, axis = 1)
