@@ -134,12 +134,11 @@ for Psii in Psi:
                 TR = 0.5
                 Toc = TR * To1
 
-                # Choose a hole position
-                ihole_ps = 20
-                ihole_ss = 40
+                # Choose a hole position - 98 i positions on both sides
+                ihole_ps = [20,40,60,80]
+                ihole_ss = [20,40,60,80]
 
                 # Pull out data for model
-
                 roinf = np.stack((Dat_ps_free['ro'][ihole_ps,jmid,0,:],
                                 Dat_ss_free['ro'][ihole_ss,jmid,0,:]))
                 Vinf = np.stack((Dat_ps_free['vrel'][ihole_ps,jmid,0,:],
@@ -186,9 +185,36 @@ for Psii in Psi:
                 #suction side, if pressure side is [1]
                 rms_ss = rms(BR.T[1])
 
+                # Pull out data for model
+                Vp = Dat_ps['vrel'][ihole_ps,jmid,0,:]
+                Vs = Dat_ss['vrel'][ihole_ss,jmid,0,:]
+                Pp = Dat_ps['pstat'][ihole_ps,jmid,0,:]
+                Ps = Dat_ss['pstat'][ihole_ss,jmid,0,:]
+                Vp_hat = Vp/np.mean(Vp, axis = 1)
+                Vs_hat = Vs/np.mean(Vs, axis = 1)
+                Pp_hat = Pp/np.mean(Pp, axis = 1)
+                Ps_hat = Ps/np.mean(Ps, axis = 1)
+                x = Dat_ps['x'][:,jmid,0,0]
+
                 #key in form 'Ma_0.70_psi_1.60_phi_0.45'
                 Data['Ma_'+"{:.2f}".format(Mai)+'_psi_'+"{:.2f}".format(Psii)+'_phi_'+"{:.2f}".format(Phii)] = [BR.T[0],BR.T[1],ptp_ps,ptp_ss,rms_ps,rms_ss]
                 #find out which way round
+                '''
+                # Plot the Pressure
+                f,a = plt.subplots()  # Create a figure and axis to plot into
+                a.plot(ft, Vinf.T)
+                a.set_ylabel('Pressure, $Pa$')
+                a.set_xlabel('Time, Vane Periods')
+                plt.tight_layout()  # Remove extraneous white space
+                plt.savefig('Pressure_psi_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f' % Mai + '.pdf')  # Write out a pdf file
+
+                # Plot the velocity
+                f,a = plt.subplots()  # Create a figure and axis to plot into
+                a.plot(ft, Vinf.T)
+                a.set_ylabel('Velocity, $V$')
+                a.set_xlabel('Time, Vane Periods')
+                plt.tight_layout()  # Remove extraneous white space
+                plt.savefig('Velocity_psi_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f' % Mai + '.pdf')  # Write out a pdf file               
 
                 # Plot the Blowing ratios
                 f,a = plt.subplots()  # Create a figure and axis to plot into
@@ -197,11 +223,29 @@ for Psii in Psi:
                 a.set_xlabel('Time, Vane Periods')
                 plt.tight_layout()  # Remove extraneous white space
                 plt.savefig('BR_psi_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f' % Mai + '.pdf')  # Write out a pdf file
+                '''
 
-                n = n + 1
+                f,a = plt.subplots()  # Create a figure and axis to plot into
+                for i in len(Pp_hat[0]):
+                        position = ihole_ps[i]
+                        a.plot(ft,Pp_hat[1],'-', label = 'position = %.2f' %position)  # Plot our data as a new line
+                        #a.plot(ft,Vp_hat[1],'--', label = 'position = %.2f' %position)  # Plot our data as a new line
+                plt.xlabel('Time, Rotor Periods, $ft$')  # Horizontal axis label
+                #plt.ylabel('Static Pressure, $p/\overline{p}$')  # Vertical axis label
+                plt.legend()
+                plt.tight_layout()  # Remove extraneous white space
+                plt.savefig('PS_Velocity_Pressure_psi_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f' % Mai)  # Write out a pdf file
 
-print 'number of simulations iterated: ', n      
-print Data
+                f,a = plt.subplots()  # Create a figure and axis to plot into
+                for i in len(Ps_hat[0]):
+                        position = ihole_ss[i]
+                        a.plot(ft,Ps_hat[1],'-', label = 'position = %.2f' %position)  # Plot our data as a new line
+                        #a.plot(ft,Vs_hat[1],'--', label = 'position = %.2f' %position)  # Plot our data as a new line
+                plt.xlabel('Time, Rotor Periods, $ft$')  # Horizontal axis label
+                #plt.ylabel('Static Pressure, $p/\overline{p}$')  # Vertical axis label
+                plt.legend()
+                plt.tight_layout()  # Remove extraneous white space
+                plt.savefig('SS_Velocity_Pressure_psi_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f' % Mai)  # Write out a pdf file
 
 '''
 #looking through phi
