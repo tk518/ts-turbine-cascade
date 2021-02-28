@@ -192,10 +192,14 @@ for Psii in Psi:
                 Vs = Dat_ss['vrel'][ihole_ss,jmid,0,:]
                 Pp = Dat_ps['pstat'][ihole_ps,jmid,0,:]
                 Ps = Dat_ss['pstat'][ihole_ss,jmid,0,:]
-                Vp_hat = np.divide(Vp , np.mean(Vp, axis = 1))
-                Vs_hat = Vs/np.mean(Vs, axis = 1)
-                Pp_hat = Pp/np.mean(Pp, axis = 1)
-                Ps_hat = Ps/np.mean(Ps, axis = 1)
+                vpmean = np.tile(np.mean(Vp, axis = 1), (480,1))
+                Vp_hat = np.divide(Vp , vpmean.T)
+                vsmean = np.tile(np.mean(Vs, axis = 1), (480,1))
+                Vs_hat = np.divide(Vs, vsmean.T)
+                ppmean = np.tile(np.mean(Pp, axis = 1), (480,1))
+                Pp_hat = np.divide(Pp, ppmean.T)
+                psmean = np.tile(np.mean(Ps, axis = 1), (480,1))
+                Ps_hat = np.divide(Ps, psmean.T)
                 x = Dat_ps['x'][:,jmid,0,0]
 
                 #key in form 'Ma_0.70_psi_1.60_phi_0.45'
