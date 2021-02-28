@@ -196,8 +196,8 @@ for Psii in Psi:
         # k = 0 because the patch is at const pitchwise position, on pressure surface
         # n = : for all instants in time 
         P = Dat['pstat'][-1,jmid,:,:]
-        V_rel = np.mean(Dat['vrel'][-1,jmid,:,:], axis = 1)
-        
+        V_rel = np.mean(Dat['v'][-1,jmid,:,:], axis = 1)
+
         # Divide pressure by mean value
         # P is a one-dimensional vector of values of static pressure at each instant in
         # time; np.mean is a function that returns the mean of an array
@@ -331,7 +331,7 @@ for Psii in Psi:
             # k = 0 because the patch is at const pitchwise position, on pressure surface
             # n = : for all instants in time 
             P1 = Dat1['pstat'][-1,jmid,:,:]
-            V_rel1 = np.mean(Dat1['vrel'][-1,jmid,:,:], axis = 1)
+            V_rel1 = np.mean(Dat1['v'][-1,jmid,:,:], axis = 1)
 
             # Divide pressure by mean value
             # P is a one-dimensional vector of values of static pressure at each instant in

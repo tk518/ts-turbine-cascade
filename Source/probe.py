@@ -83,6 +83,9 @@ def render_frame(a, d, varname, it, lev, Omega, dt, nstep_cycle, sector_size, Po
             elif varname == 'pmean_ns':
                 varnow = di['pstat'][:,0,:,it] - np.mean(di['pstat'][:,0,:,:],axis = 2)
                 #print(varnow)
+            elif varname == 'vmean':
+                varnow = np.divide(di['v'][:,0,:,it] - np.mean(di['v'][:,0,:,:],axis = 2), np.mean(di['v'][:,0,:,:],axis = 2))
+                #print(varnow)
             else:
                 varnow = di[varname][:,0,:,it]
             # Duplicate plots so the screen is always full
