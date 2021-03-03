@@ -909,7 +909,7 @@ def blade_section(chi):
     a.plot(xhat,yup,'-x')
     a.plot(xhat,ydown,'-x')
     a.axis('equal')
-    plt.show()
+    #plt.show()
 
     xy = np.vstack((xhat, yup, ydown))
 
@@ -1051,7 +1051,7 @@ def row_mesh(xy, rm, Dr, dx, s):
     a.plot(xv, rmv, '-x')
     a.plot(xv, r1v, '-x')
     a.plot(xv, r2v, '-x')
-    plt.show()
+    #plt.show()
 
 
     # Cosine pitch distribution
@@ -1430,7 +1430,7 @@ def generate(fname, phi, psi, Lam, Ma, eta, gap_chord, slip_vane, guess_file=Non
     a.plot(xy_stator[0,:],xy_stator[1:,:].T + s_c[0] * cx_vane,'-x')
     a.plot(xy_rotor[0,:],xy_rotor[1:,:].T + s_c[1] * cx_rotor,'-x')
     a.axis('equal')
-    plt.show()
+    #plt.show()
 
     # Assemble guess
     xg = np.array([-1., xy_stator[0,0],  xy_stator[0,-1],
