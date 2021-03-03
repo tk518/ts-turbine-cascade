@@ -10,7 +10,7 @@ Lam = 0.5  # Degree of reaction (0.4 to 0.6)
 # Ma = 0.9  # Vane exit Mach number (0.6 to 0.9)
 eta = 0.9  # Polytropic efficiency (leave this for now)
 gap_chord = 0.5  # Spacing between stator and rotor
-guess_file = output_1_psi_1.60_phi_0.80_Ma_0.70.hdf5 #'guess.hdf5'  # Solution to use as initial guess, or None
+guess_file = 'output_1_psi_1.60_phi_0.80_Ma_0.70.hdf5' #'guess.hdf5'  # Solution to use as initial guess, or None
 Phi = [0.4, 0.6, 0.8, 1.0, 1.20]
 Psi = [0.8, 1.2, 1.6, 2.0, 2.4]
 Ma = [0.7]
@@ -29,6 +29,7 @@ for Psii in Psi:
             # It is complicated so best to think of it as a black box!
             design.generate(fname_now, Phii, Psii, Lam, Mai, eta, gap_chord, slip_vane, guess_file )
 
+guess_file = 'output_1_psi_1.60_phi_0.80_Ma_0.70_slip.hdf5'
 slip_vane = True # Apply slip condition to vane surface
 for Psii in Psi:
 
