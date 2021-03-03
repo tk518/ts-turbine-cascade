@@ -91,8 +91,10 @@ if __name__ == "__main__":
                 dt = 2. * np.pi / nb
 
                 # loop over possible sector sizes
-                cost = np.empty((nb.max(),))
-                for i in range(nb.max()):
+                sect_max = nb.max()
+                sect_max = 9
+                cost = np.empty((sect_max,))
+                for i in range(sect_max):
 
                     # Get scaling factor needed to fit the blades in this sector
                     dt_sector = 2. * np.pi / float(i+1)
@@ -110,10 +112,6 @@ if __name__ == "__main__":
                 # get blade numbers
                 dup = np.round(dt_sect/ dt)
                 scale = dt_sect / dup / dt
-                print 'Old blade counts', nb
-                print 'Sector size', sect, 'th annulus'
-                print 'Scaled blade counts', dup
-                print 'Scaling factors', scale
 
                 # set frequency 
                 rpm = g.get_bv('rpm',bids[-1])
@@ -166,7 +164,7 @@ if __name__ == "__main__":
                 g2.set_av("frequency", ts_tstream_type.float,  freq)
 
                 g2.set_av("nstep_cycle", ts_tstream_type.int, nstep_cycle)
-                g2.set_av("nstep_inner", ts_tstream_type.int, 200)
+                g2.set_av("nstep_inner", ts_tstream_type.int, 100)
 
                 # disable saving of snapshots
                 g2.set_av("nstep_save", ts_tstream_type.int, 999999)
@@ -179,9 +177,12 @@ if __name__ == "__main__":
                 g2.set_av("nstep_save_probe", ts_tstream_type.int, nstep_save_probe)
 
                 # other configuration variables
-                g2.set_av("dts_conv", ts_tstream_type.float, 0.0005)
+                g2.set_av("dts_conv", ts_tstream_type.float, 0.0)
                 g2.set_av("facsafe", ts_tstream_type.float, 0.2)
                 g2.set_av("dts", ts_tstream_type.int, 1)
+
+                for bid in g2.get_block_ids():
+                    g2.set_bv("fmgrid", ts_tstream_type.float, bid, 0.0)
 
                 # g2.set_av("sfin",ts_tstream_type.float,0.5)
                 # g2.set_av("facsecin",ts_tstream_type.float,0.005)
@@ -192,11 +193,27 @@ if __name__ == "__main__":
                 g2.set_av("poisson_restart", ts_tstream_type.int, 1)
                 g2.set_av("poisson_nstep", ts_tstream_type.int, 0)
 
-                # load balance for 1 GPUs
-                ts_tstream_load_balance.load_balance(g2, 1)
+                # load balance for 
+                ts_tstream_load_balance.load_balance(g2, 4)
 
                 # Reset spurious application variable
                 g2.set_av("if_ale", ts_tstream_type.int, 0)
 
                 # write out unsteady input file
                 g2.write_hdf5(fname_out)
+
+                print 'Old blade counts', nb
+                print 'Sector size', sect, 'th annulus'
+                print 'Scaled blade counts', dup, 'x',sect
+                print 'Scaling factors', scale
+                nb_new = (np.array(dup)*sect).astype(int)
+
+                print 'Checking for Tyler/Sofrin modes...'
+                mV = nb_new[0]*np.arange(1,7)
+                nB = nb_new[1]*np.arange(1,7)
+                if np.intersect1d(mV,nB):
+                    print('Warning: mode found')
+                    print(mV)
+                    print(nB)
+                else:
+                    print('OK.')

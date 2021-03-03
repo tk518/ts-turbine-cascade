@@ -203,7 +203,7 @@ for Psii in Psi:
                 x = Dat_ps['x'][:,jmid,0,0]
 
                 #key in form 'Ma_0.70_psi_1.60_phi_0.45'
-                Data['Ma_'+"{:.2f}".format(Mai)+'_psi_'+"{:.2f}".format(Psii)+'_phi_'+"{:.2f}".format(Phii)] = [BR.T[0],BR.T[1],ptp_ps,ptp_ss,rms_ps,rms_ss]
+                #Data['Ma_'+"{:.2f}".format(Mai)+'_psi_'+"{:.2f}".format(Psii)+'_phi_'+"{:.2f}".format(Phii)] = [BR.T[0],BR.T[1],ptp_ps,ptp_ss,rms_ps,rms_ss]
                 #find out which way round
                 '''
                 # Plot the Pressure
@@ -232,26 +232,26 @@ for Psii in Psi:
                 '''
 
                 f,a = plt.subplots()  # Create a figure and axis to plot into
-                for i in len(Pp_hat[0]):
+                for i in range(len(Pp_hat)):
                         position = ihole_ps[i]
-                        a.plot(ft,Pp_hat[1],'-', label = 'position = %.2f' %position)  # Plot our data as a new line
+                        a.plot(ft,Pp_hat[i],'-', label = 'position = %.2f' %position)  # Plot our data as a new line
                         #a.plot(ft,Vp_hat[1],'--', label = 'position = %.2f' %position)  # Plot our data as a new line
                 plt.xlabel('Time, Rotor Periods, $ft$')  # Horizontal axis label
                 #plt.ylabel('Static Pressure, $p/\overline{p}$')  # Vertical axis label
                 plt.legend()
                 plt.tight_layout()  # Remove extraneous white space
-                plt.savefig('PS_Velocity_Pressure_psi_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f' % Mai)  # Write out a pdf file
+                plt.savefig('PS_Velocity_Pressure_psi_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f.pdf' % Mai)  # Write out a pdf file
 
                 f,a = plt.subplots()  # Create a figure and axis to plot into
-                for i in len(Ps_hat[0]):
+                for i in range(len(Ps_hat)):
                         position = ihole_ss[i]
-                        a.plot(ft,Ps_hat[1],'-', label = 'position = %.2f' %position)  # Plot our data as a new line
-                        #a.plot(ft,Vs_hat[1],'--', label = 'position = %.2f' %position)  # Plot our data as a new line
+                        a.plot(ft,Ps_hat[i],'-', label = 'position = %.2f' %position)  # Plot our data as a new line
+                        #a.plot(ft,Vs_hat[i],'--', label = 'position = %.2f' %position)  # Plot our data as a new line
                 plt.xlabel('Time, Rotor Periods, $ft$')  # Horizontal axis label
                 #plt.ylabel('Static Pressure, $p/\overline{p}$')  # Vertical axis label
                 plt.legend()
                 plt.tight_layout()  # Remove extraneous white space
-                plt.savefig('SS_Velocity_Pressure_psi_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f' % Mai)  # Write out a pdf file
+                plt.savefig('SS_Velocity_Pressure_psi_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f.pdf' % Mai)  # Write out a pdf file
 
 '''
 #looking through phi

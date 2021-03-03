@@ -41,6 +41,7 @@ def secondary(d, rpm, cp, ga, Pref, Tref):
     # Pressure from idea gas law
     rgas = cp - cv
     d['pstat'] = d['ro'] * rgas * d['tstat']
+    d['pfluc'] = d['pstat'] - np.mean(d['pstat'],3,keepdims=True)
 
     # Entropy change wrt reference
     d['ds'] = cp * np.log(d['tstat']/Tref) - rgas*np.log(d['pstat']/Pref)
