@@ -103,7 +103,7 @@ if slip == False:
                                 nt = np.shape(Dat_ps['ro'])[-1]
                                 print(nt)
                                 # Make non-dimensional time vector = time in seconds * blade passing frequency
-                                ft = np.linspace(0.,5*float(nt-1)*dt,nt) * freq
+                                ft = np.linspace(0.,float(nt-1)*dt,nt) * freq
 
                                 # Get secondary vars, things like static pressure, rotor-relative Mach, etc.
                                 Dat_ps = probe.secondary(Dat_ps, rpm, cp, ga, 1, 1)
@@ -142,6 +142,7 @@ if slip == False:
                                 Toc = TR * To1
 
                                 x = Dat_ps['x'][:,jmid,0,0]
+                                x_hat = (x - x.min())/(x.max() - x.min())
                                 #print(x.min())
                                 #print(x.max())
 
@@ -170,13 +171,10 @@ if slip == False:
                                     print ("Successfully created the directory %s " % newpath)
 
                                 f,a = plt.subplots()  # Create a figure and axis to plot into
-                                pmean_ps = np.divide(Dat_ps['pstat'][:,jmid,0,:] - np.tile(np.mean(Dat_ps['pstat'][:,jmid,0,:],axis = 1), (480,1)), np.tile(np.mean(Dat_ps['pstat'][:,jmid,0,:],axis = 1),(480,1))
-                                pmean_ss = np.divide(Dat_ss['pstat'][:,jmid,0,:] - np.tile(np.mean(Dat_ss['pstat'][:,jmid,0,:],axis = 1), (480,1)), np.tile(np.mean(Dat_ss['pstat'][:,jmid,0,:],axis = 1),(480,1))
-                                lev = np.linspace(-0.015,0.015,21)
-                                a.contourf(-x, ft, P_stat_ps.T, lev)
-                                a.contourf(x, ft, P_stat_ss.T, lev)
-                                a.axis('equal')
-                                plt.grid(False)
-                                a.axis('off')
+                                pmean_ps = np.divide(Dat_ps['pstat'][:,jmid,0,:] - np.tile(np.mean(Dat_ps['pstat'][:,jmid,0,:],axis = 1), (480,1)), np.tile(np.mean(Dat_ps['pstat'][:,jmid,0,:],axis = 1),(480,1)))
+                                pmean_ss = np.divide(Dat_ss['pstat'][:,jmid,0,:] - np.tile(np.mean(Dat_ss['pstat'][:,jmid,0,:],axis = 1), (480,1)), np.tile(np.mean(Dat_ss['pstat'][:,jmid,0,:],axis = 1),(480,1)))
+                                lev = np.linspace(-0.02,0.02,21)
+                                a.contourf(-x_hat, ft, pmean_ps, lev)
+                                a.contourf(x_hat, ft, pmean_ss, lev)
                                 plt.tight_layout()
                                 plt.savefig(newpath + '/space_time_pressure_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f.pdf' % Mai, dpi=200)
