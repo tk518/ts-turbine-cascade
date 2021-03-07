@@ -68,14 +68,6 @@ if slip == False:
                                 # Index for the mid-span
                                 jmid = int(dj/2)
 
-                                # Get information about time discretisation from TS grid
-                                freq = g.get_av('frequency')  # Blade passing frequency
-                                ncycle = g.get_av('ncycle')  # Number of cycles
-                                nstep_cycle = g.get_av('nstep_cycle')  # Time steps per cycle
-                                dt = 1./freq/float(nstep_cycle)
-                                nt = np.shape(Dat_ps['ro'])[-1]
-                                ft = np.linspace(0.,5*float(nt-1)*dt,nt) * freq
-
                                 # Assemble file names for the probes using % substitution
                                 probe_name_ps = output_file_name + '_probe_%d_%d.dat' % (bid_probe,pid_probe_ps)
                                 probe_name_ss = output_file_name + '_probe_%d_%d.dat' % (bid_probe,pid_probe_ss)
@@ -111,7 +103,7 @@ if slip == False:
                                 nt = np.shape(Dat_ps['ro'])[-1]
                                 print(nt)
                                 # Make non-dimensional time vector = time in seconds * blade passing frequency
-                                ft = np.linspace(0.,float(nt-1)*dt,nt) * freq
+                                ft = np.linspace(0.,5*float(nt-1)*dt,nt) * freq
 
                                 # Get secondary vars, things like static pressure, rotor-relative Mach, etc.
                                 Dat_ps = probe.secondary(Dat_ps, rpm, cp, ga, 1, 1)
@@ -178,13 +170,13 @@ if slip == False:
                                     print ("Successfully created the directory %s " % newpath)
 
                                 f,a = plt.subplots()  # Create a figure and axis to plot into
-                                P_stat_ps = Data['Ma_'+"{:.2f}".format(Mai)+'_psi_'+"{:.2f}".format(Psii)+'_phi_'+"{:.2f}".format(Phii)][0]
-                                P_stat_ss = Data['Ma_'+"{:.2f}".format(Mai)+'_psi_'+"{:.2f}".format(Psii)+'_phi_'+"{:.2f}".format(Phii)][1]
+                                pmean_ps = np.divide(Dat_ps['pstat'][:,jmid,0,:] - np.tile(np.mean(Dat_ps['pstat'][:,jmid,0,:],axis = 1), (480,1)), np.tile(np.mean(Dat_ps['pstat'][:,jmid,0,:],axis = 1),(480,1))
+                                pmean_ss = np.divide(Dat_ss['pstat'][:,jmid,0,:] - np.tile(np.mean(Dat_ss['pstat'][:,jmid,0,:],axis = 1), (480,1)), np.tile(np.mean(Dat_ss['pstat'][:,jmid,0,:],axis = 1),(480,1))
                                 lev = np.linspace(-0.015,0.015,21)
-                                a.contourf(-x, ft, P_stat_ps, lev)
-                                a.contourf(x, ft, P_stat_ss, lev)
+                                a.contourf(-x, ft, P_stat_ps.T, lev)
+                                a.contourf(x, ft, P_stat_ss.T, lev)
                                 a.axis('equal')
                                 plt.grid(False)
                                 a.axis('off')
                                 plt.tight_layout()
-                                plt.savefig(newpath + '/space_time_pressure_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f' % Mai +'_%d.png' %stepsize, dpi=200)
+                                plt.savefig(newpath + '/space_time_pressure_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f.pdf' % Mai, dpi=200)
