@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt  # Plotting library
 from matplotlib.pyplot import cm
 from ts import ts_tstream_reader  # TS grid reader
 from ts import ts_tstream_cut  # TS cutter
+import os
 
 #
 # Set variables here
@@ -66,6 +67,14 @@ if slip == False:
 
                                 # Index for the mid-span
                                 jmid = int(dj/2)
+
+                                # Get information about time discretisation from TS grid
+                                freq = g.get_av('frequency')  # Blade passing frequency
+                                ncycle = g.get_av('ncycle')  # Number of cycles
+                                nstep_cycle = g.get_av('nstep_cycle')  # Time steps per cycle
+                                dt = 1./freq/float(nstep_cycle)
+                                nt = np.shape(Dat_ps['ro'])[-1]
+                                ft = np.linspace(0.,5*float(nt-1)*dt,nt) * freq
 
                                 # Assemble file names for the probes using % substitution
                                 probe_name_ps = output_file_name + '_probe_%d_%d.dat' % (bid_probe,pid_probe_ps)
@@ -172,11 +181,8 @@ if slip == False:
                                 P_stat_ps = Data['Ma_'+"{:.2f}".format(Mai)+'_psi_'+"{:.2f}".format(Psii)+'_phi_'+"{:.2f}".format(Phii)][0]
                                 P_stat_ss = Data['Ma_'+"{:.2f}".format(Mai)+'_psi_'+"{:.2f}".format(Psii)+'_phi_'+"{:.2f}".format(Phii)][1]
                                 lev = np.linspace(-0.015,0.015,21)
-                                for i in range(len(x)):                     #Range of x values
-                                    for ii in range(len(P_stat_ps[1]))      #Rage of t values
-                                        a.contourf(-x[i], ii, P_stat_ps[i][ii], lev)
-                                        a.contourf(x[i], ii, P_stat_ss[i][ii], lev)
-
+                                a.contourf(-x, ft, P_stat_ps, lev)
+                                a.contourf(x, ft, P_stat_ss, lev)
                                 a.axis('equal')
                                 plt.grid(False)
                                 a.axis('off')
