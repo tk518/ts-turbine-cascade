@@ -187,3 +187,17 @@ for Psii in Psi:
                             plt.savefig(newpath + '/space_time_pressure_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f_slip.pdf' % Mai, dpi=200)
                         else:
                             plt.savefig(newpath + '/space_time_pressure_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f.pdf' % Mai, dpi=200)
+
+                        f,a = plt.subplots()  # Create a figure and axis to plot into
+                        vmean_ps = np.divide(Dat_ps['vrel'][:,jmid,0,:] - np.tile(np.mean(Dat_ps['vrel'][:,jmid,0,:],axis = 1), (480,1)).T, np.tile(np.mean(Dat_ps['vrel'][:,jmid,0,:],axis = 1),(480,1)).T)
+                        vmean_ss = np.divide(Dat_ss['vrel'][:,jmid,0,:] - np.tile(np.mean(Dat_ss['vrel'][:,jmid,0,:],axis = 1), (480,1)).T, np.tile(np.mean(Dat_ss['vrel'][:,jmid,0,:],axis = 1),(480,1)).T)
+                        lev = np.linspace(-0.005,0.005,21)
+                        a.contourf(-x_hat, ft, vmean_ps.T, lev)
+                        a.contourf(x_hat, ft, vmean_ss.T, lev)
+                        a.set_xlabel('Time, Period')
+                        a.set_ylabel('Chord')
+                        plt.tight_layout()
+                        if slip == True:
+                            plt.savefig(newpath + '/space_time_velocity_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f_slip.pdf' % Mai, dpi=200)
+                        else:
+                            plt.savefig(newpath + '/space_time_velocity_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f.pdf' % Mai, dpi=200)
