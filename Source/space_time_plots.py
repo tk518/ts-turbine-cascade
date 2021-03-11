@@ -169,8 +169,10 @@ for Psii in Psi:
                         Toc = TR * To1
                         #print 'Dat_pitch: ', Dat_pitch['rt']
                         jmid_pitchprobe = int(dj/2)
+                        pitch _k1 = Dat_pitch['rt'][0,jmid_pitchprobe,-1,0] - Dat_pitch['rt'][0,jmid_pitchprobe,0,0]
                         pitch_k = Dat_ss['rt'][0,jmid,0,0] - Dat_ps['rt'][0,jmid,0,0]
                         print 'pitch length: ', pitch_k
+                        print 'pitch length difference: ', pitch_k1-pitch_k
                         x = Dat_ps['x'][:,jmid,0,0]
                         x_hat = (x - x.min())/(x.max() - x.min())
                         U = Dat_ps['U'][0, 0, 0, 0]
