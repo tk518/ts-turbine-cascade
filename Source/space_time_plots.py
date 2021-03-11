@@ -4,8 +4,7 @@ import probe  # Code for reading TS probe output
 import model  # Simple hole model
 import matplotlib.pyplot as plt  # Plotting library
 from matplotlib.pyplot import cm
-from ts import ts_tstream_reader  # TS grid reader
-from ts import ts_tstream_cut  # TS cutter
+from ts import ts_tstream_reader, ts_tstream_patch_kind, ts_tstream_cut  # TS grid reader,TS cutter, TS kind
 import os
 
 #
@@ -256,9 +255,7 @@ for Psii in Psi:
 
                         print 'maximum velocity: ', np.max((np.max(vmean_ps), np.max(vmean_ss)))
                         print 'minimum velocity: ', np.min((np.min(vmean_ps), np.min(vmean_ss)))
-
-                          
-
+                        
                         #Make a space-time plot for Blowing Ratio
                         f,a = plt.subplots()  # Create a figure and axis to plot into
                         BRmean_ps = np.divide(BR_ps - np.tile(np.mean(BR_ps, axis = 1), (480,1)).T, np.tile(np.mean(BR_ps, axis = 1), (480,1)).T)
