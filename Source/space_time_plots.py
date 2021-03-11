@@ -169,7 +169,7 @@ for Psii in Psi:
                         Toc = TR * To1
                         #print 'Dat_pitch: ', Dat_pitch['rt']
                         jmid_pitchprobe = int(dj/2)
-                        pitch_k = Dat_ps['rt'][0,jmid,0,0] - Dat_ss['rt'][0,jmid,0,0]
+                        pitch_k = Dat_ss['rt'][0,jmid,0,0] - Dat_ps['rt'][0,jmid,0,0]
                         print 'pitch length: ', pitch_k
                         x = Dat_ps['x'][:,jmid,0,0]
                         x_hat = (x - x.min())/(x.max() - x.min())
@@ -234,11 +234,11 @@ for Psii in Psi:
                         pmean_ps = np.divide(Dat_ps_free['pstat'][:,jmid,0,:] - np.tile(np.mean(Dat_ps_free['pstat'][:,jmid,0,:],axis = 1), (480,1)).T, np.tile(np.mean(Dat_ps_free['pstat'][:,jmid,0,:],axis = 1),(480,1)).T)
                         pmean_ss = np.divide(Dat_ss_free['pstat'][:,jmid,0,:] - np.tile(np.mean(Dat_ss_free['pstat'][:,jmid,0,:],axis = 1), (480,1)).T, np.tile(np.mean(Dat_ss_free['pstat'][:,jmid,0,:],axis = 1),(480,1)).T)
                         lev = np.linspace(-0.015,0.015,21)
-                        a.contourf(-x_hat, ft - T_offset, pmean_ps.T, lev, cmap=plt.cm.gnuplot)
+                        a.contourf(-x_hat, ft - T_offset, pmean_ps.T, lev)
                         a.contourf(x_hat, ft, pmean_ss.T, lev)
                         a.set_ylabel('Time, Period')
                         a.set_xlabel('Chord')
-                        plt.colorbar(a.contourf(-x_hat, ft - T_offset, pmean_ps.T, lev, cmap=plt.cm.gnuplot))
+                        plt.colorbar(a.contourf(-x_hat, ft - T_offset, pmean_ps.T, lev))
                         plt.ylim(0,4)
                         plt.tight_layout()
                         if slip == True:
@@ -258,6 +258,7 @@ for Psii in Psi:
                         a.contourf(x_hat, ft, vmean_ss.T, lev)
                         a.set_ylabel('Time, Period')
                         a.set_xlabel('Chord')
+                        plt.colorbar(a.contourf(-x_hat, ft-T_offset, vmean_ps.T, lev))
                         plt.ylim(0,4)
                         plt.tight_layout()
                         if slip == True:
@@ -277,6 +278,7 @@ for Psii in Psi:
                         a.contourf(x_hat, ft, BRmean_ss.T, lev)
                         a.set_ylabel('Time, Period')
                         a.set_xlabel('Chord')
+                        plt.colorbar(a.contourf(-x_hat, ft-T_offset, BRmean_ps.T, lev))
                         plt.ylim(0,4)
                         plt.tight_layout()
                         if slip == True:
