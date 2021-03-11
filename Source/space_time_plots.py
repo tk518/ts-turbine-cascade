@@ -180,8 +180,8 @@ for Psii in Psi:
                         lev = np.linspace(-0.015,0.015,21)
                         a.contourf(-x_hat, ft, pmean_ps.T, lev)
                         a.contourf(x_hat, ft, pmean_ss.T, lev)
-                        a.set_xlabel('Time, Period')
-                        a.set_ylabel('Chord')
+                        a.set_ylabel('Time, Period')
+                        a.set_xlabel('Chord')
                         plt.tight_layout()
                         if slip == True:
                             plt.savefig(newpath + '/space_time_pressure_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f_slip.pdf' % Mai, dpi=200)
@@ -194,8 +194,8 @@ for Psii in Psi:
                         lev = np.linspace(-0.005,0.005,21)
                         a.contourf(-x_hat, ft, vmean_ps.T, lev)
                         a.contourf(x_hat, ft, vmean_ss.T, lev)
-                        a.set_xlabel('Time, Period')
-                        a.set_ylabel('Chord')
+                        a.set_ylabel('Time, Period')
+                        a.set_xlabel('Chord')
                         plt.tight_layout()
                         if slip == True:
                             plt.savefig(newpath + '/space_time_velocity_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f_slip.pdf' % Mai, dpi=200)
