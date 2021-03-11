@@ -107,7 +107,8 @@ for Psii in Psi:
 
 
                         # Here we extract some parameters from the TS grid to use later
-                        rpm = g.get_bv('rpm',1)  # RPM in rotor row
+                        rpm = g.get_bv('rpm',probes[0][0])  # RPM in rotor row
+                        print 'rpm: ', rpm
                         cp = g.get_av('cp')  # Specific heat capacity at const p
                         ga = g.get_av('ga')  # Specific heat ratio
 
@@ -174,7 +175,12 @@ for Psii in Psi:
                         print 'pitch length: ', pitch_k
                         x = Dat_ps['x'][:,jmid,0,0]
                         x_hat = (x - x.min())/(x.max() - x.min())
-                        print 'blade speed: ', Dat_ps['U']
+                        U = Dat_ps['U'][0, 0, 0, 0]
+                        print 'blade speed: ', Dat_ps['U'][:,0,0,0]
+                        #pitch movememt
+                        T_offset = pitch_k/U
+
+
                         # Pull out data for model
                         # Assume constant Cd
                         Cd = 0.7
@@ -226,7 +232,7 @@ for Psii in Psi:
                         pmean_ps = np.divide(Dat_ps_free['pstat'][:,jmid,0,:] - np.tile(np.mean(Dat_ps_free['pstat'][:,jmid,0,:],axis = 1), (480,1)).T, np.tile(np.mean(Dat_ps_free['pstat'][:,jmid,0,:],axis = 1),(480,1)).T)
                         pmean_ss = np.divide(Dat_ss_free['pstat'][:,jmid,0,:] - np.tile(np.mean(Dat_ss_free['pstat'][:,jmid,0,:],axis = 1), (480,1)).T, np.tile(np.mean(Dat_ss_free['pstat'][:,jmid,0,:],axis = 1),(480,1)).T)
                         lev = np.linspace(-0.015,0.015,21)
-                        a.contourf(-x_hat, ft, pmean_ps.T, lev)
+                        a.contourf(-x_hat, ft + T_offset, pmean_ps.T, lev)
                         a.contourf(x_hat, ft, pmean_ss.T, lev)
                         a.set_ylabel('Time, Period')
                         a.set_xlabel('Chord')
