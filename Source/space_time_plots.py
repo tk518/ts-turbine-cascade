@@ -179,6 +179,10 @@ for Psii in Psi:
                         print 'blade speed: ', Dat_ps['U'][:,0,0,0]
                         #pitch movememt
                         T_offset = pitch_k/U
+                        print 'absolute T_offset: ', T_offset
+                        # Individual time step in seconds = blade passing period / steps per cycle
+                        T_offset = T_offset/freq/float(nstep_cycle)*float(nstep_save_probe)
+                        print 'non-dimensional T_offset: ', T_offset
 
 
                         # Pull out data for model
