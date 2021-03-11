@@ -51,6 +51,23 @@ for Psii in Psi:
                         tsr = ts_tstream_reader.TstreamReader()
                         g = tsr.read(output_file_name + '.hdf5')
 
+                        print('***')
+                        probes = []
+                        for bid in g.get_block_ids():
+                            for pid in g.get_patch_ids(bid):
+                                patch = g.get_patch(bid,pid)
+                                if patch.kind == ts_tstream_patch_kind.probe:
+                                    rpm = g.get_bv('rpm',bid)
+                                    row_str = 'STATOR' if rpm==0 else 'ROTOR'
+                                    di = patch.ien- patch.ist 
+                                    dj = patch.jen- patch.jst
+                                    dk = patch.ken- patch.kst
+                                    if row_str == 'ROTOR' and dk != 0:
+                                        probes.append((bid,pid, dk))
+                                    print('%s, bid=%d, pid=%d, di=%d, dj=%d, dk=%d' % (row_str, bid, pid, di, dj, dk))
+                        print('***')
+
+                        print 'probes: ', probes
                         # Determine number of blades in each row
                         bids = [0,g.get_nb()-1]
                         fracann = np.array([g.get_bv('fracann',bi) for bi in bids])
@@ -75,6 +92,8 @@ for Psii in Psi:
                         probe_name_ps_free = output_file_name + '_probe_%d_%d.dat' % (bid_probe,pid_probe_ps_free)
                         probe_name_ss_free = output_file_name + '_probe_%d_%d.dat' % (bid_probe,pid_probe_ss_free)
 
+                        pitch_probe = output_file_name + '_probe_%d_%d.dat' % (probes[0][0],pid_probe_ps[0][1])
+
                         # Read the probes
                         # The probe data are separate dictionary for each surface of the blade The
                         # dictionary is keyed by variable name; the values are numpy arrays with
@@ -86,6 +105,7 @@ for Psii in Psi:
                         Dat_ss = probe.read_dat(probe_name_ss, probe_shape)
                         Dat_ps_free = probe.read_dat(probe_name_ps_free, probe_shape)
                         Dat_ss_free = probe.read_dat(probe_name_ss_free, probe_shape)
+
 
                         # Here we extract some parameters from the TS grid to use later
                         rpm = g.get_bv('rpm',1)  # RPM in rotor row
@@ -112,6 +132,13 @@ for Psii in Psi:
                         Dat_ps_free = probe.secondary(Dat_ps_free, rpm, cp, ga, 1, 1)
                         Dat_ss_free = probe.secondary(Dat_ss_free, rpm, cp, ga, 1, 1)
 
+                        p = g.get_patch(probes[0][0],pid_probe_ps[0][1])
+                        di = p.ien - p.ist
+                        dj = p.jen - p.jst
+                        dk = p.ken - p.kst
+                        probe_shape = [di, dj, dk]  # Numbers of points in i, j, k directions
+
+                        Dat_pitch = probe.read_dat(probe_name_ps, probe_shape)
                         # Cut the rotor inlet
                         Pdat = 1e5
                         Tdat = 300.
@@ -142,10 +169,11 @@ for Psii in Psi:
                         TR = 0.5
                         Toc = TR * To1
 
+                        rt = Dat_pitch['rt'][-1:,jmid,:,0]
+                        pitch_k = np.max(rt) - np.min(rt)
+                        print 'pitch length: ', pitch_k
                         x = Dat_ps['x'][:,jmid,0,0]
                         x_hat = (x - x.min())/(x.max() - x.min())
-                        #print(x.min())
-                        #print(x.max())
 
                         # Pull out data for model
                         # Assume constant Cd
