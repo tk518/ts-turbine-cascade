@@ -238,7 +238,7 @@ for Psii in Psi:
                         a.contourf(x_hat, ft, pmean_ss.T, lev)
                         a.set_ylabel('Time, Period')
                         a.set_xlabel('Chord')
-                        plt.colorbar()
+                        plt.colorbar(a.contourf(-x_hat, ft - T_offset, pmean_ps.T, lev, cmap=plt.cm.gnuplot))
                         plt.ylim(0,4)
                         plt.tight_layout()
                         if slip == True:
