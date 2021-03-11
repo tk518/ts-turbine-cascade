@@ -167,7 +167,7 @@ for Psii in Psi:
                         # Nondimensionalise data
                         Pinf_Poc, roVinf_Po_cpToc = model.normalise(Poc, Toc, Pinf, roinf, Vinf, cp)
                         # Calculate BR
-                        Br_ss = model.evaluate( Pinf_Poc, roVinf_Po_cpToc, Cd, ga )
+                        BR_ss = model.evaluate( Pinf_Poc, roVinf_Po_cpToc, Cd, ga )
 
                         Pps = Dat_ps_free['pstat'][:,jmid,0,:]
                         Pss = Dat_ss_free['pstat'][:,jmid,0,:]
@@ -209,7 +209,7 @@ for Psii in Psi:
                             plt.savefig(newpath + '/space_time_pressure_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f.pdf' % Mai, dpi=200)
 
                         print 'maximum pressure: ', np.max((np.max(pmean_ps), np.max(pmean_ss)))
-                        print 'minimum pressure: ', np.min((np.max(pmean_ps), np.min(pmean_ss)))
+                        print 'minimum pressure: ', np.min((np.min(pmean_ps), np.min(pmean_ss)))
 
                         #Make a space-time plot for velocity
                         f,a = plt.subplots()  # Create a figure and axis to plot into
@@ -227,10 +227,9 @@ for Psii in Psi:
                             plt.savefig(newpath + '/space_time_velocity_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f.pdf' % Mai, dpi=200)
 
                         print 'maximum velocity: ', np.max((np.max(vmean_ps), np.max(vmean_ss)))
-                        print 'minimum velocity: ', np.min((np.max(vmean_ps), np.min(vmean_ss)))
+                        print 'minimum velocity: ', np.min((np.min(vmean_ps), np.min(vmean_ss)))
 
-                        print 'maximum BR: ', np.max((np.max(BR_ps), np.max(BR_ss)))
-                        print 'minimum BR: ', np.min((np.max(BR_ps), np.min(BR_ss)))   
+                          
 
                         #Make a space-time plot for Blowing Ratio
                         f,a = plt.subplots()  # Create a figure and axis to plot into
@@ -247,4 +246,5 @@ for Psii in Psi:
                         else:
                             plt.savefig(newpath + '/space_time_BR_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f.pdf' % Mai, dpi=200)      
 
-                   
+                        print 'maximum BR: ', np.max((np.max(BRmean_ps), np.max(BRmean_ss)))
+                        print 'minimum BR: ', np.min((np.min(BRmean_ps), np.min(BRmean_ss))) 
