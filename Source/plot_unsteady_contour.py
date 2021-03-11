@@ -211,7 +211,7 @@ for Psii in Psi:
                     plt.savefig(newpath + '/Entropy_psi_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f' % Mai + '_%d.png' %stepsize, dpi=200)
                 plt.close(f)
             
-
+            '''
             #Entropy contour with pressure plot
             for stepsize in range(nt): #(1, 97) gets all the steps
                 f,a = plt.subplots()  # Create a figure and axis to plot into
@@ -230,12 +230,12 @@ for Psii in Psi:
                 else:
                     plt.savefig(newpath + '/combined_psi_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f' % Mai +'_%d.png' %stepsize, dpi=200)
                 plt.close(f)
-            '''
+            
 
             for stepsize in range(nt): #(1, 97) gets all the steps
                 f,a = plt.subplots()  # Create a figure and axis to plot into
                 #plt.set_cmap('cubehelix_r')
-                lev = np.linspace(-0.05,0.05,201)
+                lev = np.linspace(-0.15,0.15,41)
                 probe.render_frame(a, Dat,'vmean', stepsize, lev, Omega, dt*nstep_save_probe,nstep_cycle/nstep_save_probe, dtheta_sector, Po1, P2)
                 lev = np.linspace(1.,2.,1)
                 probe.render_frame(a, Dat,'ds', stepsize, lev, Omega, dt*nstep_save_probe,nstep_cycle/nstep_save_probe, dtheta_sector, Po1, P2)

@@ -45,7 +45,7 @@ def test_cyclicity(Dat_p, nsteps_cycle, nts):
 
 
 Phi = [0.40, 0.60, 0.80, 1.00, 1.20]
-Psi = [0.80, 1.20, 1.60, 2.00, 2.40]
+Psi = [1.60]
 Ma =  [0.70]
 Data={}
 slip = False
@@ -103,7 +103,7 @@ for Psii in Psi:
             # dictionary is keyed by variable name; the values are numpy arrays with
             # indexes [i = streamwise, j = spanwise, k = pitchwise, n = timewise]
             # For example, to get density at time instant n as a function of
-            # axial distance at mid-radius:
+            # axial  at mid-radius:
             #   Dat_ps['ro'][:,jmid,0,n]
             Dat_ps = probe.read_dat(probe_name_ps, probe_shape)
             Dat_ss = probe.read_dat(probe_name_ss, probe_shape)
@@ -208,9 +208,9 @@ for Psii in Psi:
             P2.append(Dat_ps['pstat'][imid,jmid,0,:])
             P_hat1.append(P2[n] / np.mean(P2[n]))
 
-            # Choose a hole position
-            ihole_ps = 20
-            ihole_ss = 40
+            # Choose a hole position - 98 i positions on both sides
+            ihole_ps = [10,20,30,40,50,60,70,80,90]
+            ihole_ss = [10,20,30,40,50,60,70,80,90]
 
             # Pull out data for model
 

@@ -148,15 +148,34 @@ for Psii in Psi:
                         #print(x.max())
 
                         # Pull out data for model
+                        # Assume constant Cd
+                        Cd = 0.7
+
+                        #pressure side first
+                        roinf = Dat_ps_free['ro'][:,jmid,0,:]
+                        Vinf = Dat_ps_free['vrel'][:,jmid,0,:]
+                        Pinf = Dat_ps_free['pstat'][:,jmid,0,:]
+                        # Nondimensionalise data
+                        Pinf_Poc, roVinf_Po_cpToc = model.normalise(Poc, Toc, Pinf, roinf, Vinf, cp)
+                        # Calculate BR
+                        BR_ps = model.evaluate( Pinf_Poc, roVinf_Po_cpToc, Cd, ga )
+
+                        #Suction side
+                        roinf = Dat_ss_free['ro'][:,jmid,0,:]
+                        Vinf = Dat_ss_free['vrel'][:,jmid,0,:]
+                        Pinf = Dat_ss_free['pstat'][:,jmid,0,:]
+                        # Nondimensionalise data
+                        Pinf_Poc, roVinf_Po_cpToc = model.normalise(Poc, Toc, Pinf, roinf, Vinf, cp)
+                        # Calculate BR
+                        Br_ss = model.evaluate( Pinf_Poc, roVinf_Po_cpToc, Cd, ga )
 
                         Pps = Dat_ps_free['pstat'][:,jmid,0,:]
                         Pss = Dat_ss_free['pstat'][:,jmid,0,:]
-                        #
                         # Finished reading data, now make some plots
 
                         #key in form 'Ma_0.70_psi_1.60_phi_0.45'
                         if slip == True:
-                            Data['Ma_'+"{:.2f}".format(Mai)+'_psi_'+"{:.2f}".format(Psii)+'_phi_'+"{:.2f}".format(Phii)+'_slip'] = [Pps, Pss]
+                            Data['Ma_'+"{:.2f}".format(Mai)+'_psi_'+"{:.2f}".format(Psii)+'_phi_'+"{:.2f}".format(Phii)+'_slip'] = [Pps, Pss, BR_ps, BR_ss]
                         else:
                             Data['Ma_'+"{:.2f}".format(Mai)+'_psi_'+"{:.2f}".format(Psii)+'_phi_'+"{:.2f}".format(Phii)] = [Pps, Pss]
                         #find out which way round
@@ -174,9 +193,10 @@ for Psii in Psi:
                         else:
                             print ("Successfully created the directory %s " % newpath)
 
+                        #Make a space-time plot for pressure
                         f,a = plt.subplots()  # Create a figure and axis to plot into
-                        pmean_ps = np.divide(Dat_ps['pstat'][:,jmid,0,:] - np.tile(np.mean(Dat_ps['pstat'][:,jmid,0,:],axis = 1), (480,1)).T, np.tile(np.mean(Dat_ps['pstat'][:,jmid,0,:],axis = 1),(480,1)).T)
-                        pmean_ss = np.divide(Dat_ss['pstat'][:,jmid,0,:] - np.tile(np.mean(Dat_ss['pstat'][:,jmid,0,:],axis = 1), (480,1)).T, np.tile(np.mean(Dat_ss['pstat'][:,jmid,0,:],axis = 1),(480,1)).T)
+                        pmean_ps = np.divide(Dat_ps_free['pstat'][:,jmid,0,:] - np.tile(np.mean(Dat_ps_free['pstat'][:,jmid,0,:],axis = 1), (480,1)).T, np.tile(np.mean(Dat_ps_free['pstat'][:,jmid,0,:],axis = 1),(480,1)).T)
+                        pmean_ss = np.divide(Dat_ss_free['pstat'][:,jmid,0,:] - np.tile(np.mean(Dat_ss_free['pstat'][:,jmid,0,:],axis = 1), (480,1)).T, np.tile(np.mean(Dat_ss_free['pstat'][:,jmid,0,:],axis = 1),(480,1)).T)
                         lev = np.linspace(-0.015,0.015,21)
                         a.contourf(-x_hat, ft, pmean_ps.T, lev)
                         a.contourf(x_hat, ft, pmean_ss.T, lev)
@@ -188,10 +208,14 @@ for Psii in Psi:
                         else:
                             plt.savefig(newpath + '/space_time_pressure_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f.pdf' % Mai, dpi=200)
 
+                        print 'maximum pressure: ', np.max((np.max(pmean_ps), np.max(pmean_ss)))
+                        print 'minimum pressure: ', np.min((np.max(pmean_ps), np.min(pmean_ss)))
+
+                        #Make a space-time plot for velocity
                         f,a = plt.subplots()  # Create a figure and axis to plot into
-                        vmean_ps = np.divide(Dat_ps['vrel'][:,jmid,0,:] - np.tile(np.mean(Dat_ps['vrel'][:,jmid,0,:],axis = 1), (480,1)).T, np.tile(np.mean(Dat_ps['vrel'][:,jmid,0,:],axis = 1),(480,1)).T)
-                        vmean_ss = np.divide(Dat_ss['vrel'][:,jmid,0,:] - np.tile(np.mean(Dat_ss['vrel'][:,jmid,0,:],axis = 1), (480,1)).T, np.tile(np.mean(Dat_ss['vrel'][:,jmid,0,:],axis = 1),(480,1)).T)
-                        lev = np.linspace(-0.005,0.005,21)
+                        vmean_ps = np.divide(Dat_ps_free['vrel'][:,jmid,0,:] - np.tile(np.mean(Dat_ps_free['vrel'][:,jmid,0,:],axis = 1), (480,1)).T, np.tile(np.mean(Dat_ps_free['vrel'][:,jmid,0,:],axis = 1),(480,1)).T)
+                        vmean_ss = np.divide(Dat_ss_free['vrel'][:,jmid,0,:] - np.tile(np.mean(Dat_ss_free['vrel'][:,jmid,0,:],axis = 1), (480,1)).T, np.tile(np.mean(Dat_ss_free['vrel'][:,jmid,0,:],axis = 1),(480,1)).T)
+                        lev = np.linspace(-0.015,0.015,21)
                         a.contourf(-x_hat, ft, vmean_ps.T, lev)
                         a.contourf(x_hat, ft, vmean_ss.T, lev)
                         a.set_ylabel('Time, Period')
@@ -201,3 +225,26 @@ for Psii in Psi:
                             plt.savefig(newpath + '/space_time_velocity_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f_slip.pdf' % Mai, dpi=200)
                         else:
                             plt.savefig(newpath + '/space_time_velocity_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f.pdf' % Mai, dpi=200)
+
+                        print 'maximum velocity: ', np.max((np.max(vmean_ps), np.max(vmean_ss)))
+                        print 'minimum velocity: ', np.min((np.max(vmean_ps), np.min(vmean_ss)))
+
+                        print 'maximum BR: ', np.max((np.max(BR_ps), np.max(BR_ss)))
+                        print 'minimum BR: ', np.min((np.max(BR_ps), np.min(BR_ss)))   
+
+                        #Make a space-time plot for Blowing Ratio
+                        f,a = plt.subplots()  # Create a figure and axis to plot into
+                        BRmean_ps = np.divide(BR_ps - np.tile(np.mean(BR_ps, axis = 1), (480,1)).T, np.tile(np.mean(BR_ps, axis = 1), (480,1)).T)
+                        BRmean_ss = np.divide(BR_ss - np.tile(np.mean(BR_ss, axis = 1), (480,1)).T, np.tile(np.mean(BR_ss, axis = 1), (480,1)).T)
+                        lev = np.linspace(-0.015,0.015,21)
+                        a.contourf(-x_hat, ft, BRmean_ps.T, lev)
+                        a.contourf(x_hat, ft, BRmean_ss.T, lev)
+                        a.set_ylabel('Time, Period')
+                        a.set_xlabel('Chord')
+                        plt.tight_layout()
+                        if slip == True:
+                            plt.savefig(newpath + '/space_time_BR_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f_slip.pdf' % Mai, dpi=200)
+                        else:
+                            plt.savefig(newpath + '/space_time_BR_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f.pdf' % Mai, dpi=200)      
+
+                   
