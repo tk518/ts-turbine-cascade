@@ -61,7 +61,7 @@ for Psii in Psi:
                                     di = patch.ien- patch.ist 
                                     dj = patch.jen- patch.jst
                                     dk = patch.ken- patch.kst
-                                    if row_str == 'ROTOR' and dk != 0:
+                                    if row_str == 'ROTOR' and dk != 1:
                                         probes.append((bid,pid, dk))
                                     print('%s, bid=%d, pid=%d, di=%d, dj=%d, dk=%d' % (row_str, bid, pid, di, dj, dk))
                         print('***')
@@ -91,7 +91,7 @@ for Psii in Psi:
                         probe_name_ps_free = output_file_name + '_probe_%d_%d.dat' % (bid_probe,pid_probe_ps_free)
                         probe_name_ss_free = output_file_name + '_probe_%d_%d.dat' % (bid_probe,pid_probe_ss_free)
 
-                        pitch_probe = output_file_name + '_probe_%d_%d.dat' % (probes[0][0],pid_probe_ps[0][1])
+                        pitch_probe = output_file_name + '_probe_%d_%d.dat' % (probes[0][0], probes[0][1])
 
                         # Read the probes
                         # The probe data are separate dictionary for each surface of the blade The
@@ -131,13 +131,13 @@ for Psii in Psi:
                         Dat_ps_free = probe.secondary(Dat_ps_free, rpm, cp, ga, 1, 1)
                         Dat_ss_free = probe.secondary(Dat_ss_free, rpm, cp, ga, 1, 1)
 
-                        p = g.get_patch(probes[0][0],pid_probe_ps[0][1])
+                        p = g.get_patch(probes[0][0],probes[0][1])
                         di = p.ien - p.ist
                         dj = p.jen - p.jst
                         dk = p.ken - p.kst
                         probe_shape = [di, dj, dk]  # Numbers of points in i, j, k directions
 
-                        Dat_pitch = probe.read_dat(probe_name_ps, probe_shape)
+                        Dat_pitch = probe.read_dat(pitch_probe, probe_shape)
                         # Cut the rotor inlet
                         Pdat = 1e5
                         Tdat = 300.
@@ -167,13 +167,14 @@ for Psii in Psi:
                         # the main-stream inlet stagnation condition
                         TR = 0.5
                         Toc = TR * To1
-
-                        rt = Dat_pitch['rt'][-1:,jmid,:,0]
+                        print 'Dat_pitch: ', Dat_pitch['rt']
+                        jmid_pitchprobe = int(dj/2)
+                        rt = Dat_pitch['rt'][-1,jmid_pitchprobe,:,0]
                         pitch_k = np.max(rt) - np.min(rt)
                         print 'pitch length: ', pitch_k
                         x = Dat_ps['x'][:,jmid,0,0]
                         x_hat = (x - x.min())/(x.max() - x.min())
-
+                        print 'blade speed: ', Dat_ps['U']
                         # Pull out data for model
                         # Assume constant Cd
                         Cd = 0.7
