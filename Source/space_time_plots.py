@@ -6,7 +6,6 @@ import matplotlib.pyplot as plt  # Plotting library
 from matplotlib.pyplot import cm
 from ts import ts_tstream_reader, ts_tstream_patch_kind, ts_tstream_cut  # TS grid reader,TS cutter, TS kind
 import os
-
 #
 # Set variables here
 #
@@ -168,10 +167,9 @@ for Psii in Psi:
                         # the main-stream inlet stagnation condition
                         TR = 0.5
                         Toc = TR * To1
-                        print 'Dat_pitch: ', Dat_pitch['rt']
+                        #print 'Dat_pitch: ', Dat_pitch['rt']
                         jmid_pitchprobe = int(dj/2)
-                        rt = Dat_pitch['rt'][-1,jmid_pitchprobe,:,0]
-                        pitch_k = np.max(rt) - np.min(rt)
+                        pitch_k = Dat_ps['rt'][0,jmid,0,0] - Dat_ss['rt'][0,jmid,0,0]
                         print 'pitch length: ', pitch_k
                         x = Dat_ps['x'][:,jmid,0,0]
                         x_hat = (x - x.min())/(x.max() - x.min())
@@ -181,7 +179,7 @@ for Psii in Psi:
                         T_offset = pitch_k/U
                         print 'absolute T_offset: ', T_offset
                         # Individual time step in seconds = blade passing period / steps per cycle
-                        T_offset = T_offset/freq/float(nstep_cycle)*float(nstep_save_probe)
+                        T_offset = T_offset*freq
                         print 'non-dimensional T_offset: ', T_offset
 
 
@@ -236,10 +234,12 @@ for Psii in Psi:
                         pmean_ps = np.divide(Dat_ps_free['pstat'][:,jmid,0,:] - np.tile(np.mean(Dat_ps_free['pstat'][:,jmid,0,:],axis = 1), (480,1)).T, np.tile(np.mean(Dat_ps_free['pstat'][:,jmid,0,:],axis = 1),(480,1)).T)
                         pmean_ss = np.divide(Dat_ss_free['pstat'][:,jmid,0,:] - np.tile(np.mean(Dat_ss_free['pstat'][:,jmid,0,:],axis = 1), (480,1)).T, np.tile(np.mean(Dat_ss_free['pstat'][:,jmid,0,:],axis = 1),(480,1)).T)
                         lev = np.linspace(-0.015,0.015,21)
-                        a.contourf(-x_hat, ft + T_offset, pmean_ps.T, lev)
+                        a.contourf(-x_hat, ft - T_offset, pmean_ps.T, lev, cmap=plt.cm.gnuplot)
                         a.contourf(x_hat, ft, pmean_ss.T, lev)
                         a.set_ylabel('Time, Period')
                         a.set_xlabel('Chord')
+                        plt.colorbar()
+                        plt.ylim(0,4)
                         plt.tight_layout()
                         if slip == True:
                             plt.savefig(newpath + '/space_time_pressure_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f_slip.pdf' % Mai, dpi=200)
@@ -254,10 +254,11 @@ for Psii in Psi:
                         vmean_ps = np.divide(Dat_ps_free['vrel'][:,jmid,0,:] - np.tile(np.mean(Dat_ps_free['vrel'][:,jmid,0,:],axis = 1), (480,1)).T, np.tile(np.mean(Dat_ps_free['vrel'][:,jmid,0,:],axis = 1),(480,1)).T)
                         vmean_ss = np.divide(Dat_ss_free['vrel'][:,jmid,0,:] - np.tile(np.mean(Dat_ss_free['vrel'][:,jmid,0,:],axis = 1), (480,1)).T, np.tile(np.mean(Dat_ss_free['vrel'][:,jmid,0,:],axis = 1),(480,1)).T)
                         lev = np.linspace(-0.015,0.015,21)
-                        a.contourf(-x_hat, ft, vmean_ps.T, lev)
+                        a.contourf(-x_hat, ft-T_offset, vmean_ps.T, lev)
                         a.contourf(x_hat, ft, vmean_ss.T, lev)
                         a.set_ylabel('Time, Period')
                         a.set_xlabel('Chord')
+                        plt.ylim(0,4)
                         plt.tight_layout()
                         if slip == True:
                             plt.savefig(newpath + '/space_time_velocity_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f_slip.pdf' % Mai, dpi=200)
@@ -272,10 +273,11 @@ for Psii in Psi:
                         BRmean_ps = np.divide(BR_ps - np.tile(np.mean(BR_ps, axis = 1), (480,1)).T, np.tile(np.mean(BR_ps, axis = 1), (480,1)).T)
                         BRmean_ss = np.divide(BR_ss - np.tile(np.mean(BR_ss, axis = 1), (480,1)).T, np.tile(np.mean(BR_ss, axis = 1), (480,1)).T)
                         lev = np.linspace(-0.015,0.015,21)
-                        a.contourf(-x_hat, ft, BRmean_ps.T, lev)
+                        a.contourf(-x_hat, ft-T_offset, BRmean_ps.T, lev)
                         a.contourf(x_hat, ft, BRmean_ss.T, lev)
                         a.set_ylabel('Time, Period')
                         a.set_xlabel('Chord')
+                        plt.ylim(0,4)
                         plt.tight_layout()
                         if slip == True:
                             plt.savefig(newpath + '/space_time_BR_%.2f' %Psii + '_phi_%.2f' %Phii + '_Ma_%.2f_slip.pdf' % Mai, dpi=200)
