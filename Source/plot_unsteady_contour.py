@@ -126,8 +126,11 @@ for Psii in Psi:
                     )
 
             # Pressure references
-            _, Po1 = rotor_inlet.mass_avg_1d('pstag')
-            _, P1 = rotor_inlet.area_avg_1d('pstat')
+            _, P1 = rotor_inlet.mass_avg_1d('pstat')
+            _, Mrel1 = rotor_inlet.mass_avg_1d('mach_rel')
+            _, To1 = rotor_inlet.mass_avg_1d('tstag_rel')
+            _, x1 = rotor_inlet.mass_avg_1d('x')
+            Po1 = model.cf.from_Ma('Po_P',Mrel1,ga)*P1
             _, P2 = rotor_outlet.area_avg_1d('pstat')
 
             # Temperature references

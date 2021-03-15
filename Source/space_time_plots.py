@@ -151,8 +151,11 @@ for Psii in Psi:
                                 )
 
                         # Get mass averaged rotor inlet relative stagnation conditions
-                        _, Po1 = rotor_inlet.mass_avg_1d('pstag_rel')
+                        _, P1 = rotor_inlet.mass_avg_1d('pstat')
+                        _, Mrel1 = rotor_inlet.mass_avg_1d('mach_rel')
                         _, To1 = rotor_inlet.mass_avg_1d('tstag_rel')
+                        _, x1 = rotor_inlet.mass_avg_1d('x')
+                        Po1 = model.cf.from_Ma('Po_P',Mrel1,ga)*P1
 
                         #
                         # Set up the simple hole model
@@ -160,7 +163,7 @@ for Psii in Psi:
 
                         # Choose a constant "pressure margin", or percentage increase of coolant
                         # relative to the inlet stagnation condition
-                        PM = 0.01
+                        PM = 0.04
                         Poc = (1. + PM) * Po1
 
                         # Fix a stagnation temperature ratio, i.e. the coolant is this much colder than
@@ -169,7 +172,7 @@ for Psii in Psi:
                         Toc = TR * To1
                         #print 'Dat_pitch: ', Dat_pitch['rt']
                         jmid_pitchprobe = int(dj/2)
-                        pitch _k1 = Dat_pitch['rt'][0,jmid_pitchprobe,-1,0] - Dat_pitch['rt'][0,jmid_pitchprobe,0,0]
+                        pitch_k1 = Dat_pitch['rt'][0,jmid_pitchprobe,-1,0] - Dat_pitch['rt'][0,jmid_pitchprobe,0,0]
                         pitch_k = Dat_ss['rt'][0,jmid,0,0] - Dat_ps['rt'][0,jmid,0,0]
                         print 'pitch length: ', pitch_k
                         print 'pitch length difference: ', pitch_k1-pitch_k
